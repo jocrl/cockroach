@@ -1495,6 +1495,28 @@ func TestAdminAPIJobs(t *testing.T) {
 		)
 	}
 
+//rows, err := db.Query(
+//			"SELECT count(*) FROM \"\".crdb_internal.tables WHERE table_id = $1",
+//			descID)
+//		require.NoError(t, err)
+//		rowMat, err := sqlutils.Rowf	ToStrMatrix(rows)
+//		require.NoError(t, err)
+//		require.EqualValues(t, [][]string{{"0"}}, rowMat)
+	fmt.Println("hi")
+	rows := sqlDB.Query(	t, `select next_run, last_run, num_runs from crdb_internal.jobs`,)
+		for rows.Next() {
+				//var status	string
+			var numRuns int64
+			var lastRun, nextRun time.Time
+	//const stmt = "SELECT claim_session_id, claim_instance_id, num_runs, last_run FROM system.jobs WHERE id = $1"
+			rows.Scan(&nextRun, &lastRun, &numRuns)
+			fmt.Println(nextRun)
+			fmt.Println(lastRun)
+			fmt.Println(numRuns)
+
+		}
+
+
 	const invalidJobType = math.MaxInt32
 
 	testCases := []struct {

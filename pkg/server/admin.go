@@ -1846,7 +1846,10 @@ func (s *adminServer) Jobs(
 
 	q := makeSQLQuery()
 	q.Append(`
-      SELECT job_id, job_type, description, statement, user_name, descriptor_ids, status,
+      SELECT job_id, job_type, description, statement, user_name, descriptor_ids,
+             case when status='running' AND next_run > now() AND num_runs > 1 then 'retry-running' 
+             when status='reverting' AND next_run > now() AND num_runs > 1 then 'retry-reverting' 
+             else status end as status,
 						 running_status, created, started, finished, modified,
 						 fraction_completed, high_water_timestamp, error, last_run,
 						 next_run, num_runs

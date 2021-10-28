@@ -21,7 +21,7 @@ import { cockroach } from "src/js/protos";
 
 export class Duration extends React.PureComponent<{
   job: Job;
-  className: string;
+  className?: string;
 }> {
   render() {
     const { job, className } = this.props;

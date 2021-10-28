@@ -44,20 +44,15 @@ export const JobStatus: React.FC<JobStatusProps> = ({
   switch (visualType) {
     case JobStatusVisual.BadgeOnly:
       return <JobStatusBadge jobStatus={job.status} />;
-    case JobStatusVisual.BadgeWithDuration: {
-      const durationComponent = <Duration job={job} />;
+    case JobStatusVisual.BadgeWithDuration:
       return (
         <div>
           <JobStatusBadge jobStatus={job.status} />
-          {durationComponent && (
-            <span className="jobs-table__duration">{durationComponent}</span>
-          )}
+          <Duration job={job} className="jobs-table__duration" />
         </div>
       );
-    }
-    case JobStatusVisual.ProgressBarWithDuration: {
+    case JobStatusVisual.ProgressBarWithDuration:
       const jobIsRetrying = isRetrying(job.status);
-      const durationComponent = <Duration job={job} />;
       return (
         <div>
           <ProgressBar
@@ -65,17 +60,13 @@ export const JobStatus: React.FC<JobStatusProps> = ({
             lineWidth={lineWidth || 11}
             showPercentage={true}
           />
-          {durationComponent ? "yes" : "no"}
-          {/*{durationComponent && (*/}
-          {/*  <span*/}
-          {/*    className={cn(*/}
-          {/*      "jobs-table__duration",*/}
-          {/*      "jobs-table__align-progress-bar",*/}
-          {/*    )}*/}
-          {/*  >*/}
-          {/*    {durationComponent}*/}
-          {/*  </span>*/}
-          {/*)}*/}
+          <Duration
+            job={job}
+            className={cn(
+              "jobs-table__duration",
+              "jobs-table__align-progress-bar",
+            )}
+          />
           <div className="jobs-table__align-progress-bar">
             {jobIsRetrying && <RetryingStatusBadge />}
           </div>
@@ -86,7 +77,6 @@ export const JobStatus: React.FC<JobStatusProps> = ({
           )}
         </div>
       );
-    }
     case JobStatusVisual.BadgeWithMessage:
       return (
         <div>

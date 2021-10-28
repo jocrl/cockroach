@@ -171,39 +171,9 @@ export const jobTablePropsFixture: JobTableProps = {
           num_runs: new Long(1),
         },
         {
-          id: new Long(6093756417, 70312826),
-          type: "RESTORE",
-          description: "RESTORE data.* FROM $1 WITH OPTIONS (into_db='data2')",
-          username: "root",
-          descriptor_ids: [56],
-          status: "running",
-          created: new protos.google.protobuf.Timestamp({
-            seconds: new Long(1634648117),
-            nanos: 917066000,
-          }),
-          started: new protos.google.protobuf.Timestamp({
-            seconds: new Long(1634648117),
-            nanos: 936268000,
-          }),
-          finished: new protos.google.protobuf.Timestamp({
-            seconds: new Long(1634648118),
-            nanos: 154016000,
-          }),
-          modified: new protos.google.protobuf.Timestamp({
-            seconds: new Long(1634648118),
-            nanos: 153272000,
-          }),
-          fraction_completed: 0.38,
-          last_run: new protos.google.protobuf.Timestamp({
-            seconds: new Long(1634648117),
-            nanos: 936268000,
-          }),
-          num_runs: new Long(1),
-        },
-        {
           id: new Long(3390625793, 70312826),
           type: "AUTO SPAN CONFIG RECONCILIATION",
-          description: "automatic Span Config reconciliation",
+          description: "GC for DROP TABLE havent_started_running",
           username: "root",
           descriptor_ids: [53],
           status: "running",
@@ -231,6 +201,36 @@ export const jobTablePropsFixture: JobTableProps = {
           next_run: new protos.google.protobuf.Timestamp({
             seconds: new Long(1634648117),
             nanos: 116912100,
+          }),
+          num_runs: new Long(1),
+        },
+        {
+          id: new Long(6093756417, 70312826),
+          type: "RESTORE",
+          description: "RESTORE data.* FROM $1 WITH OPTIONS (into_db='data2')",
+          username: "root",
+          descriptor_ids: [56],
+          status: "running",
+          created: new protos.google.protobuf.Timestamp({
+            seconds: new Long(1634648117),
+            nanos: 917066000,
+          }),
+          started: new protos.google.protobuf.Timestamp({
+            seconds: new Long(1634648117),
+            nanos: 936268000,
+          }),
+          finished: new protos.google.protobuf.Timestamp({
+            seconds: new Long(1634648118),
+            nanos: 154016000,
+          }),
+          modified: new protos.google.protobuf.Timestamp({
+            seconds: new Long(1634648118),
+            nanos: 153272000,
+          }),
+          fraction_completed: 0.38,
+          last_run: new protos.google.protobuf.Timestamp({
+            seconds: new Long(1634648117),
+            nanos: 936268000,
           }),
           num_runs: new Long(1),
         },
@@ -273,8 +273,7 @@ export const jobTablePropsFixture: JobTableProps = {
         {
           id: new Long(3390625793, 70312826),
           type: "STREAM INGESTION",
-          description:
-            "RESTORE DATABASE backup_database_name FROM 'your_backup_location';",
+          description: "GC for DROP TABLE havent_started_running_2",
           username: "root",
           descriptor_ids: [53],
           status: "retry-running",

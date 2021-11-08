@@ -1698,21 +1698,6 @@ func TestAdminAPIJobsDetails(t *testing.T) {
 			assert.Equal(t, expected.status, job.Status)
 		}
 	}
-
-	//expectedJobs := []struct {
-	//	id     int64
-	//	status string
-	//
-	//	numRuns int64
-	//	lastRun time.Time
-	//}{}
-
-	fmt.Println("hi")
-	for _, job := range res.Jobs {
-		fmt.Println("\tID:", job.ID, "\tType:", job.Type, "\tDescription:", job.Description, "\tStatement:", job.Statement, "\tUsername:", job.Username, "\tDescriptorIDs:", job.DescriptorIDs, "\tStatus:", job.Status, "\tCreated:", job.Created, "\tStarted:", job.Started, "\tFinished:", job.Finished, "\tModified:", job.Modified, "\tFractionCompleted:", job.FractionCompleted, "\tError:", job.Error, "\tHighwaterTimestamp:", job.HighwaterTimestamp, "\tHighwaterDecimal:", job.HighwaterDecimal, "\tRunningStatus:", job.RunningStatus, "\tLastRun:", job.LastRun, "\tNextRun:", job.NextRun, "\tNumRuns:", job.NumRuns)
-	}
-	assert.True(t, false, "Not implemented, verify other columns")
-
 }
 
 func TestAdminAPILocations(t *testing.T) {

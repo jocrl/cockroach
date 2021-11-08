@@ -9,49 +9,31 @@
 // licenses/APL.txt.
 
 import React from "react";
-import { shallow } from "enzyme";
+// import { shallow } from "enzyme";
 import { assert } from "chai";
-import { render } from "@testing-library/react";
-import { JobTable, JobTableProps } from "src/views/jobs/jobTable";
-import { MemoryRouter } from "react-router-dom";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import {
+  JobStatusCell,
+  JobStatusCellProps,
+} from "src/views/jobs/jobStatusCell";
 import "src/enzymeInit";
 
-describe("<JobTable>", () => {
-  it.only("should have the expected columns", () => {
-    const toJSON = () => {
-      return [""];
-    };
-    const jobTableProps: JobTableProps = {
-      sort: { sortKey: null, ascending: true },
-      setSort: () => {},
-      jobs: {
-        data: { jobs: [{}, {}, {}, {}], toJSON },
-        inFlight: false,
-        valid: true,
+describe("<JobStatusCell>", () => {
+  it.only("should show next execution time on hover", () => {
+    const jobStatusCellProps: JobStatusCellProps = {
+      job: {
+        status: "retry-running",
       },
-      current: 2,
-      pageSize: 2,
-      isUsedFilter: true,
     };
-    const { getByText } = render(
-      <MemoryRouter>
-        <JobTable {...jobTableProps} />
-      </MemoryRouter>,
+    const { container, getByText } = render(
+      <JobStatusCell {...jobStatusCellProps} />,
     );
-
-    const expectedColumnTitles = [
-      "Description",
-      "Status",
-      "Job ID",
-      "User",
-      "Creation Time (UTC)",
-      "Last Execution Time (UTC)",
-      "Execution Count",
-    ];
-
-    for (const columnTitle of expectedColumnTitles) {
-      getByText(columnTitle);
-    }
+    userEvent.hover(container.firstChild);
+    // userEvent.hover(getByText("retrying"));
+    screen.getByText("Execution");
+    // screen.getByText("Next Execution Time:");
+    // getByText("fake");
   });
 
   it("should reset page to 1 after job list prop changes", () => {

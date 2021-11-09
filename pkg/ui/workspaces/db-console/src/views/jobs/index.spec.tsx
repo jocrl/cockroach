@@ -19,7 +19,7 @@ import {
   retryRunningJobFixture,
 } from "src/views/jobs/jobTable.fixture";
 import { refreshJobs } from "src/redux/apiReducers";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 // import { SortSetting } from "src/views/shared/components/sortabletable";
@@ -94,7 +94,11 @@ describe("Jobs", () => {
     );
     const retryingBadge = getByText("retrying");
     userEvent.hover(retryingBadge);
+    await waitFor(
+      () => screen.getByText("Execution"),
+      // expect(screen.getByText(revealable.value)).toBeDefined(),
+    );
+    // await
     debug(undefined, 100000);
-    screen.getByText("Execution");
   });
 });

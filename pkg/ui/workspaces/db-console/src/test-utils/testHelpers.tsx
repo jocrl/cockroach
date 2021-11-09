@@ -6,9 +6,10 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import { merge } from "lodash";
 
 import { PartialRecursive } from "Typings/partialRecursive";
-import rootReducer from "./store/reducers";
+// import rootReducer from "./store/reducers";
+// import rootReducer from "./store/reducers";
 
-import { AdminUIState } from "src/redux/state";
+import { reducers, AdminUIState } from "src/redux/state";
 import rootSaga from "src/redux/sagas";
 import promiseListener from "./store/promiseListener";
 
@@ -33,7 +34,7 @@ export const mockState = (
   if (preloadedState && mergeState) {
     // Get default state object.
     const defaultState = createStore(
-      combineReducers(rootReducer),
+      reducers,
       {} as Partial<AdminUIState>,
     ).getState();
 
@@ -43,7 +44,7 @@ export const mockState = (
 
   // Generate state object with overwritten preloaded state and return.
   return createStore(
-    combineReducers(rootReducer),
+    reducers,
     (preloadedState as Partial<AdminUIState>) || {},
   ).getState();
 };
@@ -52,9 +53,7 @@ export function ProviderWrapperWithState(props: {
   initialState?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */;
   children: ReactNode;
 }) {
-  const [store] = useState(() =>
-    createStore(combineReducers(rootReducer), props.initialState),
-  );
+  const [store] = useState(() => createStore(reducers, props.initialState));
 
   return (
     <Provider store={store}>
@@ -76,7 +75,7 @@ export function ProviderWrapper(props: {
     if (props.hookAPIs) {
       const sagaMiddleware = createSagaMiddleware();
       const store = createStore(
-        combineReducers(rootReducer),
+        reducers,
         props.initialState || {},
         applyMiddleware(sagaMiddleware, promiseListener.middleware),
       );
@@ -84,7 +83,7 @@ export function ProviderWrapper(props: {
       sagaMiddleware.run(rootSaga);
       return store;
     }
-    return createStore(combineReducers(rootReducer), props.initialState || {});
+    return createStore(reducers, props.initialState || {});
   });
 
   return (

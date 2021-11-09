@@ -14,10 +14,13 @@ import { cockroach } from "src/js/protos";
 import { formatDuration } from ".";
 // import { JobTable, JobTableProps } from "src/views/jobs/jobTable";
 import { JobsTable, JobsTableProps } from "src/views/jobs/index";
-import { jobsFixture } from "src/views/jobs/jobTable.fixture";
+import {
+  allJobsFixture,
+  retryRunningJobFixture,
+} from "src/views/jobs/jobTable.fixture";
 import { refreshJobs } from "src/redux/apiReducers";
-import { render } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 // import { SortSetting } from "src/views/shared/components/sortabletable";
 import { ProviderWrapper, mockState } from "src/test-utils/testHelpers";
@@ -25,10 +28,11 @@ import { CachedDataReducerState } from "oss/src/redux/cachedDataReducer";
 
 // todo
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
+import Job = cockroach.server.serverpb.IJobResponse;
 import Long from "long";
 import * as protos from "oss/src/js";
 
-const jobsTableProps: JobsTableProps = {
+const getMockJobsTableProps = (jobs: Array<Job>): JobsTableProps => ({
   sort: { sortKey: null, ascending: true },
   status: "",
   show: "50",
@@ -39,14 +43,14 @@ const jobsTableProps: JobsTableProps = {
   setType: () => {},
   jobs: {
     data: {
-      jobs: jobsFixture,
+      jobs: jobs,
       toJSON: () => ({}),
     },
     inFlight: false,
     valid: true,
   },
   refreshJobs,
-};
+});
 
 describe("Jobs", () => {
   it("format duration", () => {
@@ -60,71 +64,35 @@ describe("Jobs", () => {
     );
   });
 
-  it.only("renders expected jobs table columns");
-
-  it.only("has a jobs table", () => {
-    const initialState = mockState();
-    //   {
-    //   cachedData: {
-    //     // jobs: new CachedDataReducerState<JobsResponse>({}),
-    //     jobs: {
-    //       "/0/50": {
-    //         // TODO(Josephine) what's up with the keyed cache? what should the key be?
-    //         inFlight: false,
-    //         valid: true,
-    //         data: {
-    //           jobs: jobsFixture,
-    //         },
-    //       },
-    //     },
-    //   },
-    // }
-
+  it.only("renders expected jobs table columns", () => {
     const { getByText } = render(
-      <ProviderWrapper hookAPIs initialState={initialState}>
-        <JobsTable {...jobsTableProps} />
+      <ProviderWrapper>
+        <JobsTable {...getMockJobsTableProps(allJobsFixture)} />
       </ProviderWrapper>,
     );
-    getByText("automatic SQL Stats compaction");
-    // getByText("fake");
+    const expectedColumnTitles = [
+      "Description",
+      "Status",
+      "Job ID",
+      "User",
+      "Creation Time (UTC)",
+      "Last Execution Time (UTC)",
+      "Execution Count",
+    ];
+
+    for (const columnTitle of expectedColumnTitles) {
+      getByText(columnTitle);
+    }
   });
-  // it.only("should have the expected columns", () => {
-  //   const toJSON = () => {
-  //     return [""];
-  //   };
-  //   const jobsTableProps: JobsTableProps = {
-  //     sort: { sortKey: null, ascending: true },
-  //     setSort: () => {},
-  //     setStatus: () => {},
-  //     setShow: () => {},
-  //     setType: () => {},
-  //     jobs: {
-  //       data: { jobs: [{}, {}, {}, {}], toJSON },
-  //       inFlight: false,
-  //       valid: true,
-  //     },
-  //     current: 2,
-  //     pageSize: 2,
-  //     isUsedFilter: true,
-  //   };
-  //   const { getByText } = render(
-  //     <MemoryRouter>
-  //       <JobsTable {...jobsTableProps} />
-  //     </MemoryRouter>,
-  //   );
-  //
-  //   const expectedColumnTitles = [
-  //     "Description",
-  //     "Status",
-  //     "Job ID",
-  //     "User",
-  //     "Creation Time (UTC)",
-  //     "Last Execution Time (UTC)",
-  //     "Execution Count",
-  //   ];
-  //
-  //   for (const columnTitle of expectedColumnTitles) {
-  //     getByText(columnTitle);
-  //   }
-  // });
+
+  it.only("shows next execution time on hovering a retry status", () => {
+    const { getByText } = render(
+      <ProviderWrapper>
+        <JobsTable {...getMockJobsTableProps([retryRunningJobFixture])} />
+      </ProviderWrapper>,
+    );
+    const retryingBadge = getByText("retrying");
+    userEvent.hover(retryingBadge);
+    screen.getByText("Execution");
+  });
 });

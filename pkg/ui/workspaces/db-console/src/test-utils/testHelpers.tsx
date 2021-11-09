@@ -8,6 +8,8 @@
 // by the Apache License, Version 2.0, included in the file
 // licenses/APL.txt.
 
+// lifted from managed-service
+
 import React, { useState, ReactNode } from "react";
 import createSagaMiddleware from "redux-saga";
 import { Provider } from "react-redux";
@@ -74,7 +76,7 @@ export function ProviderWrapperWithState(props: {
 
 export function ProviderWrapper(props: {
   // If hookAPIs is true, then the created store adds the rootSaga, which
-  // enables hooking API calls (e.g. createCluster/index.test.tsx).
+  // enables hooking API calls (e.g. createCluster/index.test.tsx in managed-service).
   hookAPIs?: boolean;
   initialEntries?: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

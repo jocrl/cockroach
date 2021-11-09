@@ -17,42 +17,42 @@ import { MemoryRouter } from "react-router-dom";
 import "src/enzymeInit";
 
 describe("<JobTable>", () => {
-  it.only("should have the expected columns", () => {
-    const toJSON = () => {
-      return [""];
-    };
-    const jobTableProps: JobTableProps = {
-      sort: { sortKey: null, ascending: true },
-      setSort: () => {},
-      jobs: {
-        data: { jobs: [{}, {}, {}, {}], toJSON },
-        inFlight: false,
-        valid: true,
-      },
-      current: 2,
-      pageSize: 2,
-      isUsedFilter: true,
-    };
-    const { getByText } = render(
-      <MemoryRouter>
-        <JobTable {...jobTableProps} />
-      </MemoryRouter>,
-    );
-
-    const expectedColumnTitles = [
-      "Description",
-      "Status",
-      "Job ID",
-      "User",
-      "Creation Time (UTC)",
-      "Last Execution Time (UTC)",
-      "Execution Count",
-    ];
-
-    for (const columnTitle of expectedColumnTitles) {
-      getByText(columnTitle);
-    }
-  });
+  // it.only("should have the expected columns", () => {
+  //   const toJSON = () => {
+  //     return [""];
+  //   };
+  //   const jobTableProps: JobTableProps = {
+  //     sort: { sortKey: null, ascending: true },
+  //     setSort: () => {},
+  //     jobs: {
+  //       data: { jobs: [{}, {}, {}, {}], toJSON },
+  //       inFlight: false,
+  //       valid: true,
+  //     },
+  //     current: 2,
+  //     pageSize: 2,
+  //     isUsedFilter: true,
+  //   };
+  //   const { getByText } = render(
+  //     <MemoryRouter>
+  //       <JobTable {...jobTableProps} />
+  //     </MemoryRouter>,
+  //   );
+  //
+  //   const expectedColumnTitles = [
+  //     "Description",
+  //     "Status",
+  //     "Job ID",
+  //     "User",
+  //     "Creation Time (UTC)",
+  //     "Last Execution Time (UTC)",
+  //     "Execution Count",
+  //   ];
+  //
+  //   for (const columnTitle of expectedColumnTitles) {
+  //     getByText(columnTitle);
+  //   }
+  // });
 
   it("should reset page to 1 after job list prop changes", () => {
     const toJSON = () => {

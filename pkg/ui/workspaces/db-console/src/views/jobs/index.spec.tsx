@@ -11,6 +11,12 @@
 import { assert } from "chai";
 import moment from "moment";
 import { formatDuration } from ".";
+import { JobTable, JobTableProps } from "src/views/jobs/jobTable";
+import { JobsTable, JobsTableProps } from "src/views/jobs/index";
+import { render } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import React from "react";
+import { SortSetting } from "oss/src/views/shared/components/sortabletable";
 
 describe("Jobs", () => {
   it("format duration", () => {
@@ -22,5 +28,45 @@ describe("Jobs", () => {
       formatDuration(moment.duration(12345, "hours")),
       "12345:00:00",
     );
+  });
+
+  it.only("should have the expected columns", () => {
+    const toJSON = () => {
+      return [""];
+    };
+    const jobsTableProps: JobsTableProps = {
+      sort: { sortKey: null, ascending: true },
+      setSort: () => {},
+      setStatus: () => {},
+      setShow: () => {},
+      setType: () => {},
+      jobs: {
+        data: { jobs: [{}, {}, {}, {}], toJSON },
+        inFlight: false,
+        valid: true,
+      },
+      current: 2,
+      pageSize: 2,
+      isUsedFilter: true,
+    };
+    const { getByText } = render(
+      <MemoryRouter>
+        <JobsTable {...jobTableProps} />
+      </MemoryRouter>,
+    );
+
+    const expectedColumnTitles = [
+      "Description",
+      "Status",
+      "Job ID",
+      "User",
+      "Creation Time (UTC)",
+      "Last Execution Time (UTC)",
+      "Execution Count",
+    ];
+
+    for (const columnTitle of expectedColumnTitles) {
+      getByText(columnTitle);
+    }
   });
 });

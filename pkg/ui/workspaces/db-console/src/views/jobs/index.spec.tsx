@@ -12,7 +12,6 @@ import { assert } from "chai";
 import moment from "moment";
 import { cockroach } from "src/js/protos";
 import { formatDuration } from ".";
-// import { JobTable, JobTableProps } from "src/views/jobs/jobTable";
 import { JobsTable, JobsTableProps } from "src/views/jobs/index";
 import {
   allJobsFixture,
@@ -22,15 +21,9 @@ import { refreshJobs } from "src/redux/apiReducers";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-// import { SortSetting } from "src/views/shared/components/sortabletable";
-import { ProviderWrapper, mockState } from "src/test-utils/testHelpers";
-import { CachedDataReducerState } from "oss/src/redux/cachedDataReducer";
+import { ProviderWrapper } from "src/test-utils/testHelpers";
 
-// todo
-import JobsResponse = cockroach.server.serverpb.JobsResponse;
 import Job = cockroach.server.serverpb.IJobResponse;
-import Long from "long";
-import * as protos from "oss/src/js";
 
 const getMockJobsTableProps = (jobs: Array<Job>): JobsTableProps => ({
   sort: { sortKey: null, ascending: true },
@@ -83,10 +76,9 @@ describe("Jobs", () => {
     for (const columnTitle of expectedColumnTitles) {
       getByText(columnTitle);
     }
-    // getByText("columnTitle");
   });
 
-  it.only("shows next execution time on hovering a retry status", () => {
+  it.only("shows next execution time on hovering a retry status", async () => {
     const { getByText, debug } = render(
       <ProviderWrapper>
         <JobsTable {...getMockJobsTableProps([retryRunningJobFixture])} />
@@ -94,11 +86,33 @@ describe("Jobs", () => {
     );
     const retryingBadge = getByText("retrying");
     userEvent.hover(retryingBadge);
-    await waitFor(
-      () => screen.getByText("Execution"),
-      // expect(screen.getByText(revealable.value)).toBeDefined(),
-    );
-    // await
+
+    // errors at waitForWrapper cos it can't find "Execution"
+    // await waitFor(
+    //   () => screen.getByText("Execution"),
+    // );
+
+    /*
+      Rendered tooltip div looks like this:
+      <div
+        class="_2RYFSwQsgBzzDzYQhLmT6 _1WXCjEONVs9HgVvXJO2WGc"
+        data-jest="tooltip"
+        style="position: absolute; left: 0px; top: 0px;"
+      >
+
+      In the actual webpage, it should look like this:
+      <div class="_2RYFSwQsgBzzDzYQhLmT6 _1WXCjEONVs9HgVvXJO2WGc"
+        data-jest="tooltip"
+        data-popper-reference-hidden="false"
+        data-popper-escaped="false"
+        data-popper-placement="bottom"
+        style="position: absolute; inset: 851px auto auto 515px;"
+        data-show=""
+       >
+     */
     debug(undefined, 100000);
+
+    // errors cos it can't find "Execution"
+    screen.getByText("Execution");
   });
 });

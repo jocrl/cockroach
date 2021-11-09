@@ -14,6 +14,7 @@ import { cockroach } from "src/js/protos";
 import { formatDuration } from ".";
 // import { JobTable, JobTableProps } from "src/views/jobs/jobTable";
 import { JobsTable, JobsTableProps } from "src/views/jobs/index";
+import { jobsFixture } from "src/views/jobs/jobTable.fixture";
 import { refreshJobs } from "src/redux/apiReducers";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
@@ -27,6 +28,26 @@ import JobsResponse = cockroach.server.serverpb.JobsResponse;
 import Long from "long";
 import * as protos from "oss/src/js";
 
+const jobsTableProps: JobsTableProps = {
+  sort: { sortKey: null, ascending: true },
+  status: "",
+  show: "50",
+  type: 0,
+  setSort: () => {},
+  setStatus: () => {},
+  setShow: () => {},
+  setType: () => {},
+  jobs: {
+    data: {
+      jobs: jobsFixture,
+      toJSON: () => ({}),
+    },
+    inFlight: false,
+    valid: true,
+  },
+  refreshJobs,
+};
+
 describe("Jobs", () => {
   it("format duration", () => {
     assert.equal(formatDuration(moment.duration(0)), "00:00:00");
@@ -39,89 +60,32 @@ describe("Jobs", () => {
     );
   });
 
+  it.only("renders expected jobs table columns");
+
   it.only("has a jobs table", () => {
-    const initialJobs = [
-      {
-        id: new Long(8136728577, 70289336),
-        type: "AUTO SQL STATS COMPACTION",
-        description: "automatic SQL Stats compaction",
-        username: "node",
-        status: "succeeded",
-        created: new protos.google.protobuf.Timestamp({
-          seconds: new Long(1634648118),
-          nanos: 200459000,
-        }),
-        started: new protos.google.protobuf.Timestamp({
-          seconds: new Long(1634648118),
-          nanos: 215527000,
-        }),
-        finished: new protos.google.protobuf.Timestamp({
-          seconds: new Long(1634648118),
-          nanos: 311522000,
-        }),
-        modified: new protos.google.protobuf.Timestamp({
-          seconds: new Long(1634648118),
-          nanos: 310899000,
-        }),
-        fraction_completed: 1,
-        last_run: new protos.google.protobuf.Timestamp({
-          seconds: new Long(1634648118),
-          nanos: 215527000,
-        }),
-        next_run: new protos.google.protobuf.Timestamp({
-          seconds: new Long(1634648118),
-          nanos: 215527100,
-        }),
-        num_runs: new Long(1),
-      },
-    ];
-    const initialState = mockState({
-      cachedData: {
-        // jobs: new CachedDataReducerState<JobsResponse>({}),
-        jobs: {
-          "/0/50": {
-            // TODO(Josephine) what's up with the keyed cache? what should the key be?
-            inFlight: false,
-            valid: true,
-            data: {
-              jobs: initialJobs,
-            },
-          },
-        },
-        // {
-        //       inFlight: false,
-        //       valid: false,
-        //       requestedAt: "2021-11-09T15:30:03.466Z",
-        //       setAt: "2021-11-09T15:30:05.149Z",
-        //       lastError: null,
-        //     },
-      },
-    });
-    const toJSON = () => {
-      return [""];
-    };
-    const jobsTableProps: JobsTableProps = {
-      sort: { sortKey: null, ascending: true },
-      status: "",
-      show: "50",
-      type: 0,
-      setSort: () => {},
-      setStatus: () => {},
-      setShow: () => {},
-      setType: () => {},
-      jobs: {
-        data: { jobs: initialJobs, toJSON },
-        inFlight: false,
-        valid: true,
-      },
-      refreshJobs,
-    };
+    const initialState = mockState();
+    //   {
+    //   cachedData: {
+    //     // jobs: new CachedDataReducerState<JobsResponse>({}),
+    //     jobs: {
+    //       "/0/50": {
+    //         // TODO(Josephine) what's up with the keyed cache? what should the key be?
+    //         inFlight: false,
+    //         valid: true,
+    //         data: {
+    //           jobs: jobsFixture,
+    //         },
+    //       },
+    //     },
+    //   },
+    // }
+
     const { getByText } = render(
       <ProviderWrapper hookAPIs initialState={initialState}>
         <JobsTable {...jobsTableProps} />
       </ProviderWrapper>,
     );
-    getByText("Description");
+    getByText("automatic SQL Stats compaction");
     // getByText("fake");
   });
   // it.only("should have the expected columns", () => {

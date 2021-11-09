@@ -1,17 +1,27 @@
+// Copyright 2021 The Cockroach Authors.
+//
+// Use of this software is governed by the Business Source License
+// included in the file licenses/BSL.txt.
+//
+// As of the Change Date specified in that file, in accordance with
+// the Business Source License, use of this software will be governed
+// by the Apache License, Version 2.0, included in the file
+// licenses/APL.txt.
+
 import React, { useState, ReactNode } from "react";
 import createSagaMiddleware from "redux-saga";
 import { Provider } from "react-redux";
 import { StaticRouter, MemoryRouter } from "react-router-dom";
-import { applyMiddleware, combineReducers, createStore } from "redux";
+import { applyMiddleware, createStore } from "redux";
 import { merge } from "lodash";
 
-import { PartialRecursive } from "Typings/partialRecursive";
+import { PartialRecursive } from "src/interfaces/partialRecursive";
 // import rootReducer from "./store/reducers";
 // import rootReducer from "./store/reducers";
 
 import { reducers, AdminUIState } from "src/redux/state";
 import rootSaga from "src/redux/sagas";
-import promiseListener from "./store/promiseListener";
+// import promiseListener from "./store/promiseListener";
 
 // mockState builds a full copy of app state with preloaded state if desired.
 // This utility addresses two important concerns:
@@ -77,7 +87,8 @@ export function ProviderWrapper(props: {
       const store = createStore(
         reducers,
         props.initialState || {},
-        applyMiddleware(sagaMiddleware, promiseListener.middleware),
+        applyMiddleware(sagaMiddleware),
+        // applyMiddleware(sagaMiddleware, promiseListener.middleware),
       );
 
       sagaMiddleware.run(rootSaga);

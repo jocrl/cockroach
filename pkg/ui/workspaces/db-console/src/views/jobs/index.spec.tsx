@@ -64,7 +64,7 @@ describe("Jobs", () => {
     );
   });
 
-  it.only("renders expected jobs table columns", () => {
+  it("renders expected jobs table columns", () => {
     const { getByText } = render(
       <ProviderWrapper>
         <JobsTable {...getMockJobsTableProps(allJobsFixture)} />
@@ -83,16 +83,18 @@ describe("Jobs", () => {
     for (const columnTitle of expectedColumnTitles) {
       getByText(columnTitle);
     }
+    // getByText("columnTitle");
   });
 
   it.only("shows next execution time on hovering a retry status", () => {
-    const { getByText } = render(
+    const { getByText, debug } = render(
       <ProviderWrapper>
         <JobsTable {...getMockJobsTableProps([retryRunningJobFixture])} />
       </ProviderWrapper>,
     );
     const retryingBadge = getByText("retrying");
     userEvent.hover(retryingBadge);
+    debug(undefined, 100000);
     screen.getByText("Execution");
   });
 });

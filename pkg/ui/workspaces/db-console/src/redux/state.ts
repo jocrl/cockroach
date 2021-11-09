@@ -35,7 +35,6 @@ import { timeWindowReducer, TimeWindowState } from "./timewindow";
 import { uiDataReducer, UIDataState } from "./uiData";
 import { loginReducer, LoginAPIState } from "./login";
 import rootSaga from "./sagas";
-import { AdminUiState } from "@cockroachlabs/cluster-ui/dist/types/store/reducers";
 
 export interface AdminUIState {
   cachedData: APIReducersState;

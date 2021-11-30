@@ -59,7 +59,7 @@ describe("Jobs", () => {
     );
   });
 
-  it("renders expected jobs table columns", () => {
+  it.only("renders expected jobs table columns", () => {
     const { getByText } = render(
       <MemoryRouter>
         <JobsTable {...getMockJobsTableProps(allJobsFixture)} />
@@ -70,7 +70,7 @@ describe("Jobs", () => {
       "Status",
       "Job ID",
       "User",
-      "Creation Time (UTC)",
+      "Creatiqron Time (UTC)",
       "Last Execution Time (UTC)",
       "Execution Count",
     ];

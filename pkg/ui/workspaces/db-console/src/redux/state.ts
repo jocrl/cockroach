@@ -52,23 +52,25 @@ const history = createHashHistory();
 
 const routerReducer = connectRouter(history);
 
+export const reducers = combineReducers<AdminUIState>({
+  cachedData: apiReducersReducer,
+  hover: hoverReducer,
+  localSettings: localSettingsReducer,
+  metrics: metricsReducer,
+  queryManager: queryManagerReducer,
+  router: routerReducer,
+  timewindow: timeWindowReducer,
+  uiData: uiDataReducer,
+  login: loginReducer,
+});
+
 // createAdminUIStore is a function that returns a new store for the admin UI.
 // It's in a function so it can be recreated as necessary for testing.
 export function createAdminUIStore(historyInst: History<any>) {
   const sagaMiddleware = createSagaMiddleware();
 
   const s: Store<AdminUIState> = createStore(
-    combineReducers<AdminUIState>({
-      cachedData: apiReducersReducer,
-      hover: hoverReducer,
-      localSettings: localSettingsReducer,
-      metrics: metricsReducer,
-      queryManager: queryManagerReducer,
-      router: routerReducer,
-      timewindow: timeWindowReducer,
-      uiData: uiDataReducer,
-      login: loginReducer,
-    }),
+    reducers,
     compose(
       applyMiddleware(thunk, sagaMiddleware, routerMiddleware(historyInst)),
       // Support for redux dev tools

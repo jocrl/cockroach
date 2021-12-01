@@ -63,7 +63,8 @@ import {
 import ClearStats from "../sqlActivity/clearStats";
 import SQLActivityError from "../sqlActivity/errorComponent";
 import { commonStyles } from "../common";
-import { TimeScale } from "db-console/dist/types/src/redux/timewindow";
+import { TimeScale } from "../timeScaleDropdown";
+// import { TimeScale } from "db-console/dist/types/src/redux/timewindow";
 import {
   TimeScaleDropdown,
   defaultTimeScaleOptions,

@@ -738,7 +738,11 @@ const statementsPagePropsFixture: StatementsPageProps = {
     },
   ],
   statementsError: null,
-  dateRange: [moment.utc("2021.08.08"), moment.utc("2021.08.12")],
+  timeScale: {
+    windowSize: moment.duration(5, "day"),
+    sampleSize: moment.duration(5, "minutes"),
+    windowEnd: moment.utc("2021.12.12"),
+  },
   apps: ["$ internal", "movr", "$ cockroach demo"],
   totalFingerprints: 95,
   lastReset: "2020-04-13 07:22:23",

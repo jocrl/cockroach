@@ -71,11 +71,11 @@ import ClearStats from "../sqlActivity/clearStats";
 import SQLActivityError from "../sqlActivity/errorComponent";
 import { commonStyles } from "../common";
 import {
+  TimeScaleDropdown,
   defaultTimeScaleOptions,
   TimeScale,
   toDateRange,
 } from "../timeScaleDropdown";
-import { TimeScaleDropdown } from "../../dist/types";
 
 const cx = classNames.bind(styles);
 const sortableTableCx = classNames.bind(sortableTableStyles);

@@ -148,7 +148,7 @@ export const getStatementDetailsPropsFixture = (): StatementDetailsProps => ({
   timeScale: {
     windowSize: moment.duration(5, "day"),
     sampleSize: moment.duration(5, "minutes"),
-    windowEnd: moment.utc("2021.08.12"),
+    windowEnd: moment.utc("2021.12.12"),
   },
   statement: {
     statement: "SELECT city, id FROM vehicles WHERE city = $1",

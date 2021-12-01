@@ -10,7 +10,7 @@
 
 import { Action } from "redux";
 import { PayloadAction } from "src/interfaces/action";
-import { Moment } from "moment";
+import { TimeScale } from "oss/src/redux/timewindow";
 
 export const CREATE_STATEMENT_DIAGNOSTICS_REPORT =
   "cockroachui/statements/CREATE_STATEMENT_DIAGNOSTICS_REPORT";
@@ -67,19 +67,14 @@ export const SET_COMBINED_STATEMENTS_RANGE =
   "cockroachui/statements/SET_COMBINED_STATEMENTS_RANGE";
 
 export type CombinedStatementsPayload = {
-  start: Moment;
-  end: Moment;
+  ts: TimeScale;
 };
 
 export function setCombinedStatementsDateRangeAction(
-  start: Moment,
-  end: Moment,
-): PayloadAction<CombinedStatementsPayload> {
+  ts: TimeScale,
+): PayloadAction<TimeScale> {
   return {
     type: SET_COMBINED_STATEMENTS_RANGE,
-    payload: {
-      start,
-      end,
-    },
+    payload: ts,
   };
 }

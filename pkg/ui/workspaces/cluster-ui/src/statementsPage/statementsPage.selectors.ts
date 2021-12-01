@@ -218,18 +218,19 @@ export const selectColumns = createSelector(
       : null,
 );
 
-export const selectLocalStorageDateRange = createSelector(
+export const selectLocalStorageTimeScale = createSelector(
   localStorageSelector,
-  localStorage => localStorage["dateRange/StatementsPage"],
+  localStorage => localStorage["timeScale/StatementsPage"],
 );
 
-export const selectDateRange = createSelector(
-  selectLocalStorageDateRange,
-  dateRange =>
-    [moment.unix(dateRange.start).utc(), moment.unix(dateRange.end).utc()] as [
-      Moment,
-      Moment,
-    ],
+export const selectTimeScale = createSelector(
+  selectLocalStorageTimeScale,
+  timeScale => timeScale,
+  // fixme(josephine) figure out unix vs utc stuff
+  // [moment.unix(dateRange.start).utc(), moment.unix(dateRange.end).utc()] as [
+  //   Moment,
+  //   Moment,
+  // ],
 );
 
 export const selectSortSetting = createSelector(

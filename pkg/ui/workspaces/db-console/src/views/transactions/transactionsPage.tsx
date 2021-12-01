@@ -27,7 +27,7 @@ import {
   defaultFilters,
 } from "@cockroachlabs/cluster-ui";
 import { nodeRegionsByIDSelector } from "src/redux/nodes";
-import { statementsDateRangeLocalSetting } from "src/redux/statementsDateRange";
+import { statementsDateRangeLocalSetting } from "oss/src/redux/statementsTimeScale";
 import { setCombinedStatementsDateRangeAction } from "src/redux/statements";
 import { LocalSetting } from "src/redux/localsettings";
 

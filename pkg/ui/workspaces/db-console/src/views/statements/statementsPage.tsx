@@ -33,7 +33,7 @@ import { TimestampToMoment } from "src/util/convert";
 import { PrintTime } from "src/views/reports/containers/range/print";
 import { selectDiagnosticsReportsPerStatement } from "src/redux/statements/statementsSelectors";
 import { createStatementDiagnosticsAlertLocalSetting } from "src/redux/alerts";
-import { statementsDateRangeLocalSetting } from "src/redux/statementsDateRange";
+import { statementsDateRangeLocalSetting } from "oss/src/redux/statementsTimeScale";
 import { queryByName } from "src/util/query";
 
 import {

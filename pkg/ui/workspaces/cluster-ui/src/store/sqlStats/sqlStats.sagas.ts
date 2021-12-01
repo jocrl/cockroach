@@ -65,7 +65,7 @@ export function* updateSQLStatsDateRangeSaga(
   yield put(
     // TODO(azhng): do we want to rename this into dataRange/SQLActivity?
     localStorageActions.update({
-      key: "dateRange/StatementsPage",
+      key: "timeScale/StatementsPage",
       value: { start, end },
     }),
   );

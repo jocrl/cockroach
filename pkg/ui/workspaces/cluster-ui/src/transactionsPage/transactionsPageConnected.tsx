@@ -30,7 +30,7 @@ import {
 } from "./transactionsPage.selectors";
 import { selectIsTenant } from "../store/uiConfig";
 import { nodeRegionsByIDSelector } from "../store/nodes";
-import { selectDateRange } from "src/statementsPage/statementsPage.selectors";
+import { selectTimeScale } from "src/statementsPage/statementsPage.selectors";
 import { StatementsRequest } from "src/api/statementsApi";
 import { actions as localStorageActions } from "../store/localStorage";
 import { Filters } from "../queryFilter";
@@ -45,7 +45,7 @@ export const TransactionsPageConnected = withRouter(
     (state: AppState) => ({
       columns: selectTxnColumns(state),
       data: selectTransactionsData(state),
-      dateRange: selectDateRange(state),
+      timeScale: selectTimeScale(state),
       error: selectTransactionsLastError(state),
       filters: selectFilters(state),
       isTenant: selectIsTenant(state),

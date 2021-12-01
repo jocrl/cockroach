@@ -12,11 +12,7 @@ import moment from "moment";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { DOMAIN_NAME } from "../utils";
 import { defaultFilters, Filters } from "../../queryFilter";
-
-type StatementsDateRangeState = {
-  start: number;
-  end: number;
-};
+import { TimeScale, defaultTimeScaleOptions } from "../../timeScaleDropdown";
 
 type SortSetting = {
   ascending: boolean;
@@ -27,7 +23,7 @@ export type LocalStorageState = {
   "adminUi/showDiagnosticsModal": boolean;
   "showColumns/StatementsPage": string;
   "showColumns/TransactionPage": string;
-  "dateRange/StatementsPage": StatementsDateRangeState;
+  "timeScale/StatementsPage": TimeScale;
   "sortSetting/StatementsPage": SortSetting;
   "sortSetting/TransactionsPage": SortSetting;
   "sortSetting/SessionsPage": SortSetting;
@@ -42,13 +38,9 @@ type Payload = {
   value: any;
 };
 
-const defaultDateRange: StatementsDateRangeState = {
-  start: moment
-    .utc()
-    .subtract(1, "hours")
-    .unix(),
-  end: moment.utc().unix() + 60, // Add 1 minute to account for potential lag.
-};
+const defaultTimeScale: TimeScale = defaultTimeScaleOptions["Past 1 hour"];
+// fixme(josepine) prior implementation added one minute, with comment below. unsure where to implement this, maybe in the defaultTimeScaleOptions? or here
+// Add 1 minute to account for potential lag.
 
 const defaultSortSetting: SortSetting = {
   ascending: false,
@@ -69,9 +61,9 @@ const initialState: LocalStorageState = {
     JSON.parse(localStorage.getItem("showColumns/StatementsPage")) || null,
   "showColumns/TransactionPage":
     JSON.parse(localStorage.getItem("showColumns/TransactionPage")) || null,
-  "dateRange/StatementsPage":
-    JSON.parse(localStorage.getItem("dateRange/StatementsPage")) ||
-    defaultDateRange,
+  "timeScale/StatementsPage":
+    JSON.parse(localStorage.getItem("timeScale/StatementsPage")) ||
+    defaultTimeScale,
   "sortSetting/StatementsPage":
     JSON.parse(localStorage.getItem("sortSetting/StatementsPage")) ||
     defaultSortSetting,

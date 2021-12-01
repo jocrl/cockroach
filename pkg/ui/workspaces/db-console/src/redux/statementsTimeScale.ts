@@ -11,24 +11,29 @@
 import moment from "moment";
 import { LocalSetting } from "./localsettings";
 import { AdminUIState } from "./state";
+import { defaultTimeScaleOptions } from "@cockroachlabs/cluster-ui";
 
-export type CombinedStatementsDateRangePayload = {
-  start: number;
-  end: number;
+export type CombinedStatementsTimeScalePayload = {
+  key?: string;
+  windowSize: moment.Duration;
+  windowValid?: moment.Duration;
+  sampleSize: moment.Duration;
+  windowEnd?: moment.Moment;
 };
 
 const localSettingsSelector = (state: AdminUIState) => state.localSettings;
 
 // The default range for statements to display is one hour ago.
-const oneHourAgo = {
-  start: moment
-    .utc()
-    .subtract(1, "hours")
-    .unix(),
-  end: moment.utc().unix() + 60, // Add 1 minute to account for potential lag
-};
+const oneHourAgo = defaultTimeScaleOptions["Past 1 hour"];
+//   {
+//   start: moment
+//     .utc()
+//     .subtract(1, "hours")
+//     .unix(),
+//   end: moment.utc().unix() + 60, // Add 1 minute to account for potential lag
+// };
 
 export const statementsDateRangeLocalSetting = new LocalSetting<
   AdminUIState,
-  CombinedStatementsDateRangePayload
->("statements_date_range", localSettingsSelector, oneHourAgo);
+  CombinedStatementsTimeScalePayload
+>("statements_time_scale", localSettingsSelector, oneHourAgo);

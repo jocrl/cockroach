@@ -19,6 +19,7 @@ import { format as d3Format } from "d3-format";
 import { ArrowLeft } from "@cockroachlabs/icons";
 import { cockroach } from "@cockroachlabs/crdb-protobuf-client";
 import Long from "long";
+import { toDateRange } from "../timeScaleDropdown";
 
 import {
   intersperse,
@@ -64,6 +65,7 @@ import { commonStyles } from "src/common";
 import { NodeSummaryStats } from "../nodes";
 import { UIConfigState } from "../store";
 import moment, { Moment } from "moment";
+import { TimeScale } from "../timeScaleDropdown";
 import { StatementsRequest } from "src/api/statementsApi";
 import SQLActivityError from "../sqlActivity/errorComponent";
 
@@ -149,7 +151,7 @@ export interface StatementDetailsDispatchProps {
 export interface StatementDetailsStateProps {
   statement: SingleStatementStatistics;
   statementsError: Error | null;
-  dateRange: [Moment, Moment];
+  timeScale: TimeScale;
   nodeNames: { [nodeId: string]: string };
   nodeRegions: { [nodeId: string]: string };
   diagnosticsReports: cockroach.server.serverpb.IStatementDiagnosticsReport[];
@@ -167,10 +169,11 @@ const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 function statementsRequestFromProps(
   props: StatementDetailsProps,
 ): cockroach.server.serverpb.StatementsRequest {
+  const [start, end] = toDateRange(props.timeScale);
   return new cockroach.server.serverpb.StatementsRequest({
     combined: true,
-    start: Long.fromNumber(props.dateRange[0].unix()),
-    end: Long.fromNumber(props.dateRange[1].unix()),
+    start: Long.fromNumber(start.unix()),
+    end: Long.fromNumber(end.unix()),
   });
 }
 
@@ -534,15 +537,16 @@ export class StatementDetails extends React.Component<
     const aggregatedTs = queryByName(this.props.location, aggregatedTsAttr);
     const aggregationInterval =
       queryByName(this.props.location, aggregationIntervalAttr) || 0;
+    const [timeScaleStart, timeScaleEnd] = toDateRange(this.props.timeScale);
     const intervalStartTime = aggregatedTs
       ? moment.unix(parseInt(aggregatedTs)).utc()
-      : this.props.dateRange[0];
+      : timeScaleStart;
     const intervalEndTime =
       aggregatedTs && aggregationInterval
         ? moment
             .unix(parseInt(aggregatedTs) + parseInt(aggregationInterval))
             .utc()
-        : this.props.dateRange[1];
+        : timeScaleEnd;
 
     const db = database ? (
       <Text>{database}</Text>

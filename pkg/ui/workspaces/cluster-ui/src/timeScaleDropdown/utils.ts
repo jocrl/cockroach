@@ -73,6 +73,12 @@ export const defaultTimeScaleOptions: TimeScaleCollection = {
   },
 };
 
+export const toDateRange = (ts: TimeScale): [moment.Moment, moment.Moment] => {
+  const end = ts.windowEnd ? moment.utc(ts.windowEnd) : moment().utc();
+  const start = moment.utc(end).subtract(ts.windowSize);
+  return [start, end];
+};
+
 export const findClosestTimeScale = (
   options: TimeScaleCollection,
   seconds: number,

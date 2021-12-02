@@ -11,7 +11,6 @@
 import { connect } from "react-redux";
 import { createSelector } from "reselect";
 import { withRouter } from "react-router-dom";
-import moment from "moment";
 import { refreshStatements } from "src/redux/apiReducers";
 import { resetSQLStatsAction } from "src/redux/sqlStats";
 import { CachedDataReducerState } from "src/redux/cachedDataReducer";
@@ -25,9 +24,13 @@ import {
   TransactionsPage,
   Filters,
   defaultFilters,
+  TimeScale,
 } from "@cockroachlabs/cluster-ui";
 import { nodeRegionsByIDSelector } from "src/redux/nodes";
-import { statementsDateRangeLocalSetting } from "oss/src/redux/statementsTimeScale";
+import {
+  // CombinedStatementsTimeScalePayload,
+  statementsTimeScaleLocalSetting,
+} from "oss/src/redux/statementsTimeScale";
 import { setCombinedStatementsDateRangeAction } from "src/redux/statements";
 import { LocalSetting } from "src/redux/localsettings";
 
@@ -59,10 +62,13 @@ const selectLastError = createSelector(
   (state: CachedDataReducerState<StatementsResponseMessage>) => state.lastError,
 );
 
-export const selectDateRange = createSelector(
-  statementsDateRangeLocalSetting.selector,
-  (state: { start: number; end: number }): [moment.Moment, moment.Moment] => {
-    return [moment.unix(state.start), moment.unix(state.end)];
+export const selectTimeScale = createSelector(
+  statementsTimeScaleLocalSetting.selector,
+  (ts: TimeScale): TimeScale => {
+    return ts;
+    // fixme(josephine) figure out unix vs utc stuff
+    // (state: { start: number; end: number }): [moment.Moment, moment.Moment] => {
+    //   return [moment.unix(state.start), moment.unix(state.end)];
   },
 );
 
@@ -95,7 +101,7 @@ const TransactionsPageConnected = withRouter(
     (state: AdminUIState) => ({
       columns: transactionColumnsLocalSetting.selectorToArray(state),
       data: selectData(state),
-      dateRange: selectDateRange(state),
+      timeScale: selectTimeScale(state),
       error: selectLastError(state),
       filters: filtersLocalSetting.selector(state),
       lastReset: selectLastReset(state),
@@ -107,7 +113,7 @@ const TransactionsPageConnected = withRouter(
     {
       refreshData: refreshStatements,
       resetSQLStats: resetSQLStatsAction,
-      onDateRangeChange: setCombinedStatementsDateRangeAction,
+      onTimeScaleChange: setCombinedStatementsDateRangeAction,
       // We use `null` when the value was never set and it will show all columns.
       // If the user modifies the selection and no columns are selected,
       // the function will save the value as a blank space, otherwise

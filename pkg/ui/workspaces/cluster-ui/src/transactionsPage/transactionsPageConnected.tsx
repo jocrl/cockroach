@@ -35,6 +35,7 @@ import { StatementsRequest } from "src/api/statementsApi";
 import { actions as localStorageActions } from "../store/localStorage";
 import { Filters } from "../queryFilter";
 import { actions as analyticsActions } from "../store/analytics";
+import { TimeScale } from "../timeScaleDropdown";
 
 export const TransactionsPageConnected = withRouter(
   connect<
@@ -57,11 +58,13 @@ export const TransactionsPageConnected = withRouter(
       refreshData: (req?: StatementsRequest) =>
         dispatch(sqlStatsActions.refresh(req)),
       resetSQLStats: () => dispatch(sqlStatsActions.reset()),
-      onDateRangeChange: (start: Moment, end: Moment) => {
+      onTimeScaleChange: (ts: TimeScale) => {
         dispatch(
-          sqlStatsActions.updateDateRange({
-            start: start.unix(),
-            end: end.unix(),
+          sqlStatsActions.updateTimeScale({
+            ts: ts,
+            // fixme(josephine) convert to unix?
+            // start: start.unix(),
+            // end: end.unix(),
           }),
         );
       },

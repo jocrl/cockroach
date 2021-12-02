@@ -33,7 +33,7 @@ const oneHourAgo = defaultTimeScaleOptions["Past 1 hour"];
 //   end: moment.utc().unix() + 60, // Add 1 minute to account for potential lag
 // };
 
-export const statementsDateRangeLocalSetting = new LocalSetting<
+export const statementsTimeScaleLocalSetting = new LocalSetting<
   AdminUIState,
   CombinedStatementsTimeScalePayload
 >("statements_time_scale", localSettingsSelector, oneHourAgo);

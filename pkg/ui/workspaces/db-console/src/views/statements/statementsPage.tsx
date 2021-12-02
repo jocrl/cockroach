@@ -33,7 +33,7 @@ import { TimestampToMoment } from "src/util/convert";
 import { PrintTime } from "src/views/reports/containers/range/print";
 import { selectDiagnosticsReportsPerStatement } from "src/redux/statements/statementsSelectors";
 import { createStatementDiagnosticsAlertLocalSetting } from "src/redux/alerts";
-import { statementsDateRangeLocalSetting } from "oss/src/redux/statementsTimeScale";
+import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeScale";
 import { queryByName } from "src/util/query";
 
 import {
@@ -226,7 +226,7 @@ export const selectLastReset = createSelector(
 );
 
 export const selectDateRange = createSelector(
-  statementsDateRangeLocalSetting.selector,
+  statementsTimeScaleLocalSetting.selector,
   (state: { start: number; end: number }): [Moment, Moment] => {
     return [moment.unix(state.start), moment.unix(state.end)];
   },
@@ -274,7 +274,7 @@ export default withRouter(
     }),
     {
       refreshStatements: refreshStatements,
-      onDateRangeChange: setCombinedStatementsDateRangeAction,
+      onTimeScaleChange: setCombinedStatementsDateRangeAction,
       refreshStatementDiagnosticsRequests,
       resetSQLStats: resetSQLStatsAction,
       dismissAlertMessage: () =>

@@ -227,6 +227,7 @@ export const selectTimeScale = createSelector(
   selectLocalStorageTimeScale,
   timeScale => timeScale,
   // fixme(josephine) figure out unix vs utc stuff
+  // dateRange =>
   // [moment.unix(dateRange.start).utc(), moment.unix(dateRange.end).utc()] as [
   //   Moment,
   //   Moment,

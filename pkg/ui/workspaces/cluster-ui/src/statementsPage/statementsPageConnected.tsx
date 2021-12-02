@@ -40,6 +40,7 @@ import {
 import { selectIsTenant } from "../store/uiConfig";
 import { nodeRegionsByIDSelector } from "../store/nodes";
 import { StatementsRequest } from "src/api/statementsApi";
+import { TimeScale } from "../timeScaleDropdown";
 
 export const ConnectedStatementsPage = withRouter(
   connect<
@@ -65,11 +66,10 @@ export const ConnectedStatementsPage = withRouter(
     (dispatch: Dispatch) => ({
       refreshStatements: (req?: StatementsRequest) =>
         dispatch(sqlStatsActions.refresh(req)),
-      onDateRangeChange: (start: Moment, end: Moment) => {
+      onTimeScaleChange: (ts: TimeScale) => {
         dispatch(
-          sqlStatsActions.updateDateRange({
-            start: start.unix(),
-            end: end.unix(),
+          sqlStatsActions.updateTimeScale({
+            ts: ts,
           }),
         );
       },

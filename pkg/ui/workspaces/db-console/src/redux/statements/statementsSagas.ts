@@ -30,7 +30,7 @@ import {
   refreshStatements,
 } from "src/redux/apiReducers";
 import { createStatementDiagnosticsAlertLocalSetting } from "src/redux/alerts";
-import { statementsDateRangeLocalSetting } from "oss/src/redux/statementsTimeScale";
+import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeScale";
 import { toDateRange } from "@cockroachlabs/cluster-ui";
 import Long from "long";
 
@@ -69,7 +69,7 @@ export function* setCombinedStatementsTimeScaleSaga(
 ) {
   const { ts } = action.payload;
 
-  yield put(statementsDateRangeLocalSetting.set(ts));
+  yield put(statementsTimeScaleLocalSetting.set(ts));
   // yield put(
   //   statementsDateRangeLocalSetting.set({
   //     start: start.unix(),

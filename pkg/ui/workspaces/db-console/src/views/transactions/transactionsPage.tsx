@@ -27,10 +27,7 @@ import {
   TimeScale,
 } from "@cockroachlabs/cluster-ui";
 import { nodeRegionsByIDSelector } from "src/redux/nodes";
-import {
-  // CombinedStatementsTimeScalePayload,
-  statementsTimeScaleLocalSetting,
-} from "oss/src/redux/statementsTimeScale";
+import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeScale";
 import { setCombinedStatementsDateRangeAction } from "src/redux/statements";
 import { LocalSetting } from "src/redux/localsettings";
 
@@ -63,8 +60,8 @@ const selectLastError = createSelector(
 );
 
 export const selectTimeScale = createSelector(
-  // statementsTimeScaleLocalSetting.selector,
-  (state: AdminUIState) => state.timewindow.scale,
+  statementsTimeScaleLocalSetting.selector,
+  // (state: AdminUIState) => state.timewindow.scale,
   // (state: AdminUIState): TimeScale => state.timewindow.scale,
   (ts: TimeScale): TimeScale => {
     return ts;

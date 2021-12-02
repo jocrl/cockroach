@@ -30,6 +30,7 @@ import { selectDiagnosticsReportsPerStatement } from "../store/statementDiagnost
 import { AggregateStatistics } from "../statementsTable";
 import { sqlStatsSelector } from "../store/sqlStats/sqlStats.selector";
 import { SQLStatsState } from "../store/sqlStats";
+import { AdminUIState } from "db-console/dist/types/src/redux/state";
 
 type ICollectedStatementStatistics = cockroach.server.serverpb.StatementsResponse.ICollectedStatementStatistics;
 export interface StatementsSummaryData {
@@ -224,7 +225,8 @@ export const selectLocalStorageTimeScale = createSelector(
 );
 
 export const selectTimeScale = createSelector(
-  selectLocalStorageTimeScale,
+  // selectLocalStorageTimeScale,
+  (state: AdminUIState) => state.timewindow.scale,
   timeScale => timeScale,
   // fixme(josephine) figure out unix vs utc stuff
   // dateRange =>

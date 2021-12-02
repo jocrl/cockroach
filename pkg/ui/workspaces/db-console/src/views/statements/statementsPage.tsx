@@ -226,7 +226,8 @@ export const selectLastReset = createSelector(
 );
 
 export const selectTimeScale = createSelector(
-  statementsTimeScaleLocalSetting.selector,
+  // statementsTimeScaleLocalSetting.selector,
+  (state: AdminUIState) => state.timewindow.scale,
   (ts: TimeScale): TimeScale => {
     return ts;
     // fixme(josephine) figure out unix vs utc stuff

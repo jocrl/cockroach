@@ -63,7 +63,9 @@ const selectLastError = createSelector(
 );
 
 export const selectTimeScale = createSelector(
-  statementsTimeScaleLocalSetting.selector,
+  // statementsTimeScaleLocalSetting.selector,
+  (state: AdminUIState) => state.timewindow.scale,
+  // (state: AdminUIState): TimeScale => state.timewindow.scale,
   (ts: TimeScale): TimeScale => {
     return ts;
     // fixme(josephine) figure out unix vs utc stuff

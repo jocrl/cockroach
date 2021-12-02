@@ -225,8 +225,8 @@ export const selectLocalStorageTimeScale = createSelector(
 );
 
 export const selectTimeScale = createSelector(
-  // selectLocalStorageTimeScale,
-  (state: AdminUIState) => state.timewindow.scale,
+  selectLocalStorageTimeScale,
+  // (state: AppState) => state.adminUI.timewindow.scale,
   timeScale => timeScale,
   // fixme(josephine) figure out unix vs utc stuff
   // dateRange =>

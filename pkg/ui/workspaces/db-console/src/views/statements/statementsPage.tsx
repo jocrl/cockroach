@@ -265,7 +265,7 @@ export default withRouter(
       apps: selectApps(state),
       columns: statementColumnsLocalSetting.selectorToArray(state),
       databases: selectDatabases(state),
-      dateRange: selectTimeScale(state),
+      timeScale: selectTimeScale(state),
       filters: filtersLocalSetting.selector(state),
       lastReset: selectLastReset(state),
       nodeRegions: nodeRegionsByIDSelector(state),

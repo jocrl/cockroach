@@ -59,7 +59,7 @@ import {
   trackDownloadDiagnosticsBundleAction,
   trackStatementDetailsSubnavSelectionAction,
 } from "src/redux/analyticsActions";
-import { selectDateRange } from "src/views/statements/statementsPage";
+import { selectTimeScale } from "src/views/statements/statementsPage";
 
 interface Fraction {
   numerator: number;
@@ -226,7 +226,7 @@ const mapStateToProps = (
   return {
     statement,
     statementsError: state.cachedData.statements.lastError,
-    dateRange: selectDateRange(state),
+    timeScale: selectTimeScale(state),
     nodeNames: nodeDisplayNameByIDSelector(state),
     nodeRegions: nodeRegionsByIDSelector(state),
     diagnosticsReports: selectDiagnosticsReportsByStatementFingerprint(

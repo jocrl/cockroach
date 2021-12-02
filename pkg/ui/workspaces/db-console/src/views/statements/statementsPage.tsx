@@ -41,6 +41,7 @@ import {
   AggregateStatistics,
   Filters,
   defaultFilters,
+  TimeScale,
 } from "@cockroachlabs/cluster-ui";
 import {
   createOpenDiagnosticsModalAction,
@@ -225,10 +226,13 @@ export const selectLastReset = createSelector(
   },
 );
 
-export const selectDateRange = createSelector(
+export const selectTimeScale = createSelector(
   statementsTimeScaleLocalSetting.selector,
-  (state: { start: number; end: number }): [Moment, Moment] => {
-    return [moment.unix(state.start), moment.unix(state.end)];
+  (ts: TimeScale): TimeScale => {
+    return ts;
+    // fixme(josephine) figure out unix vs utc stuff
+    // (state: { start: number; end: number }): [Moment, Moment] => {
+    //   return [moment.unix(state.start), moment.unix(state.end)];
   },
 );
 
@@ -262,7 +266,7 @@ export default withRouter(
       apps: selectApps(state),
       columns: statementColumnsLocalSetting.selectorToArray(state),
       databases: selectDatabases(state),
-      dateRange: selectDateRange(state),
+      dateRange: selectTimeScale(state),
       filters: filtersLocalSetting.selector(state),
       lastReset: selectLastReset(state),
       nodeRegions: nodeRegionsByIDSelector(state),

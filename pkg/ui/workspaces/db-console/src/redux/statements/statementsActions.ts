@@ -74,7 +74,8 @@ export function setCombinedStatementsDateRangeAction(
   ts: TimeScale,
 ): PayloadAction<TimeScale> {
   return {
-    type: SET_COMBINED_STATEMENTS_RANGE,
+    type: "cockroachui/timewindow/SET_SCALE",
+    // type: SET_COMBINED_STATEMENTS_RANGE,
     payload: ts,
   };
 }

@@ -63,6 +63,9 @@ function saveToSessionStorage(data: LocalSettingData) {
  */
 function getValueFromSessionStorage(key: string) {
   const value = sessionStorage.getItem(`${STORAGE_PREFIX}/${key}`);
+  if (key == "statements_time_scale") {
+    // debugger;
+  }
   return JSON.parse(value);
 }
 

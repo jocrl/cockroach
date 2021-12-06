@@ -18,7 +18,7 @@ import {
   createStatementDiagnosticsReportCompleteAction,
   createStatementDiagnosticsReportFailedAction,
   CombinedStatementsPayload,
-  SET_COMBINED_STATEMENTS_RANGE,
+  SET_COMBINED_STATEMENTS_TIME_SCALE,
 } from "./statementsActions";
 import { cockroach } from "src/js/protos";
 import CreateStatementDiagnosticsReportRequest = cockroach.server.serverpb.CreateStatementDiagnosticsReportRequest;
@@ -90,7 +90,7 @@ export function* statementsSaga() {
   yield all([
     takeEvery(CREATE_STATEMENT_DIAGNOSTICS_REPORT, createDiagnosticsReportSaga),
     takeLatest(
-      SET_COMBINED_STATEMENTS_RANGE,
+      SET_COMBINED_STATEMENTS_TIME_SCALE,
       setCombinedStatementsTimeScaleSaga,
     ),
   ]);

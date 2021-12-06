@@ -63,8 +63,8 @@ export function createOpenDiagnosticsModalAction(
         Combined Stats Actions
 ****************************************/
 
-export const SET_COMBINED_STATEMENTS_RANGE =
-  "cockroachui/statements/SET_COMBINED_STATEMENTS_RANGE";
+export const SET_COMBINED_STATEMENTS_TIME_SCALE =
+  "cockroachui/statements/SET_COMBINED_STATEMENTS_TIME_SCALE";
 
 export type CombinedStatementsPayload = {
   ts: TimeScale;
@@ -75,7 +75,7 @@ export function setCombinedStatementsDateRangeAction(
 ): PayloadAction<TimeScale> {
   return {
     // type: "cockroachui/timewindow/SET_SCALE",
-    type: SET_COMBINED_STATEMENTS_RANGE,
+    type: SET_COMBINED_STATEMENTS_TIME_SCALE,
     payload: ts,
   };
 }

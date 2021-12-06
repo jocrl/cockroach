@@ -73,6 +73,7 @@ export type CombinedStatementsPayload = {
 export function setCombinedStatementsDateRangeAction(
   ts: TimeScale,
 ): PayloadAction<TimeScale> {
+  console.log("setting action: ", ts);
   return {
     // type: "cockroachui/timewindow/SET_SCALE",
     type: SET_COMBINED_STATEMENTS_TIME_SCALE,

@@ -67,7 +67,8 @@ export function* createDiagnosticsReportSaga(
 export function* setCombinedStatementsTimeScaleSaga(
   action: PayloadAction<CombinedStatementsPayload>,
 ) {
-  const { ts } = action.payload;
+  const ts = action.payload;
+  console.log("reading saga: ", ts);
 
   yield put(statementsTimeScaleLocalSetting.set(ts));
   // yield put(

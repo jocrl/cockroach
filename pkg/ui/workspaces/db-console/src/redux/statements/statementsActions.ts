@@ -66,11 +66,7 @@ export function createOpenDiagnosticsModalAction(
 export const SET_COMBINED_STATEMENTS_TIME_SCALE =
   "cockroachui/statements/SET_COMBINED_STATEMENTS_TIME_SCALE";
 
-export type CombinedStatementsPayload = {
-  ts: TimeScale;
-};
-
-export function setCombinedStatementsDateRangeAction(
+export function setCombinedStatementsTimeScaleAction(
   ts: TimeScale,
 ): PayloadAction<TimeScale> {
   console.log("setting action: ", ts);

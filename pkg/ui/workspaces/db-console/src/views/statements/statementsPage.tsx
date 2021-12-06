@@ -45,7 +45,7 @@ import {
 import {
   createOpenDiagnosticsModalAction,
   createStatementDiagnosticsReportAction,
-  setCombinedStatementsDateRangeAction,
+  setCombinedStatementsTimeScaleAction,
 } from "src/redux/statements";
 import {
   trackDownloadDiagnosticsBundleAction,
@@ -278,7 +278,7 @@ export default withRouter(
     }),
     {
       refreshStatements: refreshStatements,
-      onTimeScaleChange: setCombinedStatementsDateRangeAction,
+      onTimeScaleChange: setCombinedStatementsTimeScaleAction,
       refreshStatementDiagnosticsRequests,
       resetSQLStats: resetSQLStatsAction,
       dismissAlertMessage: () =>

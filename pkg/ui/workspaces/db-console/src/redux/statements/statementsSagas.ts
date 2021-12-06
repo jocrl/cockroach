@@ -17,7 +17,6 @@ import {
   DiagnosticsReportPayload,
   createStatementDiagnosticsReportCompleteAction,
   createStatementDiagnosticsReportFailedAction,
-  CombinedStatementsPayload,
   SET_COMBINED_STATEMENTS_TIME_SCALE,
 } from "./statementsActions";
 import { cockroach } from "src/js/protos";
@@ -31,7 +30,7 @@ import {
 } from "src/redux/apiReducers";
 import { createStatementDiagnosticsAlertLocalSetting } from "src/redux/alerts";
 import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeScale";
-import { toDateRange } from "@cockroachlabs/cluster-ui";
+import { TimeScale, toDateRange } from "@cockroachlabs/cluster-ui";
 import Long from "long";
 
 export function* createDiagnosticsReportSaga(
@@ -65,7 +64,7 @@ export function* createDiagnosticsReportSaga(
 }
 
 export function* setCombinedStatementsTimeScaleSaga(
-  action: PayloadAction<CombinedStatementsPayload>,
+  action: PayloadAction<TimeScale>,
 ) {
   const ts = action.payload;
   console.log("reading saga: ", ts);

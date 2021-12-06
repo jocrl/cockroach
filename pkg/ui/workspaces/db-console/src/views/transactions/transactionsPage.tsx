@@ -28,7 +28,7 @@ import {
 } from "@cockroachlabs/cluster-ui";
 import { nodeRegionsByIDSelector } from "src/redux/nodes";
 import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeScale";
-import { setCombinedStatementsDateRangeAction } from "src/redux/statements";
+import { setCombinedStatementsTimeScaleAction } from "src/redux/statements";
 import { LocalSetting } from "src/redux/localsettings";
 
 // selectStatements returns the array of AggregateStatistics to show on the
@@ -112,7 +112,7 @@ const TransactionsPageConnected = withRouter(
     {
       refreshData: refreshStatements,
       resetSQLStats: resetSQLStatsAction,
-      onTimeScaleChange: setCombinedStatementsDateRangeAction,
+      onTimeScaleChange: setCombinedStatementsTimeScaleAction,
       // We use `null` when the value was never set and it will show all columns.
       // If the user modifies the selection and no columns are selected,
       // the function will save the value as a blank space, otherwise

@@ -11,7 +11,7 @@
 import moment from "moment";
 import { LocalSetting } from "./localsettings";
 import { AdminUIState } from "./state";
-import { defaultTimeScaleOptions } from "@cockroachlabs/cluster-ui";
+import { defaultTimeScaleOptions, TimeScale } from "@cockroachlabs/cluster-ui";
 
 export type CombinedStatementsTimeScalePayload = {
   key?: string;
@@ -24,7 +24,10 @@ export type CombinedStatementsTimeScalePayload = {
 const localSettingsSelector = (state: AdminUIState) => state.localSettings;
 
 // The default range for statements to display is one hour ago.
-const oneHourAgo = defaultTimeScaleOptions["Past 1 Hour"];
+const oneHourAgo: TimeScale = {
+  ...defaultTimeScaleOptions["Past 1 Hour"],
+  key: "Past 1 Hour",
+};
 //   {
 //   start: moment
 //     .utc()

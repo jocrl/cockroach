@@ -24,7 +24,7 @@ export type CombinedStatementsTimeScalePayload = {
 const localSettingsSelector = (state: AdminUIState) => state.localSettings;
 
 // The default range for statements to display is one hour ago.
-const oneHourAgo = defaultTimeScaleOptions["Past 1 hour"];
+const oneHourAgo = defaultTimeScaleOptions["Past 1 Hour"];
 //   {
 //   start: moment
 //     .utc()

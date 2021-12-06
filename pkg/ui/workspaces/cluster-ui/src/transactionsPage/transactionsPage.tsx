@@ -352,7 +352,7 @@ export class TransactionsPage extends React.Component<
 
   resetTime = (): void => {
     // Default range to reset to is one hour ago.
-    this.changeTimeScale(defaultTimeScaleOptions["Past 1 hour"]);
+    this.changeTimeScale(defaultTimeScaleOptions["Past 1 Hour"]);
   };
 
   renderTransactionsList(): React.ReactElement {

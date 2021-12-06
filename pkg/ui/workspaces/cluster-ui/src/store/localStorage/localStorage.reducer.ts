@@ -38,7 +38,7 @@ type Payload = {
   value: any;
 };
 
-const defaultTimeScale: TimeScale = defaultTimeScaleOptions["Past 1 hour"];
+const defaultTimeScale: TimeScale = defaultTimeScaleOptions["Past 1 Hour"];
 // fixme(josepine) prior implementation added one minute, with comment below. unsure where to implement this, maybe in the defaultTimeScaleOptions? or here
 // Add 1 minute to account for potential lag.
 

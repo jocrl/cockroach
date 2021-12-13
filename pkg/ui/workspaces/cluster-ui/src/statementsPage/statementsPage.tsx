@@ -75,6 +75,7 @@ import {
   defaultTimeScaleSelected,
   TimeScale,
   toDateRange,
+  oneHourOrGreaterTimeScaleOptions,
 } from "../timeScaleDropdown";
 
 const cx = classNames.bind(styles);
@@ -560,6 +561,7 @@ export class StatementsPage extends React.Component<
           <PageConfigItem>
             <TimeScaleDropdown
               currentScale={this.props.timeScale}
+              options={oneHourOrGreaterTimeScaleOptions}
               setTimeScale={this.changeTimeScale}
             />
           </PageConfigItem>

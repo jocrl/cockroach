@@ -73,6 +73,13 @@ export const defaultTimeScaleOptions: TimeScaleCollection = {
   },
 };
 
+export const oneHourOrGreaterTimeScaleOptions: TimeScaleCollection = Object.assign(
+  {},
+  ...Object.entries(defaultTimeScaleOptions)
+    .filter(([_, v]) => v.windowSize >= moment.duration(1, "hour"))
+    .map(([k, v]) => ({ [k]: v })),
+);
+
 export const defaultTimeScaleSelected: TimeScale = {
   ...defaultTimeScaleOptions["Past 1 Hour"],
   key: "Past 1 Hour",

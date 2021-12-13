@@ -65,6 +65,7 @@ import {
   defaultTimeScaleSelected,
   TimeScale,
   toDateRange,
+  oneHourOrGreaterTimeScaleOptions,
 } from "../timeScaleDropdown";
 
 type IStatementsResponse = protos.cockroach.server.serverpb.IStatementsResponse;
@@ -460,6 +461,7 @@ export class TransactionsPage extends React.Component<
                   <PageConfigItem>
                     <TimeScaleDropdown
                       currentScale={this.props.timeScale}
+                      options={oneHourOrGreaterTimeScaleOptions}
                       setTimeScale={this.changeTimeScale}
                     />
                   </PageConfigItem>

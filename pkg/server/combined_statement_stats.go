@@ -297,3 +297,36 @@ func collectCombinedTransactions(
 
 	return transactions, nil
 }
+
+func getEarliestAggregatedTsPerShard(
+	ctx context.Context, tableName, hashColumnName, pkColumnNames string,
+) error {
+	//rowLimitPerShard := c.getRowLimitPerShard()
+	//
+	//existingRowCountQuery := c.getQueryForCheckingTableRowCounts(tableName, hashColumnName)
+	earliestAggregatedTsStmt := c.getStatementForDeletingStaleRows(tableName, pkColumnNames, hashColumnName)
+
+	for shardIdx, rowLimit := range rowLimitPerShard {
+		var existingRowCount int64
+		if err := c.getRowCountForShard(
+			ctx,
+			existingRowCountQuery,
+			shardIdx,
+			&existingRowCount,
+		); err != nil {
+			return err
+		}
+
+		if err := c.removeStaleRowsForShard(
+			ctx,
+			deleteOldStatsStmt,
+			shardIdx,
+			existingRowCount,
+			rowLimit,
+		); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

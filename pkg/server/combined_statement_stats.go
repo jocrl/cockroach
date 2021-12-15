@@ -13,6 +13,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/cockroachdb/cockroach/pkg/sql/catalog/systemschema"
 	"strings"
 	"time"
 
@@ -298,13 +299,17 @@ func collectCombinedTransactions(
 	return transactions, nil
 }
 
-func getEarliestAggregatedTsPerShard(
+func getEarliestAggregatedTs(
 	ctx context.Context, tableName, hashColumnName, pkColumnNames string,
 ) error {
+		for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
+			earliestAggregatedTsStmt := getStatementForEarliestAggregatedTs(tableName, hashColumnName)
+			// fixme(do the query)
+		}
+
 	//rowLimitPerShard := c.getRowLimitPerShard()
 	//
 	//existingRowCountQuery := c.getQueryForCheckingTableRowCounts(tableName, hashColumnName)
-	earliestAggregatedTsStmt := c.getStatementForDeletingStaleRows(tableName, pkColumnNames, hashColumnName)
 
 	for shardIdx, rowLimit := range rowLimitPerShard {
 		var existingRowCount int64
@@ -329,4 +334,16 @@ func getEarliestAggregatedTsPerShard(
 	}
 
 	return nil
+}
+
+func getStatementForEarliestAggregatedTs(
+	tableName, hashColumnName string,
+) string {
+	// [1]: table name
+	// [2]: hash column name
+	const stmt = `SELECT aggregated_ts FROM %[1]s WHERE %[2]s = $1 ORDER BY aggregated_ts LIMIT 1`
+	return fmt.Sprintf(stmt,
+		tableName,
+		hashColumnName,
+	)
 }

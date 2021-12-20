@@ -14,8 +14,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/cockroachdb/cockroach/pkg/sql/catalog/systemschema"
-	"github.com/cockroachdb/cockroach/pkg/sql/pgwire/pgcode"
-	"github.com/cockroachdb/cockroach/pkg/sql/pgwire/pgerror"
 	"strings"
 	"time"
 
@@ -71,11 +69,23 @@ func getCombinedStatementStats(
 		return nil, err
 	}
 
+	earliestStatementAggregatedTs, err := scanEarliestAggregatedTs(ctx, ie, "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+	if err != nil {
+		return nil, err
+	}
+
+	earliestTransactionAggregatedTs, err := scanEarliestAggregatedTs(ctx, ie, "system.transaction_statistics", systemschema.TxnStatsHashColumnName)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &serverpb.StatementsResponse{
-		Statements:            statements,
-		Transactions:          transactions,
-		LastReset:             statsProvider.GetLastReset(),
-		InternalAppNamePrefix: catconstants.InternalAppNamePrefix,
+		Statements:                      statements,
+		Transactions:                    transactions,
+		LastReset:                       statsProvider.GetLastReset(),
+		InternalAppNamePrefix:           catconstants.InternalAppNamePrefix,
+		EarliestStatementAggregatedTs:   earliestStatementAggregatedTs,
+		EarliestTransactionAggregatedTs: earliestTransactionAggregatedTs,
 	}
 
 	return response, nil
@@ -301,15 +311,15 @@ func collectCombinedTransactions(
 	return transactions, nil
 }
 
-func getEarliestAggregatedTs(
-	ctx context.Context, ie *sql.InternalExecutor, tableName, hashColumnName, pkColumnNames string,
+func scanEarliestAggregatedTs(
+	ctx context.Context, ie *sql.InternalExecutor, tableName, hashColumnName string,
 	//ctx context.Context, tableName, hashColumnName, pkColumnNames string,
 ) (time.Time, error) {
 	earliestAggregatedTsPerShard := make([]time.Time, systemschema.SQLStatsHashShardBucketCount)
 
 	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
 		stmt := getStatementForEarliestAggregatedTs(tableName, hashColumnName)
-		row, err := ie.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt)
+		row, err := ie.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
 
 		if err != nil {
 			return time.Time{}, err
@@ -320,29 +330,19 @@ func getEarliestAggregatedTs(
 			shardEarliestAggregatedTs := tree.MustBeDTimestampTZ(row[0]).Time
 			earliestAggregatedTsPerShard[shardIdx] = shardEarliestAggregatedTs
 		}
-
-		// fixme(handle cases where no row returned. also, normal errors)
-
-		// fixme(do the query)
-
-		//if row, err := executor.QueryRow(ctx, "checking-for-temp-system-db" /* opName */, txn, checkIfDatabaseExists, restoreTempSystemDB); err != nil {
-		//	return errors.Wrap(err, "checking for temporary system db")
-		//} else if row == nil {
-		//	// Temporary system DB might already have been dropped by the restore job.
-		//	return nil
-		//}
-
 	}
 
 	var earliestAggregatedTs time.Time
 
 	for _, shardEarliestAggregatedTs := range earliestAggregatedTsPerShard {
-		if shardEarliestAggregatedTs.Before(earliestAggregatedTs) {
+		if !shardEarliestAggregatedTs.IsZero() && shardEarliestAggregatedTs.Before(earliestAggregatedTs) {
 			earliestAggregatedTs = shardEarliestAggregatedTs
 		}
 	}
 
-	return earliestAggregatedTs
+	// fixme(if none, query in-memory stats)
+
+	return earliestAggregatedTs, nil
 }
 
 func getStatementForEarliestAggregatedTs(

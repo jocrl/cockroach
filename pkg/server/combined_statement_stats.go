@@ -316,28 +316,34 @@ func scanEarliestAggregatedTs(
 	//ctx context.Context, tableName, hashColumnName, pkColumnNames string,
 ) (time.Time, error) {
 	earliestAggregatedTsPerShard := make([]time.Time, systemschema.SQLStatsHashShardBucketCount)
-
+	fmt.Println("hi1")
 	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
 		stmt := getStatementForEarliestAggregatedTs(tableName, hashColumnName)
 		row, err := ie.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
-
+		fmt.Println("hi loop", shardIdx)
 		if err != nil {
+			fmt.Println("hi loop 2", shardIdx)
 			return time.Time{}, err
 		}
 		if row == nil {
+			fmt.Println("hi loop 3", shardIdx)
 			earliestAggregatedTsPerShard[shardIdx] = time.Time{}
 		} else {
+			fmt.Println("hi loop 4", shardIdx)
 			shardEarliestAggregatedTs := tree.MustBeDTimestampTZ(row[0]).Time
+			fmt.Println("hi loop 5", shardIdx)
 			earliestAggregatedTsPerShard[shardIdx] = shardEarliestAggregatedTs
 		}
 	}
-
+	fmt.Println("hi2")
 	var earliestAggregatedTs time.Time
 
+	fmt.Println("hi3")
 	for _, shardEarliestAggregatedTs := range earliestAggregatedTsPerShard {
 		if !shardEarliestAggregatedTs.IsZero() && shardEarliestAggregatedTs.Before(earliestAggregatedTs) {
 			earliestAggregatedTs = shardEarliestAggregatedTs
 		}
+		fmt.Println("hi4")
 	}
 
 	// fixme(if none, query in-memory stats)
@@ -350,7 +356,7 @@ func getStatementForEarliestAggregatedTs(
 ) string {
 	// [1]: table name
 	// [2]: hash column name
-	const stmt = `SELECT aggregated_ts FROM %[1]s WHERE %[2]s = $1 ORDER BY aggregated_ts LIMIT 1 AS OF SYSTEM TIME follower_read_timestamp();`
+	const stmt = `SELECT aggregated_ts FROM %[1]s AS OF SYSTEM TIME follower_read_timestamp() WHERE %[2]s = $1 ORDER BY aggregated_ts LIMIT 1;`
 	return fmt.Sprintf(stmt,
 		tableName,
 		hashColumnName,

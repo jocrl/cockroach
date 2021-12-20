@@ -10,7 +10,31 @@
 
 package server
 
-import "testing"
+import (
+	"context"
+	"fmt"
+	"github.com/cockroachdb/cockroach/pkg/base"
+	"github.com/cockroachdb/cockroach/pkg/sql"
+	"github.com/cockroachdb/cockroach/pkg/sql/catalog/systemschema"
+	"github.com/cockroachdb/cockroach/pkg/testutils/serverutils"
+	"github.com/cockroachdb/cockroach/pkg/util/leaktest"
+	"github.com/cockroachdb/cockroach/pkg/util/log"
+	"testing"
+)
 
 func TestScanEarliestAggregatedTs(t *testing.T) {
+	defer leaktest.AfterTest(t)()
+	defer log.Scope(t).Close(t)
+
+	ctx := context.Background()
+	s, _, _ := serverutils.StartServer(t, base.TestServerArgs{})
+
+	defer s.Stopper().Stop(ctx)
+
+	earliestAggregatedTs, err := scanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(earliestAggregatedTs)
 }

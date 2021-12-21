@@ -183,7 +183,7 @@ func (s *SQLStats) IterateAggregatedTransactionStats(
 func (s *SQLStats) ScanEarliestAggregatedTs(
 	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
 ) (time.Time, error) {
-	// fixme(no idea what I'm supposed to implement here)
+	// fixme(I /think/ I'm supposed to implement querying the in-memory table here. but unclear difference with ss_mem_storage.go)
 	return time.Time{}, nil
 }
 

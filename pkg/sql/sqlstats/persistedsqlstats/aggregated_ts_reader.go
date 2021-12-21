@@ -46,7 +46,7 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 		}
 	}
 	fmt.Println("hi2")
-	var earliestAggregatedTs time.Time
+	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
 
 	fmt.Println("hi3")
 	for _, shardEarliestAggregatedTs := range earliestAggregatedTsPerShard {

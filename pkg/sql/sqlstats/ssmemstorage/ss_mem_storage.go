@@ -219,7 +219,7 @@ func (s *Container) IterateTransactionStats(
 func (s *Container) ScanEarliestAggregatedTs(
 	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
 ) (time.Time, error) {
-	// fixme(implement this... I /think/ this should be the implementation of querying the )
+	// fixme(implement this... I /think/ this should be the implementation of querying the in-memory stats)
 	return time.Time{}, nil
 }
 

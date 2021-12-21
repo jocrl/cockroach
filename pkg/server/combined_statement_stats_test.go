@@ -27,10 +27,9 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	defer log.Scope(t).Close(t)
 
 	params, _ := tests.CreateTestServerParams()
-
-	ctx := context.Background()
 	s, _, _ := serverutils.StartServer(t, params)
 
+	ctx := context.Background()
 	defer s.Stopper().Stop(ctx)
 
 	earliestAggregatedTs, err := scanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)

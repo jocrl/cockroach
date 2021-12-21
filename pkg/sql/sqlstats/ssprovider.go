@@ -15,6 +15,7 @@ package sqlstats
 
 import (
 	"context"
+	"github.com/cockroachdb/cockroach/pkg/sql"
 	"time"
 
 	"github.com/cockroachdb/cockroach/pkg/roachpb"
@@ -60,6 +61,9 @@ type Reader interface {
 	// IterateAggregatedTransactionStats iterates through all the collected app-level
 	// transactions statistics. It behaves similarly to IterateStatementStats.
 	IterateAggregatedTransactionStats(context.Context, *IteratorOptions, AggregatedTransactionVisitor) error
+
+	// ScanEarliestAggregatedTs ....... fixme
+	ScanEarliestAggregatedTs(context.Context, *sql.InternalExecutor, string, string) (time.Time, error)
 }
 
 // ApplicationStats is an interface to read from or write to the statistics

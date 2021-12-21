@@ -179,6 +179,14 @@ func (s *SQLStats) IterateAggregatedTransactionStats(
 	return nil
 }
 
+// ScanEarliestAggregatedTs implements sqlstats.Provider interface.
+func (s *SQLStats) ScanEarliestAggregatedTs(
+	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
+) (time.Time, error) {
+	// fixme(no idea what I'm supposed to implement here)
+	return time.Time{}, nil
+}
+
 // Reset implements sqlstats.Provider interface.
 func (s *SQLStats) Reset(ctx context.Context) error {
 	return s.resetAndMaybeDumpStats(ctx, s.flushTarget)

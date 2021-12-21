@@ -22,14 +22,14 @@ import (
 )
 
 func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
-	ctx context.Context, ie *sqlutil.InternalExecutor, tableName, hashColumnName string,
+	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
 	//ctx context.Context, tableName, hashColumnName, pkColumnNames string,
 ) (time.Time, error) {
 	earliestAggregatedTsPerShard := make([]time.Time, systemschema.SQLStatsHashShardBucketCount)
 	fmt.Println("hi1")
 	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
 		stmt := s.getStatementForEarliestAggregatedTs(tableName, hashColumnName)
-		row, err := ie.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
+		row, err := ex.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
 		fmt.Println("hi loop", shardIdx)
 		if err != nil {
 			fmt.Println("hi loop 2", shardIdx)

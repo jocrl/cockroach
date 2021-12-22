@@ -1,4 +1,4 @@
-// Copyright 2021 The Cockroach Authors.
+// Copyright 2022 The Cockroach Authors.
 //
 // Use of this software is governed by the Business Source License
 // included in the file licenses/BSL.txt.
@@ -30,30 +30,24 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
 		stmt := s.getStatementForEarliestAggregatedTs(tableName, hashColumnName)
 		row, err := ex.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
-		fmt.Println("hi loop", shardIdx)
 		if err != nil {
-			fmt.Println("hi loop 2", shardIdx)
 			return time.Time{}, err
 		}
 		if row == nil {
-			fmt.Println("hi loop 3", shardIdx)
 			earliestAggregatedTsPerShard[shardIdx] = time.Time{}
 		} else {
-			fmt.Println("hi loop 4", shardIdx)
 			shardEarliestAggregatedTs := tree.MustBeDTimestampTZ(row[0]).Time
-			fmt.Println("hi loop 5", shardIdx)
+			fmt.Println("setting", shardEarliestAggregatedTs)
 			earliestAggregatedTsPerShard[shardIdx] = shardEarliestAggregatedTs
 		}
 	}
-	fmt.Println("hi2")
 	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
 
-	fmt.Println("hi3")
 	for _, shardEarliestAggregatedTs := range earliestAggregatedTsPerShard {
-		if !shardEarliestAggregatedTs.IsZero() && shardEarliestAggregatedTs.Before(earliestAggregatedTs) {
+		if !shardEarliestAggregatedTs.IsZero() && (earliestAggregatedTs.IsZero() || shardEarliestAggregatedTs.Before(earliestAggregatedTs)) {
 			earliestAggregatedTs = shardEarliestAggregatedTs
+			fmt.Println("replacing", shardEarliestAggregatedTs)
 		}
-		fmt.Println("hi4")
 	}
 
 	// fixme(if none, query in-memory stats)

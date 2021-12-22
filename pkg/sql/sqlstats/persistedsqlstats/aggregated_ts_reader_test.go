@@ -24,7 +24,7 @@ import (
 	"testing"
 )
 
-func TestScanEarliestAggregatedTs(t *testing.T) {
+func TestScanEarliestAggregatedTsPersistedExists(t *testing.T) {
 	defer leaktest.AfterTest(t)()
 	defer log.Scope(t).Close(t)
 
@@ -36,10 +36,9 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 
 	sqlStats := s.SQLServer().(*sql.Server).GetSQLStatsProvider().(*persistedsqlstats.PersistedSQLStats)
 
-	//sqlServer := s.(*TestServer).Server.sqlServer.pgServer.SQLServer
-	//sqlServer.GetSQLStatsProvider().(*persistedsqlstats.PersistedSQLStats).Flush(ctx)
+	// set up multiple persisted times, also in-memory
+
 	earliestAggregatedTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-	//earliestAggregatedTs, err := persistedsqlstats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
 
 	if err != nil {
 		t.Fatal(err)

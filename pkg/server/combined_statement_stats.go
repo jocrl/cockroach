@@ -13,6 +13,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/cockroachdb/cockroach/pkg/sql/catalog/systemschema"
 	"strings"
 	"time"
 
@@ -68,11 +69,23 @@ func getCombinedStatementStats(
 		return nil, err
 	}
 
+	earliestStatementAggregatedTs, err := statsProvider.ScanEarliestAggregatedTs(ctx, ie, "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+	if err != nil {
+		return nil, err
+	}
+
+	earliestTransactionAggregatedTs, err := statsProvider.ScanEarliestAggregatedTs(ctx, ie, "system.transaction_statistics", systemschema.TxnStatsHashColumnName)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &serverpb.StatementsResponse{
-		Statements:            statements,
-		Transactions:          transactions,
-		LastReset:             statsProvider.GetLastReset(),
-		InternalAppNamePrefix: catconstants.InternalAppNamePrefix,
+		Statements:                      statements,
+		Transactions:                    transactions,
+		LastReset:                       statsProvider.GetLastReset(),
+		InternalAppNamePrefix:           catconstants.InternalAppNamePrefix,
+		EarliestStatementAggregatedTs:   earliestStatementAggregatedTs,
+		EarliestTransactionAggregatedTs: earliestTransactionAggregatedTs,
 	}
 
 	return response, nil

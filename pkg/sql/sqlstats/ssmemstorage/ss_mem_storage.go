@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/cockroachdb/cockroach/pkg/sql/sqlutil"
 	"sync/atomic"
 	"time"
 	"unsafe"
@@ -212,6 +213,14 @@ func (s *Container) IterateTransactionStats(
 	}
 
 	return nil
+}
+
+// ScanEarliestAggregatedTs implements sqlstats.Provider interface.
+func (s *Container) ScanEarliestAggregatedTs(
+	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
+) (time.Time, error) {
+	// fixme(implement this... I /think/ this should be the implementation of querying the in-memory stats)
+	return time.Time{}, nil
 }
 
 // NewTempContainerFromExistingStmtStats creates a new Container by ingesting a slice

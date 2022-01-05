@@ -1225,6 +1225,7 @@ message StatementsResponse {
   // used for statements/queries issued internally by CockroachDB.
   string internal_app_name_prefix = 4;
 
+
   message ExtendedCollectedTransactionStatistics {
     cockroach.sql.CollectedTransactionStatistics stats_data = 1 [(gogoproto.nullable) = false];
     int32 node_id = 2 [(gogoproto.customname) = "NodeID",
@@ -1233,7 +1234,10 @@ message StatementsResponse {
 
   // Transactions is transaction-level statistics for the collection of
   // statements in this response.
+
   repeated ExtendedCollectedTransactionStatistics transactions = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp earliest_statement_aggregated_ts = 6 [(gogoproto.nullable) = false,  (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp earliest_transaction_aggregated_ts = 7 [(gogoproto.nullable) = false,  (gogoproto.stdtime) = true];
 }
 
 message CombinedStatementsStatsRequest {

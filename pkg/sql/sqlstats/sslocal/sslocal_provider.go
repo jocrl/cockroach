@@ -179,6 +179,14 @@ func (s *SQLStats) IterateAggregatedTransactionStats(
 	return nil
 }
 
+// ScanEarliestAggregatedTs implements sqlstats.Provider interface.
+func (s *SQLStats) ScanEarliestAggregatedTs(
+	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
+) (time.Time, error) {
+	// fixme(I /think/ I'm supposed to implement querying the in-memory table here. but unclear difference with ss_mem_storage.go)
+	return time.Time{}, nil
+}
+
 // Reset implements sqlstats.Provider interface.
 func (s *SQLStats) Reset(ctx context.Context) error {
 	return s.resetAndMaybeDumpStats(ctx, s.flushTarget)

@@ -226,6 +226,7 @@ export class TransactionDetails extends React.Component<
                 transactionFingerprintId,
             );
             const aggregatedStatements = aggregateStatements(txnScopedStmts);
+            debugger;
             populateRegionNodeForStatements(
               aggregatedStatements,
               nodeRegions,

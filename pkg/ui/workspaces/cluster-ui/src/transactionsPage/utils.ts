@@ -98,6 +98,7 @@ export const aggregateStatements = (
 
   flattenStatementStats(statements).forEach(s => {
     const key = transactionScopedStatementKey(s);
+    // debugger;
     if (!(key in statsKey)) {
       statsKey[key] = {
         label: s.statement,

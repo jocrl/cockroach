@@ -260,7 +260,7 @@ export function statementKey(stmt: ExecutionStatistics): string {
     stmt.statement +
     stmt.implicit_txn +
     stmt.database +
-    stmt.aggregated_ts +
+    // stmt.aggregated_ts +
     stmt.aggregation_interval
   );
 }

@@ -220,7 +220,23 @@ func (s *Container) ScanEarliestAggregatedTs(
 	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
 ) (time.Time, error) {
 	// fixme(implement this... I /think/ this should be the implementation of querying the in-memory stats)
-	return time.Time{}, nil
+
+	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
+
+	// is nil okay here?
+	iter := s.StmtStatsIterator(&sqlstats.IteratorOptions{})
+
+	for iter.Next() {
+		var aggregatedTs = iter.Cur().AggregatedTs
+		// I might be missing some error handling here?
+
+		if !aggregatedTs.IsZero() && (earliestAggregatedTs.IsZero() || aggregatedTs.Before(earliestAggregatedTs)) {
+			earliestAggregatedTs = aggregatedTs
+			fmt.Println("mem map 2 replacing", aggregatedTs)
+		}
+	}
+
+	return earliestAggregatedTs, nil
 }
 
 // NewTempContainerFromExistingStmtStats creates a new Container by ingesting a slice

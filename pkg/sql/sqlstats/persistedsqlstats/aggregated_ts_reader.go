@@ -50,6 +50,15 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 	}
 
 	// fixme(if none, query in-memory stats)
+	if earliestAggregatedTs.IsZero() {
+		fmt.Println("querying in-memory")
+		// can I shorten these two lines?
+		ts, err := s.SQLStats.ScanEarliestAggregatedTs(ctx, ex, tableName, hashColumnName)
+		earliestAggregatedTs = ts
+		if err != nil {
+			return time.Time{}, err
+		}
+	}
 
 	return earliestAggregatedTs, nil
 }

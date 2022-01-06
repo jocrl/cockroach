@@ -61,7 +61,6 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	//}
 
 	// fixme how does it end up on diff shards? guarantee that we check all
-	// fixme generate different times
 
 	t.Run("in-memory only read", func(t *testing.T) {
 		earliestAggregatedTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
@@ -71,45 +70,45 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 		}
 	})
 
-	t.Run("disk only read", func(t *testing.T) {
-		sqlStats.Flush(ctx)
-		fmt.Println("flush 1", fakeTime.Now())
-
-		for _, tc := range testQueries {
-			verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
-		}
-
-		earliestAggregatedTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-		fmt.Println("disk1", earliestAggregatedTs1)
-		if err1 != nil {
-			t.Fatal(err1)
-		}
-
-		fakeTime.setTime(fakeTime.Now().Add(time.Hour * 3))
-		for _, tc := range testQueries {
-			for i := int64(0); i < tc.count; i++ {
-				sqlConn.Exec(t, tc.query)
-			}
-		}
-		//for _, tc := range testQueries {
-		//	expectedStmtFingerprints[tc.fingerprint] = tc.count
-		//	for i := int64(0); i < tc.count; i++ {
-		//		sqlConn.Exec(t, tc.query)
-		//	}
-		//}
-		sqlStats.Flush(ctx)
-		fmt.Println("flush 2", fakeTime.Now())
-
-		for _, tc := range testQueries {
-			verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
-		}
-
-		earliestAggregatedTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-		fmt.Println("disk2", earliestAggregatedTs2)
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-	})
+	//t.Run("disk only read", func(t *testing.T) {
+	//	sqlStats.Flush(ctx)
+	//	fmt.Println("flush 1", fakeTime.Now())
+	//
+	//	for _, tc := range testQueries {
+	//		verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
+	//	}
+	//
+	//	earliestAggregatedTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+	//	fmt.Println("disk1", earliestAggregatedTs1)
+	//	if err1 != nil {
+	//		t.Fatal(err1)
+	//	}
+	//
+	//	fakeTime.setTime(fakeTime.Now().Add(time.Hour * 3))
+	//	for _, tc := range testQueries {
+	//		for i := int64(0); i < tc.count; i++ {
+	//			sqlConn.Exec(t, tc.query)
+	//		}
+	//	}
+	//	//for _, tc := range testQueries {
+	//	//	expectedStmtFingerprints[tc.fingerprint] = tc.count
+	//	//	for i := int64(0); i < tc.count; i++ {
+	//	//		sqlConn.Exec(t, tc.query)
+	//	//	}
+	//	//}
+	//	sqlStats.Flush(ctx)
+	//	fmt.Println("flush 2", fakeTime.Now())
+	//
+	//	for _, tc := range testQueries {
+	//		verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
+	//	}
+	//
+	//	earliestAggregatedTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+	//	fmt.Println("disk2", earliestAggregatedTs2)
+	//	if err2 != nil {
+	//		t.Fatal(err2)
+	//	}
+	//})
 
 	//t.Run("hybrid read", func(t *testing.T) {
 	//	// We execute each test queries one more time without flushing the stats.

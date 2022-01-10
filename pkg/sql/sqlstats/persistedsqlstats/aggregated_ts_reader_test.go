@@ -31,6 +31,9 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	defer leaktest.AfterTest(t)()
 	defer log.Scope(t).Close(t)
 
+	expectedEarliestTime := timeutil.Now()
+	//.Add(5 * time.Second)
+
 	fakeTime := stubTime{
 		aggInterval: time.Hour,
 	}

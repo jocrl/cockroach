@@ -15,7 +15,6 @@ package sqlstats
 
 import (
 	"context"
-	"github.com/cockroachdb/cockroach/pkg/sql/sqlutil"
 	"time"
 
 	"github.com/cockroachdb/cockroach/pkg/roachpb"
@@ -182,7 +181,7 @@ type Provider interface {
 	Start(ctx context.Context, stopper *stop.Stopper)
 
 	// ScanEarliestAggregatedTs ....... fixme
-	ScanEarliestAggregatedTs(context.Context, sqlutil.InternalExecutor, string, string) (time.Time, error)
+	//ScanEarliestAggregatedTs(context.Context, sqlutil.InternalExecutor, string, string) (time.Time, error)
 }
 
 // RecordedStmtStats stores the statistics of a statement to be recorded.

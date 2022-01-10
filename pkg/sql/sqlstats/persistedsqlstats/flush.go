@@ -238,7 +238,7 @@ func (s *PersistedSQLStats) doInsertElseDoUpdate(
 	return nil
 }
 
-func (s *PersistedSQLStats) ComputeAggregatedTs() time.Time {
+func (s *PersistedSQLStats) computeAggregatedTs() time.Time {
 	interval := SQLStatsFlushInterval.Get(&s.cfg.Settings.SV)
 	now := s.getTimeNow()
 

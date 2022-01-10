@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/cockroachdb/cockroach/pkg/sql/sqlstats/persistedsqlstats"
 	"github.com/cockroachdb/cockroach/pkg/sql/sqlutil"
 	"sync/atomic"
 	"time"
@@ -219,6 +220,8 @@ func (s *Container) IterateTransactionStats(
 func (s *Container) ScanEarliestAggregatedTs(
 	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
 ) (time.Time, error) {
+	// I want to be able to call
+
 	// fixme(implement this... I /think/ this should be the implementation of querying the in-memory stats)
 
 	//interval := SQLStatsFlushInterval.Get(&s.cfg.Settings.SV)
@@ -226,21 +229,28 @@ func (s *Container) ScanEarliestAggregatedTs(
 	//
 	//aggTs := now.Truncate(interval)
 	//
+	//stmtStatsExist := false
 	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
 
 	// is nil okay here?
 	iter := s.StmtStatsIterator(&sqlstats.IteratorOptions{})
-
-	for iter.Next() {
-		var aggregatedTs = iter.Cur().AggregatedTs
-		fmt.Println("iterating", aggregatedTs, iter.Cur().String())
-		// I might be missing some error handling here?
-
-		if !aggregatedTs.IsZero() && (earliestAggregatedTs.IsZero() || aggregatedTs.Before(earliestAggregatedTs)) {
-			earliestAggregatedTs = aggregatedTs
-			fmt.Println("mem map 2 replacing", aggregatedTs)
-		}
+	if iter.Next() {
+		fmt.Println("test")
+		earliestAggregatedTs :=
+		//earliestAggregatedTs := persistedsqlstats.ComputeAggregatedTs()
+		//stmtStatsExist := true
 	}
+
+	//for iter.Next() {
+	//	var aggregatedTs = iter.Cur().AggregatedTs
+	//	fmt.Println("iterating", aggregatedTs, iter.Cur().String())
+	//	// I might be missing some error handling here?
+	//
+	//	if !aggregatedTs.IsZero() && (earliestAggregatedTs.IsZero() || aggregatedTs.Before(earliestAggregatedTs)) {
+	//		earliestAggregatedTs = aggregatedTs
+	//		fmt.Println("mem map 2 replacing", aggregatedTs)
+	//	}
+	//}
 
 	return earliestAggregatedTs, nil
 }

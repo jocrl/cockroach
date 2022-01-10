@@ -181,37 +181,37 @@ func (s *SQLStats) IterateAggregatedTransactionStats(
 }
 
 // ScanEarliestAggregatedTs implements sqlstats.Provider interface.
-func (s *SQLStats) ScanEarliestAggregatedTs(
-	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
-) (time.Time, error) {
-	// fixme(I /think/ I'm supposed to implement querying the in-memory table here. but unclear difference with ss_mem_storage.go)
-	appNames := s.getAppNames(false) // doesn't need to be sorted
-
-	var appEarliestAggregatedTimestamps []time.Time
-
-	for _, appName := range appNames {
-		statsContainer := s.getStatsForApplication(appName)
-
-		appEarliestAggregatedTimestamp, err := statsContainer.ScanEarliestAggregatedTs(ctx, ex, tableName, hashColumnName)
-		//fmt.Println("earliest ", appEarliestAggregatedTimestamp, " in app ", appName)
-		if err != nil {
-			return time.Time{}, errors.Wrap(err, "sql stats iteration abort")
-		}
-		appEarliestAggregatedTimestamps = append(appEarliestAggregatedTimestamps, appEarliestAggregatedTimestamp)
-
-	}
-
-	// find the earliest
-	earliestAggregatedTs := time.Time{}
-	for _, timestamp := range appEarliestAggregatedTimestamps {
-		if !timestamp.IsZero() && (earliestAggregatedTs.IsZero() || timestamp.Before(earliestAggregatedTs)) {
-			earliestAggregatedTs = timestamp
-			fmt.Println("memory replacing", timestamp)
-		}
-	}
-	return earliestAggregatedTs, nil
-	//return time.Time{}, nil
-}
+//func (s *SQLStats) ScanEarliestAggregatedTs(
+//	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
+//) (time.Time, error) {
+//	// fixme(I /think/ I'm supposed to implement querying the in-memory table here. but unclear difference with ss_mem_storage.go)
+//	appNames := s.getAppNames(false) // doesn't need to be sorted
+//
+//	var appEarliestAggregatedTimestamps []time.Time
+//
+//	for _, appName := range appNames {
+//		statsContainer := s.getStatsForApplication(appName)
+//
+//		appEarliestAggregatedTimestamp, err := statsContainer.ScanEarliestAggregatedTs(ctx, ex, tableName, hashColumnName)
+//		//fmt.Println("earliest ", appEarliestAggregatedTimestamp, " in app ", appName)
+//		if err != nil {
+//			return time.Time{}, errors.Wrap(err, "sql stats iteration abort")
+//		}
+//		appEarliestAggregatedTimestamps = append(appEarliestAggregatedTimestamps, appEarliestAggregatedTimestamp)
+//
+//	}
+//
+//	// find the earliest
+//	earliestAggregatedTs := time.Time{}
+//	for _, timestamp := range appEarliestAggregatedTimestamps {
+//		if !timestamp.IsZero() && (earliestAggregatedTs.IsZero() || timestamp.Before(earliestAggregatedTs)) {
+//			earliestAggregatedTs = timestamp
+//			fmt.Println("memory replacing", timestamp)
+//		}
+//	}
+//	return earliestAggregatedTs, nil
+//	//return time.Time{}, nil
+//}
 
 // Reset implements sqlstats.Provider interface.
 func (s *SQLStats) Reset(ctx context.Context) error {

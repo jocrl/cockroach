@@ -11,57 +11,50 @@
 package persistedsqlstats
 
 import (
-	"context"
 	"fmt"
-	"github.com/cockroachdb/cockroach/pkg/security"
-	"github.com/cockroachdb/cockroach/pkg/sql/catalog/systemschema"
-	"github.com/cockroachdb/cockroach/pkg/sql/sem/tree"
-	"github.com/cockroachdb/cockroach/pkg/sql/sessiondata"
-	"github.com/cockroachdb/cockroach/pkg/sql/sqlutil"
-	"time"
 )
 
-func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
-	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
-	//ctx context.Context, tableName, hashColumnName, pkColumnNames string,
-) (time.Time, error) {
-	earliestAggregatedTsPerShard := make([]time.Time, systemschema.SQLStatsHashShardBucketCount)
-	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
-		stmt := s.getStatementForEarliestAggregatedTs(tableName, hashColumnName)
-		row, err := ex.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
-		if err != nil {
-			return time.Time{}, err
-		}
-		if row == nil {
-			earliestAggregatedTsPerShard[shardIdx] = time.Time{}
-		} else {
-			shardEarliestAggregatedTs := tree.MustBeDTimestampTZ(row[0]).Time
-			fmt.Println("setting", shardEarliestAggregatedTs)
-			earliestAggregatedTsPerShard[shardIdx] = shardEarliestAggregatedTs
-		}
-	}
-	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
-
-	for _, shardEarliestAggregatedTs := range earliestAggregatedTsPerShard {
-		if !shardEarliestAggregatedTs.IsZero() && (earliestAggregatedTs.IsZero() || shardEarliestAggregatedTs.Before(earliestAggregatedTs)) {
-			earliestAggregatedTs = shardEarliestAggregatedTs
-			fmt.Println("replacing", shardEarliestAggregatedTs)
-		}
-	}
-
-	// fixme(if none, query in-memory stats)
-	if earliestAggregatedTs.IsZero() {
-		fmt.Println("querying in-memory")
-		// can I shorten these two lines?
-		ts, err := s.SQLStats.ScanEarliestAggregatedTs(ctx, ex, tableName, hashColumnName)
-		earliestAggregatedTs = ts
-		if err != nil {
-			return time.Time{}, err
-		}
-	}
-
-	return earliestAggregatedTs, nil
-}
+//func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
+//	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
+//	//ctx context.Context, tableName, hashColumnName, pkColumnNames string,
+//) (time.Time, error) {
+//	earliestAggregatedTsPerShard := make([]time.Time, systemschema.SQLStatsHashShardBucketCount)
+//	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
+//		stmt := s.getStatementForEarliestAggregatedTs(tableName, hashColumnName)
+//		row, err := ex.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
+//		if err != nil {
+//			return time.Time{}, err
+//		}
+//		if row == nil {
+//			earliestAggregatedTsPerShard[shardIdx] = time.Time{}
+//		} else {
+//			shardEarliestAggregatedTs := tree.MustBeDTimestampTZ(row[0]).Time
+//			fmt.Println("setting", shardEarliestAggregatedTs)
+//			earliestAggregatedTsPerShard[shardIdx] = shardEarliestAggregatedTs
+//		}
+//	}
+//	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
+//
+//	for _, shardEarliestAggregatedTs := range earliestAggregatedTsPerShard {
+//		if !shardEarliestAggregatedTs.IsZero() && (earliestAggregatedTs.IsZero() || shardEarliestAggregatedTs.Before(earliestAggregatedTs)) {
+//			earliestAggregatedTs = shardEarliestAggregatedTs
+//			fmt.Println("replacing", shardEarliestAggregatedTs)
+//		}
+//	}
+//
+//	// fixme(if none, query in-memory stats)
+//	if earliestAggregatedTs.IsZero() {
+//		fmt.Println("querying in-memory")
+//		// can I shorten these two lines?
+//		ts, err := s.SQLStats.ScanEarliestAggregatedTs(ctx, ex, tableName, hashColumnName)
+//		earliestAggregatedTs = ts
+//		if err != nil {
+//			return time.Time{}, err
+//		}
+//	}
+//
+//	return earliestAggregatedTs, nil
+//}
 
 func (s *PersistedSQLStats) getStatementForEarliestAggregatedTs(
 	tableName, hashColumnName string,

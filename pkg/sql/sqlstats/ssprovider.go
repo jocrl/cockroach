@@ -15,13 +15,13 @@ package sqlstats
 
 import (
 	"context"
+	"github.com/cockroachdb/cockroach/pkg/sql/sqlutil"
 	"time"
 
 	"github.com/cockroachdb/cockroach/pkg/roachpb"
 	"github.com/cockroachdb/cockroach/pkg/sql/execstats"
 	"github.com/cockroachdb/cockroach/pkg/sql/sem/tree"
 	"github.com/cockroachdb/cockroach/pkg/sql/sessionphase"
-	"github.com/cockroachdb/cockroach/pkg/sql/sqlutil"
 	"github.com/cockroachdb/cockroach/pkg/util/stop"
 )
 
@@ -61,9 +61,6 @@ type Reader interface {
 	// IterateAggregatedTransactionStats iterates through all the collected app-level
 	// transactions statistics. It behaves similarly to IterateStatementStats.
 	IterateAggregatedTransactionStats(context.Context, *IteratorOptions, AggregatedTransactionVisitor) error
-
-	// ScanEarliestAggregatedTs ....... fixme
-	ScanEarliestAggregatedTs(context.Context, sqlutil.InternalExecutor, string, string) (time.Time, error)
 }
 
 // ApplicationStats is an interface to read from or write to the statistics
@@ -183,6 +180,9 @@ type Provider interface {
 	Storage
 
 	Start(ctx context.Context, stopper *stop.Stopper)
+
+	// ScanEarliestAggregatedTs ....... fixme
+	ScanEarliestAggregatedTs(context.Context, sqlutil.InternalExecutor, string, string) (time.Time, error)
 }
 
 // RecordedStmtStats stores the statistics of a statement to be recorded.

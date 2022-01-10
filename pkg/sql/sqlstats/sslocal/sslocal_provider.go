@@ -186,15 +186,14 @@ func (s *SQLStats) ScanEarliestAggregatedTs(
 ) (time.Time, error) {
 	// fixme(I /think/ I'm supposed to implement querying the in-memory table here. but unclear difference with ss_mem_storage.go)
 	appNames := s.getAppNames(false) // doesn't need to be sorted
-	fmt.Println("app names", appNames)
 
-	// "per" makes this sound like a dictionary, think of a better var name
 	var appEarliestAggregatedTimestamps []time.Time
 
 	for _, appName := range appNames {
 		statsContainer := s.getStatsForApplication(appName)
 
 		appEarliestAggregatedTimestamp, err := statsContainer.ScanEarliestAggregatedTs(ctx, ex, tableName, hashColumnName)
+		//fmt.Println("earliest ", appEarliestAggregatedTimestamp, " in app ", appName)
 		if err != nil {
 			return time.Time{}, errors.Wrap(err, "sql stats iteration abort")
 		}

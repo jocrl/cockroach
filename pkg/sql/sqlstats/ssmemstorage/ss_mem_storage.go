@@ -221,6 +221,11 @@ func (s *Container) ScanEarliestAggregatedTs(
 ) (time.Time, error) {
 	// fixme(implement this... I /think/ this should be the implementation of querying the in-memory stats)
 
+	//interval := SQLStatsFlushInterval.Get(&s.cfg.Settings.SV)
+	//now := s.getTimeNow()
+	//
+	//aggTs := now.Truncate(interval)
+	//
 	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
 
 	// is nil okay here?
@@ -228,6 +233,7 @@ func (s *Container) ScanEarliestAggregatedTs(
 
 	for iter.Next() {
 		var aggregatedTs = iter.Cur().AggregatedTs
+		fmt.Println("iterating", aggregatedTs, iter.Cur().String())
 		// I might be missing some error handling here?
 
 		if !aggregatedTs.IsZero() && (earliestAggregatedTs.IsZero() || aggregatedTs.Before(earliestAggregatedTs)) {

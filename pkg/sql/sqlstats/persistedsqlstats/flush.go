@@ -32,7 +32,7 @@ func (s *PersistedSQLStats) Flush(ctx context.Context) {
 	log.Infof(ctx, "flushing %d stmt/txn fingerprints (%d bytes) after %s",
 		s.SQLStats.GetTotalFingerprintCount(), s.SQLStats.GetTotalFingerprintBytes(), timeutil.Since(s.lastFlushStarted))
 
-	aggregatedTs := s.computeAggregatedTs()
+	aggregatedTs := s.ComputeAggregatedTs()
 	s.lastFlushStarted = s.getTimeNow()
 
 	s.flushStmtStats(ctx, aggregatedTs)
@@ -238,7 +238,7 @@ func (s *PersistedSQLStats) doInsertElseDoUpdate(
 	return nil
 }
 
-func (s *PersistedSQLStats) computeAggregatedTs() time.Time {
+func (s *PersistedSQLStats) ComputeAggregatedTs() time.Time {
 	interval := SQLStatsFlushInterval.Get(&s.cfg.Settings.SV)
 	now := s.getTimeNow()
 

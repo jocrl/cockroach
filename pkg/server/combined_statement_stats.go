@@ -14,6 +14,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/cockroachdb/cockroach/pkg/sql/catalog/systemschema"
+	"github.com/cockroachdb/cockroach/pkg/sql/sqlstats/persistedsqlstats"
 	"strings"
 	"time"
 
@@ -69,12 +70,12 @@ func getCombinedStatementStats(
 		return nil, err
 	}
 
-	earliestStatementAggregatedTs, err := statsProvider.ScanEarliestAggregatedTs(ctx, ie, "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+	earliestStatementAggregatedTs, err := statsProvider.(*persistedsqlstats.PersistedSQLStats).ScanEarliestAggregatedTs(ctx, ie, "system.statement_statistics", systemschema.StmtStatsHashColumnName)
 	if err != nil {
 		return nil, err
 	}
 
-	earliestTransactionAggregatedTs, err := statsProvider.ScanEarliestAggregatedTs(ctx, ie, "system.transaction_statistics", systemschema.TxnStatsHashColumnName)
+	earliestTransactionAggregatedTs, err := statsProvider.(*persistedsqlstats.PersistedSQLStats).ScanEarliestAggregatedTs(ctx, ie, "system.transaction_statistics", systemschema.TxnStatsHashColumnName)
 	if err != nil {
 		return nil, err
 	}

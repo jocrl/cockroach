@@ -49,7 +49,11 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 		}
 	}
 
-	// fixme(if none, query in-memory stats)
+	if earliestAggregatedTs.IsZero() {
+		// if there are no persisted stats, return what the aggregatedTs of in-memory stats would have been if they were flushed.
+		// this assumes that there are in-memory stats, since there are many internal queries constantly running
+		earliestAggregatedTs = s.computeAggregatedTs()
+	}
 
 	return earliestAggregatedTs, nil
 }

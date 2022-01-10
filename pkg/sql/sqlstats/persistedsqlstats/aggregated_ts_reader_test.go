@@ -25,19 +25,24 @@ import (
 	"github.com/cockroachdb/cockroach/pkg/util/leaktest"
 	"github.com/cockroachdb/cockroach/pkg/util/log"
 	"github.com/cockroachdb/cockroach/pkg/util/timeutil"
+	"github.com/stretchr/testify/require"
 )
 
 func TestScanEarliestAggregatedTs(t *testing.T) {
 	defer leaktest.AfterTest(t)()
 	defer log.Scope(t).Close(t)
 
-	expectedEarliestTime := timeutil.Now()
+	baseTime := timeutil.Now()
 	//.Add(5 * time.Second)
+	aggInterval := time.Hour
+
+	// chosen to ensure a different truncated aggTs
+	advancementInterval := time.Hour * 2
 
 	fakeTime := stubTime{
-		aggInterval: time.Hour,
+		aggInterval: aggInterval,
 	}
-	fakeTime.setTime(timeutil.Now())
+	fakeTime.setTime(baseTime)
 
 	params, _ := tests.CreateTestServerParams()
 	s, db, _ := serverutils.StartServer(t, params)
@@ -66,52 +71,82 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	// fixme how does it end up on diff shards? guarantee that we check all
 	// fixme generate different times
 
-	t.Run("in-memory only read", func(t *testing.T) {
-		earliestAggregatedTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-		fmt.Println("mem", earliestAggregatedTs)
+	truncatedBaseTime := baseTime.Truncate(aggInterval)
+	t.Run("in-memory read", func(t *testing.T) {
+		memoryEarliestAggTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+		fmt.Println("mem", memoryEarliestAggTs)
 		if err != nil {
 			t.Fatal(err)
 		}
+		require.Equal(t, truncatedBaseTime, memoryEarliestAggTs, "expected: %s, got: %s", truncatedBaseTime, memoryEarliestAggTs)
+
 	})
 
-	t.Run("disk only read", func(t *testing.T) {
+	t.Run("disk read", func(t *testing.T) {
 		sqlStats.Flush(ctx)
-		fmt.Println("flush 1", fakeTime.Now())
 
-		for _, tc := range testQueries {
-			verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
-		}
-
-		earliestAggregatedTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-		fmt.Println("disk1", earliestAggregatedTs1)
+		// normal disk read
+		diskEarliestAggTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
 		if err1 != nil {
 			t.Fatal(err1)
 		}
+		require.Equal(t, truncatedBaseTime, diskEarliestAggTs1, "expected: %s, got: %s", truncatedBaseTime, diskEarliestAggTs1)
 
-		fakeTime.setTime(fakeTime.Now().Add(time.Hour * 3))
+		// run and flush statements at a later time
 		for _, tc := range testQueries {
 			for i := int64(0); i < tc.count; i++ {
 				sqlConn.Exec(t, tc.query)
 			}
 		}
+		fakeTime.setTime(baseTime.Add(advancementInterval))
+		sqlStats.Flush(ctx)
+
+		// run and flush statements at an earlier time, before baseTime
+		beforeBaseTime := baseTime.Add(-advancementInterval)
+		truncatedBeforeBaseTime := beforeBaseTime.Truncate(aggInterval)
+		fakeTime.setTime(beforeBaseTime)
+		for _, tc := range testQueries {
+			for i := int64(0); i < tc.count; i++ {
+				sqlConn.Exec(t, tc.query)
+			}
+		}
+		sqlStats.Flush(ctx)
+
+		// the earliest aggTs should now be beforeBaseTime
+		diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		require.Equal(t, truncatedBeforeBaseTime, diskEarliestAggTs2, "expected: %s, got: %s", truncatedBeforeBaseTime, diskEarliestAggTs2)
+
+		//for _, tc := range testQueries {
+		//	verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
+		//}
+
+		//fakeTime.setTime(fakeTime.Now().Add(aggInterval * 3))
+		//for _, tc := range testQueries {
+		//	for i := int64(0); i < tc.count; i++ {
+		//		sqlConn.Exec(t, tc.query)
+		//	}
+		//}
 		//for _, tc := range testQueries {
 		//	expectedStmtFingerprints[tc.fingerprint] = tc.count
 		//	for i := int64(0); i < tc.count; i++ {
 		//		sqlConn.Exec(t, tc.query)
 		//	}
 		//}
-		sqlStats.Flush(ctx)
-		fmt.Println("flush 2", fakeTime.Now())
-
-		for _, tc := range testQueries {
-			verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
-		}
-
-		earliestAggregatedTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-		fmt.Println("disk2", earliestAggregatedTs2)
-		if err2 != nil {
-			t.Fatal(err2)
-		}
+		//sqlStats.Flush(ctx)
+		//fmt.Println("flush 2", fakeTime.Now())
+		//
+		//for _, tc := range testQueries {
+		//	verifyAggregatedTsOfInsertedEntries(t, sqlConn, tc.fingerprint, "system.statement_statistics")
+		//}
+		//
+		//earliestAggregatedTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+		//fmt.Println("disk2", earliestAggregatedTs2)
+		//if err2 != nil {
+		//	t.Fatal(err2)
+		//}
 	})
 
 	//t.Run("hybrid read", func(t *testing.T) {

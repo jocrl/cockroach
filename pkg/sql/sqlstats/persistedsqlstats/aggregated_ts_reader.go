@@ -51,7 +51,7 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 		var ok bool
 		for ok, err = it.Next(ctx); ok; ok, err = it.Next(ctx) {
 			row := it.Cur()
-			fmt.Println("row", row[0], row[1].String()[0:16])
+			fmt.Println("row", row[0], row[1].String()[0:10])
 		}
 		//defer rows.Close()
 		//aggregatedTsValues := []time.Time{}

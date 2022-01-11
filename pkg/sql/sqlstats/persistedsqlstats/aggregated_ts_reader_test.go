@@ -13,13 +13,14 @@ package persistedsqlstats_test
 import (
 	"context"
 	"fmt"
+	"github.com/cockroachdb/cockroach/pkg/sql/sqlstats"
 	"testing"
 	"time"
 
+	"github.com/cockroachdb/cockroach/pkg/base"
 	"github.com/cockroachdb/cockroach/pkg/sql"
 	"github.com/cockroachdb/cockroach/pkg/sql/catalog/systemschema"
 	"github.com/cockroachdb/cockroach/pkg/sql/sqlstats/persistedsqlstats"
-	"github.com/cockroachdb/cockroach/pkg/sql/tests"
 	"github.com/cockroachdb/cockroach/pkg/testutils/serverutils"
 	"github.com/cockroachdb/cockroach/pkg/testutils/sqlutils"
 	"github.com/cockroachdb/cockroach/pkg/util/leaktest"
@@ -44,11 +45,27 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	}
 	fakeTime.setTime(baseTime)
 
-	params, _ := tests.CreateTestServerParams()
-	s, db, _ := serverutils.StartServer(t, params)
+	s, db, _ := serverutils.StartServer(t, base.TestServerArgs{
+		Knobs: base.TestingKnobs{
+			SQLStatsKnobs: &sqlstats.TestingKnobs{
+				StubTimeNow: fakeTime.Now,
+			},
+		},
+	})
+
+	//testCluster := serverutils.StartNewTestCluster(t, 3 /* numNodes */, base.TestClusterArgs{
+	//	ServerArgs: base.TestServerArgs{
+	//		Knobs: base.TestingKnobs{
+	//			SQLStatsKnobs: &sqlstats.TestingKnobs{
+	//				StubTimeNow: fakeTime.Now,
+	//			},
+	//		},
+	//	},
+	//})
 
 	ctx := context.Background()
 	defer s.Stopper().Stop(ctx)
+	//defer testCluster.Stopper().Stop(ctx)
 
 	sqlStats := s.SQLServer().(*sql.Server).GetSQLStatsProvider().(*persistedsqlstats.PersistedSQLStats)
 	sqlConn := sqlutils.MakeSQLRunner(db)
@@ -86,11 +103,11 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 		sqlStats.Flush(ctx)
 
 		// normal disk read
-		//diskEarliestAggTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-		//if err1 != nil {
-		//	t.Fatal(err1)
-		//}
-		//require.Equal(t, truncatedBaseTime, diskEarliestAggTs1, "expected: %s, got: %s", truncatedBaseTime, diskEarliestAggTs1)
+		diskEarliestAggTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+		if err1 != nil {
+			t.Fatal(err1)
+		}
+		require.Equal(t, truncatedBaseTime, diskEarliestAggTs1, "expected: %s, got: %s", truncatedBaseTime, diskEarliestAggTs1)
 
 		// run and flush statements at an earlier time, before baseTime
 		beforeBaseTime := baseTime.Add(-advancementInterval)
@@ -102,12 +119,11 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 				sqlConn.Exec(t, tc.query)
 			}
 		}
-
 		sqlStats.Flush(ctx)
 
+		// run and flush statements at a later time
 		afterBaseTime := baseTime.Add(advancementInterval)
 		fakeTime.setTime(afterBaseTime)
-		// run and flush statements at a later time
 		for _, tc := range testQueries {
 			for i := int64(0); i < tc.count; i++ {
 				sqlConn.Exec(t, tc.query)
@@ -115,8 +131,12 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 		}
 		sqlStats.Flush(ctx)
 
-		//// we need to set time to aftwards again before doing the read, because of the AOST clause
-		//fakeTime.setTime(afterBaseTime)
+		// create some in-memory stats for good measure
+		for _, tc := range testQueries {
+			for i := int64(0); i < tc.count; i++ {
+				sqlConn.Exec(t, tc.query)
+			}
+		}
 
 		// the earliest aggTs should now be beforeBaseTime
 		diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)

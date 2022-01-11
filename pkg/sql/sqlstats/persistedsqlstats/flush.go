@@ -12,6 +12,7 @@ package persistedsqlstats
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/cockroachdb/cockroach/pkg/kv"
@@ -32,7 +33,11 @@ func (s *PersistedSQLStats) Flush(ctx context.Context) {
 	log.Infof(ctx, "flushing %d stmt/txn fingerprints (%d bytes) after %s",
 		s.SQLStats.GetTotalFingerprintCount(), s.SQLStats.GetTotalFingerprintBytes(), timeutil.Since(s.lastFlushStarted))
 
+	fmt.Printf("flushing %d stmt/txn fingerprints (%d bytes) after %s",
+		s.SQLStats.GetTotalFingerprintCount(), s.SQLStats.GetTotalFingerprintBytes(), timeutil.Since(s.lastFlushStarted))
+
 	aggregatedTs := s.computeAggregatedTs()
+	fmt.Println("flushing", aggregatedTs)
 	s.lastFlushStarted = s.getTimeNow()
 
 	s.flushStmtStats(ctx, aggregatedTs)

@@ -39,6 +39,32 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 			fmt.Println("setting", shardEarliestAggregatedTs)
 			earliestAggregatedTsPerShard[shardIdx] = shardEarliestAggregatedTs
 		}
+
+		stmt2 := fmt.Sprintf(`SELECT aggregated_ts, metadata ->> 'query' FROM %[1]s %[2]s WHERE %[3]s = $1 ORDER BY aggregated_ts;`,
+			tableName,
+			s.cfg.Knobs.AOSTClause,
+			hashColumnName,
+		)
+		it, err := ex.QueryIterator(ctx, "test", nil, stmt2, shardIdx)
+		// The loop below might encounter an error after some schedules have been
+		// executed (i.e. previous iterations succeeded), and this is ok.
+		var ok bool
+		for ok, err = it.Next(ctx); ok; ok, err = it.Next(ctx) {
+			row := it.Cur()
+			fmt.Println("row", row[0], row[1].String()[0:16])
+		}
+		//defer rows.Close()
+		//aggregatedTsValues := []time.Time{}
+		//
+		//for rows.Next() {
+		//	var aggregatedTs time.Time
+		//	if err := rows.Scan(&aggregatedTs); err != nil {
+		//		t.Fatal(err)
+		//	}
+		//	fmt.Println("scanning", aggregatedTs)
+		//	aggregatedTsValues = append(aggregatedTsValues, aggregatedTs)
+		//
+		//}
 	}
 	var earliestAggregatedTs time.Time // fixme(unclear what this is initialized as)
 

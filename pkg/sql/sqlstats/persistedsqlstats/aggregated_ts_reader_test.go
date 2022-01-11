@@ -86,23 +86,15 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 		sqlStats.Flush(ctx)
 
 		// normal disk read
-		diskEarliestAggTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
-		if err1 != nil {
-			t.Fatal(err1)
-		}
-		require.Equal(t, truncatedBaseTime, diskEarliestAggTs1, "expected: %s, got: %s", truncatedBaseTime, diskEarliestAggTs1)
-
-		// run and flush statements at a later time
-		for _, tc := range testQueries {
-			for i := int64(0); i < tc.count; i++ {
-				sqlConn.Exec(t, tc.query)
-			}
-		}
-		fakeTime.setTime(baseTime.Add(advancementInterval))
-		sqlStats.Flush(ctx)
+		//diskEarliestAggTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+		//if err1 != nil {
+		//	t.Fatal(err1)
+		//}
+		//require.Equal(t, truncatedBaseTime, diskEarliestAggTs1, "expected: %s, got: %s", truncatedBaseTime, diskEarliestAggTs1)
 
 		// run and flush statements at an earlier time, before baseTime
 		beforeBaseTime := baseTime.Add(-advancementInterval)
+		fmt.Println("before time", beforeBaseTime)
 		truncatedBeforeBaseTime := beforeBaseTime.Truncate(aggInterval)
 		fakeTime.setTime(beforeBaseTime)
 		for _, tc := range testQueries {
@@ -110,7 +102,21 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 				sqlConn.Exec(t, tc.query)
 			}
 		}
+
 		sqlStats.Flush(ctx)
+
+		afterBaseTime := baseTime.Add(advancementInterval)
+		fakeTime.setTime(afterBaseTime)
+		// run and flush statements at a later time
+		for _, tc := range testQueries {
+			for i := int64(0); i < tc.count; i++ {
+				sqlConn.Exec(t, tc.query)
+			}
+		}
+		sqlStats.Flush(ctx)
+
+		//// we need to set time to aftwards again before doing the read, because of the AOST clause
+		//fakeTime.setTime(afterBaseTime)
 
 		// the earliest aggTs should now be beforeBaseTime
 		diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)

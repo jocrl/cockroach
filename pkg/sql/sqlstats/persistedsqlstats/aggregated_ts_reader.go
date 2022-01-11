@@ -26,6 +26,7 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 	//ctx context.Context, tableName, hashColumnName, pkColumnNames string,
 ) (time.Time, error) {
 	earliestAggregatedTsPerShard := make([]time.Time, systemschema.SQLStatsHashShardBucketCount)
+	fmt.Println("num shards", systemschema.SQLStatsHashShardBucketCount)
 	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
 		stmt := s.getStatementForEarliestAggregatedTs(tableName, hashColumnName)
 		row, err := ex.QueryRowEx(ctx, "scan-earliest-aggregated-ts", nil, sessiondata.InternalExecutorOverride{User: security.RootUserName()}, stmt, shardIdx)
@@ -51,7 +52,7 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 		var ok bool
 		for ok, err = it.Next(ctx); ok; ok, err = it.Next(ctx) {
 			row := it.Cur()
-			fmt.Println("row", row[0], row[1].String()[0:10])
+			fmt.Println("row", row[0], row[1].String())
 		}
 		//defer rows.Close()
 		//aggregatedTsValues := []time.Time{}

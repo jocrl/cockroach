@@ -57,86 +57,92 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	//hashColumnName := systemschema.StmtStatsHashColumnName
 	//runWithTxn := false
 
-	tableName := "system.transaction_statistics"
-	hashColumnName := systemschema.TxnStatsHashColumnName
-	runWithTxn := true
+	//tableName := "system.transaction_statistics"
+	//hashColumnName := systemschema.TxnStatsHashColumnName
+	//runWithTxn := true
 
-	baseTime := timeutil.Now()
-	//.Add(5 * time.Second)
-	aggInterval := time.Hour
+	for _, tc := range earliestAggTsTestCases {
 
-	// chosen to ensure a different truncated aggTs
-	advancementInterval := time.Hour * 2
+		tableName := tc.tableName
+		hashColumnName := tc.hashColumnName
+		runWithTxn := tc.runWithTxn
 
-	fakeTime := stubTime{
-		aggInterval: aggInterval,
-	}
-	fakeTime.setTime(baseTime)
+		baseTime := timeutil.Now()
+		aggInterval := time.Hour
 
-	s, db, _ := serverutils.StartServer(t, base.TestServerArgs{
-		Knobs: base.TestingKnobs{
-			SQLStatsKnobs: &sqlstats.TestingKnobs{
-				StubTimeNow: fakeTime.Now,
+		// chosen to ensure a different truncated aggTs
+		advancementInterval := time.Hour * 2
+
+		fakeTime := stubTime{
+			aggInterval: aggInterval,
+		}
+		fakeTime.setTime(baseTime)
+
+		s, db, _ := serverutils.StartServer(t, base.TestServerArgs{
+			Knobs: base.TestingKnobs{
+				SQLStatsKnobs: &sqlstats.TestingKnobs{
+					StubTimeNow: fakeTime.Now,
+				},
 			},
-		},
-	})
+		})
 
-	ctx := context.Background()
-	defer s.Stopper().Stop(ctx)
+		ctx := context.Background()
+		defer s.Stopper().Stop(ctx)
 
-	sqlStats := s.SQLServer().(*sql.Server).GetSQLStatsProvider().(*persistedsqlstats.PersistedSQLStats)
-	sqlConn := sqlutils.MakeSQLRunner(db)
+		sqlStats := s.SQLServer().(*sql.Server).GetSQLStatsProvider().(*persistedsqlstats.PersistedSQLStats)
+		sqlConn := sqlutils.MakeSQLRunner(db)
 
-	truncatedBaseTime := baseTime.Truncate(aggInterval)
+		truncatedBaseTime := baseTime.Truncate(aggInterval)
 
-	t.Run("empty persisted stats table", func(t *testing.T) {
-		// generate un-flushed stats distributed across shards (there should also be un-flushed stats from internal queries)
-		runStatements(t, sqlConn, systemschema.SQLStatsHashShardBucketCount*2, runWithTxn)
+		t.Run(fmt.Sprintf("%s empty persisted stats table", tc.tableName), func(t *testing.T) {
+			// generate un-flushed stats distributed across shards (there should also be un-flushed stats from internal queries)
+			runStatements(t, sqlConn, systemschema.SQLStatsHashShardBucketCount*2, runWithTxn)
 
-		// verify test set up, that the table is indeed empty
-		stmt := fmt.Sprintf(`SELECT count(*) FROM %[1]s`,
-			tableName,
-		)
-		row := sqlConn.QueryRow(t, stmt)
-		var count int
-		row.Scan(&count)
-		require.Equal(t, count, 0)
+			// verify test set up, that the table is indeed empty
+			stmt := fmt.Sprintf(`SELECT count(*) FROM %[1]s`,
+				tableName,
+			)
+			row := sqlConn.QueryRow(t, stmt)
+			var count int
+			row.Scan(&count)
+			require.Equal(t, count, 0)
 
-		emptyTableEarliestAggTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
-		if err != nil {
-			t.Fatal(err)
-		}
-		require.Equal(t, truncatedBaseTime, emptyTableEarliestAggTs, "expected: %s, got: %s", truncatedBaseTime, emptyTableEarliestAggTs)
-	})
+			emptyTableEarliestAggTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
+			if err != nil {
+				t.Fatal(err)
+			}
+			require.Equal(t, truncatedBaseTime, emptyTableEarliestAggTs, "expected: %s, got: %s", truncatedBaseTime, emptyTableEarliestAggTs)
+		})
 
-	t.Run("table read", func(t *testing.T) {
-		// flush the stats at baseTime
-		sqlStats.Flush(ctx)
+		t.Run(fmt.Sprintf("%s table read", tc.tableName), func(t *testing.T) {
+			// flush the stats at baseTime
+			sqlStats.Flush(ctx)
 
-		// generate stats at an earlier time, before baseTime
-		beforeBaseTime := baseTime.Add(-advancementInterval)
-		fakeTime.setTime(beforeBaseTime)
-		truncatedBeforeBaseTime := beforeBaseTime.Truncate(aggInterval)
-		// run one single earliest statement/transaction
-		runStatements(t, sqlConn, 1, runWithTxn)
-		sqlStats.Flush(ctx)
+			// generate stats at an earlier time, before baseTime
+			beforeBaseTime := baseTime.Add(-advancementInterval)
+			fakeTime.setTime(beforeBaseTime)
+			truncatedBeforeBaseTime := beforeBaseTime.Truncate(aggInterval)
+			// run one single earliest statement/transaction
+			runStatements(t, sqlConn, 1, runWithTxn)
+			sqlStats.Flush(ctx)
 
-		// run and flush statements at a later time
-		afterBaseTime := baseTime.Add(advancementInterval)
-		fakeTime.setTime(afterBaseTime)
-		runStatements(t, sqlConn, systemschema.SQLStatsHashShardBucketCount*2, runWithTxn)
-		sqlStats.Flush(ctx)
+			// run and flush statements at a later time
+			afterBaseTime := baseTime.Add(advancementInterval)
+			fakeTime.setTime(afterBaseTime)
+			runStatements(t, sqlConn, systemschema.SQLStatsHashShardBucketCount*2, runWithTxn)
+			sqlStats.Flush(ctx)
 
-		// verify test set up
-		verifyDistinctAggregatedTs(t, sqlConn, tableName, []time.Time{truncatedBeforeBaseTime, truncatedBaseTime, afterBaseTime.Truncate(aggInterval)})
-		verifyNotPresentInAllShards(t, sqlConn, tableName, truncatedBeforeBaseTime)
+			// verify test set up
+			verifyDistinctAggregatedTs(t, sqlConn, tableName, []time.Time{truncatedBeforeBaseTime, truncatedBaseTime, afterBaseTime.Truncate(aggInterval)})
+			verifyNotPresentInAllShards(t, sqlConn, tableName, truncatedBeforeBaseTime)
 
-		diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-		require.Equal(t, truncatedBeforeBaseTime, diskEarliestAggTs2, "expected: %s, got: %s", truncatedBeforeBaseTime, diskEarliestAggTs2)
-	})
+			diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
+			if err2 != nil {
+				t.Fatal(err2)
+			}
+			require.Equal(t, truncatedBeforeBaseTime, diskEarliestAggTs2, "expected: %s, got: %s", truncatedBeforeBaseTime, diskEarliestAggTs2)
+		})
+	}
 
 }
 
@@ -156,7 +162,6 @@ func runStatements(
 		if withTxn {
 			stmt = fmt.Sprintf("BEGIN; %[1]s; COMMIT;", stmt)
 		}
-		fmt.Println("")
 		sqlConn.Exec(t, stmt)
 	}
 }
@@ -181,7 +186,6 @@ func verifyDistinctAggregatedTs(
 		if err := rows.Scan(&aggregatedTs); err != nil {
 			t.Fatal(err)
 		}
-		fmt.Println("distinct", aggregatedTs)
 		aggregatedTsValues = append(aggregatedTsValues, aggregatedTs)
 
 	}

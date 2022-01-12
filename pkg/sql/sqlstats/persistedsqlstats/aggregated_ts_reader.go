@@ -29,7 +29,7 @@ func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
 	switch tableName {
 	case "system.statement_statistics":
 		hashColumnName = systemschema.StmtStatsHashColumnName
-	case "system.transaction _statistics":
+	case "system.transaction_statistics":
 		hashColumnName = systemschema.TxnStatsHashColumnName
 	}
 

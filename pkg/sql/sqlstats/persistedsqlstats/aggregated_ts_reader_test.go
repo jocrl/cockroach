@@ -31,21 +31,18 @@ import (
 )
 
 type earliestAggTsTestCase struct {
-	tableName      string
-	hashColumnName string
-	runWithTxn     bool
+	tableName  string
+	runWithTxn bool
 }
 
 var earliestAggTsTestCases = []earliestAggTsTestCase{
 	{
-		tableName:      "system.statement_statistics",
-		hashColumnName: systemschema.StmtStatsHashColumnName,
-		runWithTxn:     false,
+		tableName:  "system.statement_statistics",
+		runWithTxn: false,
 	},
 	{
-		tableName:      "system.transaction_statistics",
-		hashColumnName: systemschema.TxnStatsHashColumnName,
-		runWithTxn:     true,
+		tableName:  "system.transaction_statistics",
+		runWithTxn: true,
 	},
 }
 
@@ -56,7 +53,6 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	for _, tc := range earliestAggTsTestCases {
 
 		tableName := tc.tableName
-		hashColumnName := tc.hashColumnName
 		runWithTxn := tc.runWithTxn
 
 		baseTime := timeutil.Now()
@@ -99,7 +95,7 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 			row.Scan(&count)
 			require.Equal(t, count, 0)
 
-			emptyTableEarliestAggTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
+			emptyTableEarliestAggTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -128,7 +124,7 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 			verifyDistinctAggregatedTs(t, sqlConn, tableName, []time.Time{truncatedBeforeBaseTime, truncatedBaseTime, afterBaseTime.Truncate(aggInterval)})
 			verifyNotPresentInAllShards(t, sqlConn, tableName, truncatedBeforeBaseTime)
 
-			diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
+			diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName)
 			if err2 != nil {
 				t.Fatal(err2)
 			}

@@ -23,8 +23,16 @@ import (
 )
 
 func (s *PersistedSQLStats) ScanEarliestAggregatedTs(
-	ctx context.Context, ex sqlutil.InternalExecutor, tableName, hashColumnName string,
+	ctx context.Context, ex sqlutil.InternalExecutor, tableName string,
 ) (time.Time, error) {
+	var hashColumnName string
+	switch tableName {
+	case "system.statement_statistics":
+		hashColumnName = systemschema.StmtStatsHashColumnName
+	case "system.transaction _statistics":
+		hashColumnName = systemschema.TxnStatsHashColumnName
+	}
+
 	earliestAggregatedTsPerShard := make([]time.Time, systemschema.SQLStatsHashShardBucketCount)
 	for shardIdx := int64(0); shardIdx < systemschema.SQLStatsHashShardBucketCount; shardIdx++ {
 		stmt := s.getStatementForEarliestAggregatedTs(tableName, hashColumnName)

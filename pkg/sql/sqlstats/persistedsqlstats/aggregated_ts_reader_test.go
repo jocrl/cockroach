@@ -30,11 +30,36 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-//var testQueries = []string{}
+type earliestAggTsTestCase struct {
+	tableName      string
+	hashColumnName string
+	runWithTxn     bool
+}
+
+var earliestAggTsTestCases = []earliestAggTsTestCase{
+	{
+		tableName:      "system.statement_statistics",
+		hashColumnName: systemschema.StmtStatsHashColumnName,
+		runWithTxn:     false,
+	},
+	{
+		tableName:      "system.transaction_statistics",
+		hashColumnName: systemschema.TxnStatsHashColumnName,
+		runWithTxn:     true,
+	},
+}
 
 func TestScanEarliestAggregatedTs(t *testing.T) {
 	defer leaktest.AfterTest(t)()
 	defer log.Scope(t).Close(t)
+	//
+	//tableName := "system.statement_statistics"
+	//hashColumnName := systemschema.StmtStatsHashColumnName
+	//runWithTxn := false
+
+	tableName := "system.transaction_statistics"
+	hashColumnName := systemschema.TxnStatsHashColumnName
+	runWithTxn := true
 
 	baseTime := timeutil.Now()
 	//.Add(5 * time.Second)
@@ -97,8 +122,8 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 	truncatedBaseTime := baseTime.Truncate(aggInterval)
 
 	// we haven't run any user queries, but there should be in-memory stats for internal tables
-	t.Run("in-memory read", func(t *testing.T) {
-		memoryEarliestAggTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+	t.Run("empty persisted stats table", func(t *testing.T) {
+		memoryEarliestAggTs, err := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
 		fmt.Println("mem", memoryEarliestAggTs)
 		if err != nil {
 			t.Fatal(err)
@@ -107,13 +132,13 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 
 	})
 
-	t.Run("disk read", func(t *testing.T) {
+	t.Run("table read", func(t *testing.T) {
 		sqlStats.Flush(ctx)
 
 		// normal disk read
 		// verify test set up
-		verifyDistinctAggregatedTs(t, sqlConn, "system.statement_statistics", []time.Time{truncatedBaseTime})
-		diskEarliestAggTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+		verifyDistinctAggregatedTs(t, sqlConn, tableName, []time.Time{truncatedBaseTime})
+		diskEarliestAggTs1, err1 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
 		if err1 != nil {
 			t.Fatal(err1)
 		}
@@ -129,7 +154,8 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 		truncatedBeforeBaseTime := beforeBaseTime.Truncate(aggInterval)
 
 		// generate one single earliest statement
-		sqlConn.Exec(t, "SELECT 1")
+		runStatements(t, sqlConn, 1, runWithTxn)
+		//sqlConn.Exec(t, "SELECT 1")
 		//for _, tc := range testQueries {
 		//	for i := int64(0); i < tc.count; i++ {
 		//	}
@@ -146,18 +172,24 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 		//}
 
 		// generate statements at later times, with different fingerprints so that they get distributed across all shards
-		for i := int64(1); i < systemschema.SQLStatsHashShardBucketCount*5; i++ {
-			ones := make([]string, i)
-			for j := 0; j < len(ones); j++ {
-				ones[j] = "1"
-			}
-			stmt := fmt.Sprintf("SELECT %[1]s", strings.Join(ones, ", "))
-			sqlConn.Exec(t, stmt)
-		}
+		runStatements(t, sqlConn, systemschema.SQLStatsHashShardBucketCount*5, runWithTxn)
+		//for i := int64(1); i < systemschema.SQLStatsHashShardBucketCount*5; i++ {
+		//	ones := make([]string, i)
+		//	for j := 0; j < len(ones); j++ {
+		//		ones[j] = "1"
+		//	}
+		//	stmt := fmt.Sprintf("SELECT %[1]s", strings.Join(ones, ", "))
+		//	sqlConn.Exec(t, stmt)
+		//}
 		sqlStats.Flush(ctx)
 
 		// create in-memory stats for good measure
-		sqlConn.Exec(t, "SELECT 1 WHERE 1 < 10")
+		// fixme: commented out because 15s flush, not querying in memory
+		//if runWithTxn {
+		//	sqlConn.Exec(t, "BEGIN; SELECT 1 WHERE 1 < 10; COMMIT;")
+		//} else {
+		//	sqlConn.Exec(t, "SELECT 1 WHERE 1 < 10")
+		//}
 		//for _, tc := range testQueries {
 		//	for i := int64(0); i < tc.count; i++ {
 		//		sqlConn.Exec(t, tc.query)
@@ -165,18 +197,51 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 		//}
 
 		// verify test set up
-		verifyDistinctAggregatedTs(t, sqlConn, "system.statement_statistics", []time.Time{truncatedBeforeBaseTime, truncatedBaseTime, afterBaseTime.Truncate(aggInterval)})
-		verifyNotPresentInAllShards(t, sqlConn, "system.statement_statistics", truncatedBeforeBaseTime)
+		verifyDistinctAggregatedTs(t, sqlConn, tableName, []time.Time{truncatedBeforeBaseTime, truncatedBaseTime, afterBaseTime.Truncate(aggInterval)})
+		verifyNotPresentInAllShards(t, sqlConn, tableName, truncatedBeforeBaseTime)
+
+		//here
 
 		// the earliest aggTs should now be beforeBaseTime
-		diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), "system.statement_statistics", systemschema.StmtStatsHashColumnName)
+		diskEarliestAggTs2, err2 := sqlStats.ScanEarliestAggregatedTs(ctx, s.InternalExecutor().(*sql.InternalExecutor), tableName, hashColumnName)
 		if err2 != nil {
 			t.Fatal(err2)
 		}
 		require.Equal(t, truncatedBeforeBaseTime, diskEarliestAggTs2, "expected: %s, got: %s", truncatedBeforeBaseTime, diskEarliestAggTs2)
 
+		//stmt := fmt.Sprintf(`SELECT count(*) FROM %[1]s WHERE aggregated_ts = $1::TIMESTAMP`,
+		//	tableName,
+		//)
+		//row := sqlConn.QueryRow(t, stmt, truncatedBeforeBaseTime)
+		//var count int
+		//row.Scan(&count)
+		//fmt.Println("here ", count)
+		//// there should be two stats at that time: the single query that we ran, and the insert into statement stats
+		//// would this change with transaction stats?
+		//require.Equal(t, 2, count)
 	})
 
+}
+
+func runStatements(
+	t *testing.T,
+	sqlConn *sqlutils.SQLRunner,
+	numStatements int,
+	withTxn bool,
+) {
+	for i := 1; i < numStatements+1; i++ {
+		// generate statements with unique fingerprints
+		ones := make([]string, i)
+		for j := 0; j < len(ones); j++ {
+			ones[j] = "1"
+		}
+		stmt := fmt.Sprintf("SELECT %[1]s", strings.Join(ones, ", "))
+		if withTxn {
+			stmt = fmt.Sprintf("BEGIN; %[1]s; COMMIT;", stmt)
+		}
+		fmt.Println("")
+		sqlConn.Exec(t, stmt)
+	}
 }
 
 func verifyDistinctAggregatedTs(
@@ -213,6 +278,8 @@ func verifyNotPresentInAllShards(
 	sqlConn *sqlutils.SQLRunner,
 	tableName string, aggTs time.Time) {
 	// this is a more convenient, though stricted test. if there are fewer stats with that aggTs than shards, then definitely not all shards have a row with that aggTs
+	// using this
+	// concretely, running a single query/transaction generates two statement statistics (one for itself, and one for inserting the statistic), and one transaction statistic (if it's a transaction)
 	stmt := fmt.Sprintf(`SELECT count(*) FROM %[1]s WHERE aggregated_ts = $1::TIMESTAMP`,
 		tableName,
 	)

@@ -52,14 +52,6 @@ var earliestAggTsTestCases = []earliestAggTsTestCase{
 func TestScanEarliestAggregatedTs(t *testing.T) {
 	defer leaktest.AfterTest(t)()
 	defer log.Scope(t).Close(t)
-	//
-	//tableName := "system.statement_statistics"
-	//hashColumnName := systemschema.StmtStatsHashColumnName
-	//runWithTxn := false
-
-	//tableName := "system.transaction_statistics"
-	//hashColumnName := systemschema.TxnStatsHashColumnName
-	//runWithTxn := true
 
 	for _, tc := range earliestAggTsTestCases {
 
@@ -94,7 +86,7 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 
 		truncatedBaseTime := baseTime.Truncate(aggInterval)
 
-		t.Run(fmt.Sprintf("%s empty persisted stats table", tc.tableName), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s empty table", tc.tableName), func(t *testing.T) {
 			// generate un-flushed stats distributed across shards (there should also be un-flushed stats from internal queries)
 			runStatements(t, sqlConn, systemschema.SQLStatsHashShardBucketCount*2, runWithTxn)
 
@@ -114,7 +106,7 @@ func TestScanEarliestAggregatedTs(t *testing.T) {
 			require.Equal(t, truncatedBaseTime, emptyTableEarliestAggTs, "expected: %s, got: %s", truncatedBaseTime, emptyTableEarliestAggTs)
 		})
 
-		t.Run(fmt.Sprintf("%s table read", tc.tableName), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s populated table", tc.tableName), func(t *testing.T) {
 			// flush the stats at baseTime
 			sqlStats.Flush(ctx)
 

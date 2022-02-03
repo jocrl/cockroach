@@ -11,8 +11,16 @@
 import * as $protobuf from "protobufjs";
 
 import { cockroach } from "src/js/protos";
-import { API_PREFIX, STATUS_PREFIX, toArrayBuffer } from "src/util/api";
+import {
+  API_PREFIX,
+  queryTimeSeries,
+  STATUS_PREFIX,
+  TimeSeriesQueryRequestMessage,
+  TimeSeriesQueryResponseMessage,
+  toArrayBuffer,
+} from "src/util/api";
 import fetchMock from "src/util/fetch-mock";
+import moment from "moment";
 
 const {
   DatabasesResponse,

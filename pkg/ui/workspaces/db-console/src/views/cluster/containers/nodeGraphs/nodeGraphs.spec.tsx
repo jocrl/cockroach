@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, prettyDOM } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -16,7 +16,7 @@ import {
 } from "redux";
 import { AppState, rootReducer } from "@cockroachlabs/cluster-ui";
 import { routerMiddleware } from "connected-react-router";
-import { createAdminUIStore } from "oss/src/redux/state";
+import { createAdminUIStore } from "src/redux/state";
 import { createHashHistory } from "history";
 
 const foo = {
@@ -3352,18 +3352,47 @@ const foo = {
   nodeLastError: null,
 };
 
-const getMockNodeGraphsProps = (): NodeGraphsProps => {
+import {
+  refreshNodes,
+  refreshLiveness,
+  refreshSettings,
+} from "src/redux/apiReducers";
+import {
+  setMetricsFixedWindow,
+  setTimeScale,
+  TimeWindow,
+  TimeScale,
+  adjustTimeScale,
+} from "src/redux/timeScale";
+import * as sinon from "sinon";
+import { assert } from "chai";
+import * as api from "src/util/api";
+
+import fetchMock from "oss/src/util/fetch-mock";
+import * as protos from "src/js/protos";
+import { EventsResponseMessage, STATUS_PREFIX } from "src/util/api";
+
+export const getMockNodeGraphsProps = (): NodeGraphsProps => {
   const history = H.createHashHistory();
   const someDuration = moment.duration(5, "minutes");
   const someTime = moment();
 
   return {
+    // MapStateToProps
     nodesSummary: foo,
     currentlyHovering: false,
     hoverState: new HoverState(),
     resolution10sStorageTTL: someDuration,
     resolution30mStorageTTL: someDuration,
-    //
+    // MapDispatchToProps
+    refreshNodes: refreshNodes,
+    refreshLiveness: refreshLiveness,
+    refreshNodeSettings: refreshSettings,
+    hoverOn: () => {},
+    hoverOff: () => {},
+    setMetricsFixedWindow: setMetricsFixedWindow,
+    setTimeScale: setTimeScale,
+    // RouteComponentProps
     location: history.location,
     history,
     match: {
@@ -3376,7 +3405,7 @@ const getMockNodeGraphsProps = (): NodeGraphsProps => {
 };
 
 describe("Metrics Page", () => {
-  it.only("automatically polls for new data every 10 seconds", () => {
+  it.only("automatically polls for new data every 10 seconds", async () => {
     const store = createAdminUIStore(createHashHistory());
     //   const store: Store<AppState, Action> = createStore(
     //   combineReducers({
@@ -3386,7 +3415,78 @@ describe("Metrics Page", () => {
     //   applyMiddleware(routerMiddleware(history)),
     // );
 
-    const { getByText } = render(
+    const spy = sinon.spy();
+    // copied from api.spec.ts
+    const eventsPrefixMatcher = `begin:${api.API_PREFIX}/events?`;
+    fetchMock.mock({
+      matcher: eventsPrefixMatcher,
+      method: "GET",
+      response: (_url: string, requestObj: RequestInit) => {
+        const encodedResponse = new protos.cockroach.server.serverpb.EventsResponse();
+        return {
+          body: encodedResponse,
+        };
+      },
+    });
+
+    fetchMock.mock({
+      matcher: `${api.API_PREFIX}/settings?unredacted_values=true`,
+      method: "GET",
+      response: (_url: string, requestObj: RequestInit) => {
+        const encodedResponse = new protos.cockroach.server.serverpb.SettingsResponse();
+        return {
+          body: encodedResponse,
+        };
+      },
+    });
+
+    fetchMock.mock({
+      matcher: `${api.API_PREFIX}/liveness`,
+      method: "GET",
+      response: (_url: string, requestObj: RequestInit) => {
+        const encodedResponse = new protos.cockroach.server.serverpb.LivenessResponse();
+        return {
+          body: encodedResponse,
+        };
+      },
+    });
+
+    fetchMock.mock({
+      matcher: `${api.STATUS_PREFIX}/nodes_ui`,
+      method: "GET",
+      response: (_url: string, requestObj: RequestInit) => {
+        const encodedResponse = new protos.cockroach.server.serverpb.NodesResponseExternal();
+        return {
+          body: encodedResponse,
+        };
+      },
+    });
+
+    // fetchMock.mock({
+    //   matcher: `${api.API_PREFIX}/ts/query`,
+    //   method: "GET",
+    //   response: (_url: string, requestObj: RequestInit) => {
+    //     // assert.isUndefined(requestObj.body);
+    //     // const response = new protos.cockroach.ts.tspb.TimeSeriesQueryResponse(
+    //     const response = {
+    //       results: [
+    //         {
+    //           datapoints: [],
+    //         },
+    //       ],
+    //     };
+    //     // );
+    //
+    //     const encodedResponse = protos.cockroach.ts.tspb.TimeSeriesQueryResponse.encode(
+    //       response,
+    //     ).finish();
+    //     return {
+    //       body: api.toArrayBuffer(encodedResponse),
+    //     };
+    //   },
+    // });
+
+    const { container, getByText } = render(
       <Provider store={store}>
         <MemoryRouter>
           <NodeGraphs {...getMockNodeGraphsProps()} />
@@ -3394,7 +3494,21 @@ describe("Metrics Page", () => {
         ,
       </Provider>,
     );
-    getByText("Metrics");
+    getByText("SQL Statements");
+    // assert(spy.calledOnce);
+    await new Promise(r => setTimeout(r, 2000));
+    const output = prettyDOM(container);
+    const outputLength = (output.match(/\n/g) || []).length;
+
+    assert(outputLength != 267, `still the old version without graphs`);
+    if (outputLength != 267) {
+      screen.debug(container, 99999999999999);
+    }
+    assert(false);
+    await waitFor(() => screen.getByText("queries"));
+    // div.innerHTML = "<div><h1>Hello World</h1></div>";
+    // console.log(prettyDOM(container));
+    getByText("17:21");
   });
 
   it("updates the graphs when the time picker is changed", () => {});

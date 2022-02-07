@@ -339,19 +339,10 @@ function touPlot(
     return [[]];
   }
 
-  const foo = data.flatMap(series => series.values.map(d => d.timestamp_nanos));
-  if (foo.some(x => !x)) {
-    console.log(`testing ${data}`);
-  }
   const xValuesComplete: number[] = [
     ...new Set(
       data.flatMap(series =>
-        series.values.map(d => {
-          console.log(d.timestamp_nanos);
-          if (!d.timestamp_nanos) {
-          }
-          return d.timestamp_nanos.toNumber();
-        }),
+        series.values.map(d => d.timestamp_nanos.toNumber()),
       ),
     ),
   ].sort((a, b) => a - b);

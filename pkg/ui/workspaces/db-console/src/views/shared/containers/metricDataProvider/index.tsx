@@ -218,6 +218,13 @@ class MetricsDataProvider extends React.Component<
       // Josephine: data and request here are correctly defined
 
       // Do not attach data if queries are not equivalent.
+      if (data && request) {
+        console.log(
+          _.isEqual(request.queries, this.requestMessage(this.props).queries),
+        );
+        console.log(request.queries[0]);
+        console.log(this.requestMessage(this.props).queries[0]);
+      }
       if (
         data &&
         request &&
@@ -225,19 +232,28 @@ class MetricsDataProvider extends React.Component<
       ) {
         return data;
       } else {
-        console.log(
-          `queries data: ${data}, ${_.isEqual(
-            request.queries,
-            this.requestMessage(this.props).queries,
-          )}`,
-        );
-        // console.log(`queries request: ${JSON.stringify(request)}`);
-        console.log(`queries: ${JSON.stringify(request.queries)}`);
-        console.log(
-          `prop queries: ${JSON.stringify(
-            this.requestMessage(this.props).queries,
-          )}`,
-        );
+        // console.log(
+        //   `equal: ${_.isEqual(
+        //     request.queries[0].downsampler,
+        //     this.requestMessage(this.props).queries[0].downsampler,
+        //   )}, ${_.isEqual(
+        //     request.queries[0].source_aggregator,
+        //     this.requestMessage(this.props).queries[0].source_aggregator,
+        //   )}, ${_.isEqual(
+        //     request.queries[0].derivative,
+        //     this.requestMessage(this.props).queries[0].derivative,
+        //   )}, ${_.isEqual(
+        //     request.queries[0].name,
+        //     this.requestMessage(this.props).queries[0].name,
+        //   )}`,
+        // );
+        // // console.log(`queries request: ${JSON.stringify(request)}`);
+        // console.log(`queries: ${JSON.stringify(request.queries)}`);
+        // console.log(
+        //   `prop queries: ${JSON.stringify(
+        //     this.requestMessage(this.props).queries,
+        //   )}`,
+        // );
       }
     }
     return undefined;

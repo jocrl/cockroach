@@ -16,7 +16,7 @@ import {
 } from "redux";
 import { AppState, rootReducer } from "@cockroachlabs/cluster-ui";
 import { routerMiddleware } from "connected-react-router";
-import { createAdminUIStore } from "src/redux/state";
+import { AdminUIState, createAdminUIStore } from "src/redux/state";
 import { createHashHistory } from "history";
 
 const foo = {
@@ -3351,8 +3351,11 @@ const foo = {
   },
   nodeLastError: null,
 };
+type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};
 
-const initialState = {
+const initialState: RecursivePartial<AdminUIState> = {
   metrics: {
     queries: {
       "nodes.overview.0": {
@@ -3363,6 +3366,7 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.select.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -3373,6 +3377,7 @@ const initialState = {
             },
             {
               name: "cr.node.sql.update.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -3383,6 +3388,7 @@ const initialState = {
             },
             {
               name: "cr.node.sql.insert.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -3393,6 +3399,7 @@ const initialState = {
             },
             {
               name: "cr.node.sql.delete.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:

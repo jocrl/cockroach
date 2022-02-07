@@ -52,10 +52,6 @@ const history = createHashHistory();
 
 const routerReducer = connectRouter(history);
 
-type RecursivePartial<T> = {
-  [P in keyof T]?: RecursivePartial<T[P]>;
-};
-
 // createAdminUIStore is a function that returns a new store for the admin UI.
 // It's in a function so it can be recreated as necessary for testing.
 export function createAdminUIStore(

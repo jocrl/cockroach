@@ -217,14 +217,10 @@ class MetricsDataProvider extends React.Component<
       const { data, request } = this.props.metrics;
       // Josephine: data and request here are correctly defined
 
+      console.log(this.props.metrics.id);
       // Do not attach data if queries are not equivalent.
-      if (data && request) {
-        console.log(
-          _.isEqual(request.queries, this.requestMessage(this.props).queries),
-        );
-        console.log(request.queries[0]);
-        console.log(this.requestMessage(this.props).queries[0]);
-      }
+      // if (data && request) {
+      // }
       if (
         data &&
         request &&
@@ -232,6 +228,11 @@ class MetricsDataProvider extends React.Component<
       ) {
         return data;
       } else {
+        console.log(
+          _.isEqual(request.queries, this.requestMessage(this.props).queries),
+        );
+        console.log(request.queries[0]);
+        console.log(this.requestMessage(this.props).queries[0]);
         // console.log(
         //   `equal: ${_.isEqual(
         //     request.queries[0].downsampler,

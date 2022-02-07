@@ -5069,6 +5069,7 @@ const initialState: RecursivePartial<AdminUIState> = {
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
                   .NON_NEGATIVE_DERIVATIVE,
+              sources: undefined,
             },
           ],
           sample_nanos: new Long(10000000000),
@@ -6183,6 +6184,7 @@ const initialState: RecursivePartial<AdminUIState> = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
+              sources: undefined,
             },
             {
               name: "cr.store.capacity.available",
@@ -6192,6 +6194,7 @@ const initialState: RecursivePartial<AdminUIState> = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
+              sources: undefined,
             },
             {
               name: "cr.store.capacity.used",
@@ -6201,6 +6204,7 @@ const initialState: RecursivePartial<AdminUIState> = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
+              sources: undefined,
             },
           ],
           sample_nanos: new Long(10000000000),
@@ -6380,6 +6384,7 @@ const initialState: RecursivePartial<AdminUIState> = {
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
                   .NON_NEGATIVE_DERIVATIVE,
+              sources: undefined,
             },
             {
               name: "cr.node.sql.insert.count",
@@ -6390,6 +6395,7 @@ const initialState: RecursivePartial<AdminUIState> = {
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
                   .NON_NEGATIVE_DERIVATIVE,
+              sources: undefined,
             },
             {
               name: "cr.node.sql.update.count",
@@ -6400,6 +6406,7 @@ const initialState: RecursivePartial<AdminUIState> = {
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
                   .NON_NEGATIVE_DERIVATIVE,
+              sources: undefined,
             },
             {
               name: "cr.node.sql.delete.count",
@@ -6410,6 +6417,7 @@ const initialState: RecursivePartial<AdminUIState> = {
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
                   .NON_NEGATIVE_DERIVATIVE,
+              sources: undefined,
             },
           ],
           sample_nanos: new Long(10000000000),
@@ -6475,6 +6483,7 @@ const initialState: RecursivePartial<AdminUIState> = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
               derivative:
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
+              sources: undefined,
             },
           ],
           sample_nanos: new Long(10000000000),

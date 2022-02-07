@@ -3366,7 +3366,6 @@ const initialState: RecursivePartial<AdminUIState> = {
           queries: [
             {
               name: "cr.node.sql.select.count",
-              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -3377,7 +3376,6 @@ const initialState: RecursivePartial<AdminUIState> = {
             },
             {
               name: "cr.node.sql.update.count",
-              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -3388,7 +3386,6 @@ const initialState: RecursivePartial<AdminUIState> = {
             },
             {
               name: "cr.node.sql.insert.count",
-              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -3399,7 +3396,6 @@ const initialState: RecursivePartial<AdminUIState> = {
             },
             {
               name: "cr.node.sql.delete.count",
-              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -4441,6 +4437,7 @@ const initialState: RecursivePartial<AdminUIState> = {
           queries: [
             {
               name: "cr.node.sql.select.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -4451,6 +4448,7 @@ const initialState: RecursivePartial<AdminUIState> = {
             },
             {
               name: "cr.node.sql.update.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -4461,6 +4459,7 @@ const initialState: RecursivePartial<AdminUIState> = {
             },
             {
               name: "cr.node.sql.insert.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:
@@ -4471,6 +4470,7 @@ const initialState: RecursivePartial<AdminUIState> = {
             },
             {
               name: "cr.node.sql.delete.count",
+              sources: undefined,
               downsampler:
                 protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
               source_aggregator:

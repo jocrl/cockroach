@@ -217,7 +217,9 @@ class MetricsDataProvider extends React.Component<
       const { data, request } = this.props.metrics;
       // Josephine
       //
-      console.log(`metrics: ${JSON.stringify(this.props.metrics)}`);
+      // console.log(`metrics: ${JSON.stringify(this.props.metrics)}`);
+      console.log(`data: ${JSON.stringify(data)}`);
+      console.log(`request: ${JSON.stringify(request)}`);
 
       // Do not attach data if queries are not equivalent.
       if (

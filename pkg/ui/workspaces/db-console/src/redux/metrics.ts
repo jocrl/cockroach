@@ -350,6 +350,7 @@ export function* sendRequestBatch(requests: WithID<TSRequest>[]) {
     response = yield call(queryTimeSeries, unifiedRequest);
     // The number of results should match the queries exactly, and should
     // be in the exact order passed.
+    console.log(response);
     if (response.results.length !== unifiedRequest.queries.length) {
       throw `mismatched count of results (${response.results.length}) and queries (${unifiedRequest.queries.length})`;
     }

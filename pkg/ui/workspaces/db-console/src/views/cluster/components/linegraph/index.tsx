@@ -122,7 +122,7 @@ export class LineGraphOld extends React.Component<
 
     this.chart = nvd3.models.lineChart();
     InitLineChart(this.chart);
-
+    console.log("chart is being initialized");
     if (axis.props.range) {
       this.chart.forceY(axis.props.range);
     }
@@ -281,6 +281,7 @@ export class LineGraphOld extends React.Component<
 
   render() {
     const { title, subtitle, tooltip, data } = this.props;
+    // Josephine: this is the old component
 
     let hoverProps: Partial<React.SVGProps<SVGSVGElement>> = {};
     if (this.props.hoverOn) {
@@ -576,6 +577,7 @@ export class LineGraph extends React.Component<LineGraphProps, {}> {
 
   render() {
     const { title, subtitle, tooltip, data, preCalcGraphSize } = this.props;
+    console.log(`data: ${data}`);
 
     return (
       <Visualization

@@ -3363,27 +3363,43 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.select.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.update.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.insert.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.delete.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
           ],
           sample_nanos: "10000000000",
@@ -3393,9 +3409,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.select.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -3644,9 +3664,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.update.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -3895,9 +3919,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.insert.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -4146,9 +4174,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.delete.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -4402,27 +4434,43 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.select.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.update.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.insert.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.delete.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
           ],
           sample_nanos: "10000000000",
@@ -4436,9 +4484,12 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
-              downsampler: "MAX",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
               sources: ["1"],
             },
           ],
@@ -4449,9 +4500,12 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.service.latency-p99",
-                downsampler: "MAX",
-                source_aggregator: "SUM",
-                derivative: "NONE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
                 sources: ["1"],
               },
               datapoints: [
@@ -4705,9 +4759,12 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
-              downsampler: "MAX",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
               sources: ["1"],
             },
           ],
@@ -4722,9 +4779,13 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.distsql.contended_queries.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
           ],
           sample_nanos: "10000000000",
@@ -4734,9 +4795,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.distsql.contended_queries.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -4990,9 +5055,13 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.distsql.contended_queries.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
           ],
           sample_nanos: "10000000000",
@@ -5006,9 +5075,12 @@ const initialState = {
           queries: [
             {
               name: "cr.store.replicas",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
               sources: ["1"],
             },
           ],
@@ -5019,9 +5091,12 @@ const initialState = {
             {
               query: {
                 name: "cr.store.replicas",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NONE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
                 sources: ["1"],
               },
               datapoints: [
@@ -5275,9 +5350,12 @@ const initialState = {
           queries: [
             {
               name: "cr.store.replicas",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
               sources: ["1"],
             },
           ],
@@ -5292,21 +5370,30 @@ const initialState = {
           queries: [
             {
               name: "cr.store.capacity",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
             {
               name: "cr.store.capacity.available",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
             {
               name: "cr.store.capacity.used",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
           sample_nanos: "10000000000",
@@ -5316,9 +5403,12 @@ const initialState = {
             {
               query: {
                 name: "cr.store.capacity",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NONE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
                 sources: ["1"],
               },
               datapoints: [
@@ -5567,9 +5657,12 @@ const initialState = {
             {
               query: {
                 name: "cr.store.capacity.available",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NONE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
                 sources: ["1"],
               },
               datapoints: [
@@ -5818,9 +5911,12 @@ const initialState = {
             {
               query: {
                 name: "cr.store.capacity.used",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NONE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
                 sources: ["1"],
               },
               datapoints: [
@@ -6074,21 +6170,30 @@ const initialState = {
           queries: [
             {
               name: "cr.store.capacity",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
             {
               name: "cr.store.capacity.available",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
             {
               name: "cr.store.capacity.used",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
           sample_nanos: "10000000000",
@@ -6102,27 +6207,43 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.select.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.insert.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.update.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.delete.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
           ],
           sample_nanos: "10000000000",
@@ -6132,9 +6253,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.select.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -6155,9 +6280,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.insert.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -6178,9 +6307,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.update.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -6201,9 +6334,13 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.delete.count",
-                downsampler: "AVG",
-                source_aggregator: "SUM",
-                derivative: "NON_NEGATIVE_DERIVATIVE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                    .NON_NEGATIVE_DERIVATIVE,
                 sources: ["1"],
               },
               datapoints: [
@@ -6229,27 +6366,43 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.select.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.insert.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.update.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
             {
               name: "cr.node.sql.delete.count",
-              downsampler: "AVG",
-              source_aggregator: "SUM",
-              derivative: "NON_NEGATIVE_DERIVATIVE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.AVG,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.SUM,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative
+                  .NON_NEGATIVE_DERIVATIVE,
             },
           ],
           sample_nanos: "10000000000",
@@ -6263,9 +6416,12 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
-              downsampler: "MAX",
-              source_aggregator: "MAX",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
           sample_nanos: "10000000000",
@@ -6275,9 +6431,12 @@ const initialState = {
             {
               query: {
                 name: "cr.node.sql.service.latency-p99",
-                downsampler: "MAX",
-                source_aggregator: "MAX",
-                derivative: "NONE",
+                downsampler:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+                source_aggregator:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+                derivative:
+                  protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
                 sources: ["1"],
               },
               datapoints: [
@@ -6303,9 +6462,12 @@ const initialState = {
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
-              downsampler: "MAX",
-              source_aggregator: "MAX",
-              derivative: "NONE",
+              downsampler:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+              source_aggregator:
+                protos.cockroach.ts.tspb.TimeSeriesQueryAggregator.MAX,
+              derivative:
+                protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
           sample_nanos: "10000000000",
@@ -6383,7 +6545,7 @@ export const getMockNodeGraphsProps = (): NodeGraphsProps => {
 
 describe("Metrics Page", () => {
   it.only("automatically polls for new data every 10 seconds", async () => {
-    const store = createAdminUIStore(createHashHistory());
+    const store = createAdminUIStore(createHashHistory(), initialState);
     //   const store: Store<AppState, Action> = createStore(
     //   combineReducers({
     //     adminUI: rootReducer,

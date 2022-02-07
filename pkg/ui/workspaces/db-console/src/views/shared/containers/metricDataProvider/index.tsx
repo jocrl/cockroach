@@ -215,11 +215,13 @@ class MetricsDataProvider extends React.Component<
   getData() {
     if (this.props.metrics) {
       const { data, request } = this.props.metrics;
-      // Josephine
-      //
-      // console.log(`metrics: ${JSON.stringify(this.props.metrics)}`);
-      console.log(`data: ${JSON.stringify(data)}`);
-      console.log(`request: ${JSON.stringify(request)}`);
+      // Josephine: data and request here are correctly defined
+      console.log(`queries: ${JSON.stringify(request.queries)}`);
+      console.log(
+        `prop queries: ${JSON.stringify(
+          this.requestMessage(this.props).queries,
+        )}`,
+      );
 
       // Do not attach data if queries are not equivalent.
       if (
@@ -245,6 +247,7 @@ class MetricsDataProvider extends React.Component<
       history: this.props.history,
       adjustTimeScaleOnChange,
     };
+    console.log(`props from provider perspective: ${dataProps.data}`);
     return React.cloneElement(
       child as React.ReactElement<MetricsDataComponentProps>,
       dataProps,

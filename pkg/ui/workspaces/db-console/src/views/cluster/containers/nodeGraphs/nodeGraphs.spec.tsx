@@ -3358,8 +3358,8 @@ const initialState = {
       "nodes.overview.0": {
         id: "nodes.overview.0",
         nextRequest: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.node.sql.select.count",
@@ -3402,7 +3402,7 @@ const initialState = {
                   .NON_NEGATIVE_DERIVATIVE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
         data: {
           results: [
@@ -3420,243 +3420,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 24.900000000000002,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 24.8,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 25.700000000000003,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 25.3,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 24.5,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 25.5,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 25.6,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 24.900000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 25.6,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 25.6,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 25.3,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 25.5,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 25.400000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 24.700000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 25,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 24.900000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 25.900000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 24.8,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 25.8,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 25,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 25.1,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 25.400000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 25.6,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 25.8,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 24.400000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 25.6,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 25.900000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 25.5,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 25.3,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 25.700000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 25.8,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 25.5,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 25.8,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 25.6,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 24.700000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 24.8,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 25.700000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 25.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 25.3,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 25.6,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 26.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 25,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 25,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 24.8,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 25.400000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 25.700000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 25.900000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 25.1,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 25,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 25.1,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 25,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 25.1,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 25.900000000000002,
                 },
               ],
@@ -3675,243 +3675,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 0.4,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 0.2,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 0.1,
                 },
               ],
@@ -3930,243 +3930,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 24.200000000000003,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 13.100000000000001,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 10.8,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 11,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 13.200000000000001,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 14.3,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 15.4,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 16.5,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 15.4,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 20.8,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 10.5,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 17.7,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 15,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 8.8,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 11,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 18.7,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 15.3,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 17.5,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 10.9,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 9.8,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 9.700000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 12,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 15.200000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 14.100000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 9.9,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 12,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 15.3,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 15.3,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 15.4,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 12.100000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 19.6,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 16.400000000000002,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 9.8,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 15.4,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 23,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 15.4,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 10.9,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 13.200000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 19.700000000000003,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 12.100000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 17.5,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 13.200000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 6.4,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 8.700000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 11,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 7.6000000000000005,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 14.200000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 26.3,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 8.8,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 16.5,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 8.8,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 10.9,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 16.5,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 16.5,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 8.6,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 20.8,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 13.200000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 7.7,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 13.100000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 10.9,
                 },
               ],
@@ -4185,243 +4185,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 0,
                 },
               ],
@@ -4429,8 +4429,8 @@ const initialState = {
           ],
         },
         request: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.node.sql.select.count",
@@ -4473,14 +4473,14 @@ const initialState = {
                   .NON_NEGATIVE_DERIVATIVE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
       },
       "nodes.overview.1": {
         id: "nodes.overview.1",
         nextRequest: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
@@ -4493,7 +4493,7 @@ const initialState = {
               sources: ["1"],
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
         data: {
           results: [
@@ -4510,243 +4510,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 1179647,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 1507327,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 1507327,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 1376255,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 1179647,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 1245183,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 1441791,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 1703935,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 1638399,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 1769471,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 1900543,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 1835007,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 1900543,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 1835007,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 1703935,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 1703935,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 1572863,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 1507327,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 1376255,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 1376255,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 1376255,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 1376255,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 1441791,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 1507327,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 1507327,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 1507327,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 1769471,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 1638399,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 1572863,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 1310719,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 1376255,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 1441791,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 1572863,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 1703935,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 1900543,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 1703935,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 1835007,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 1835007,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 1835007,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 1769471,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 1703935,
                 },
               ],
@@ -4754,8 +4754,8 @@ const initialState = {
           ],
         },
         request: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
@@ -4768,14 +4768,14 @@ const initialState = {
               sources: ["1"],
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
       },
       "nodes.overview.2": {
         id: "nodes.overview.2",
         nextRequest: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.node.sql.distsql.contended_queries.count",
@@ -4788,7 +4788,7 @@ const initialState = {
                   .NON_NEGATIVE_DERIVATIVE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
         data: {
           results: [
@@ -4806,243 +4806,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 0,
                 },
               ],
@@ -5050,8 +5050,8 @@ const initialState = {
           ],
         },
         request: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.node.sql.distsql.contended_queries.count",
@@ -5064,14 +5064,14 @@ const initialState = {
                   .NON_NEGATIVE_DERIVATIVE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
       },
       "nodes.overview.3": {
         id: "nodes.overview.3",
         nextRequest: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.store.replicas",
@@ -5084,7 +5084,7 @@ const initialState = {
               sources: ["1"],
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
         data: {
           results: [
@@ -5101,243 +5101,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 73,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 73,
                 },
               ],
@@ -5345,8 +5345,8 @@ const initialState = {
           ],
         },
         request: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.store.replicas",
@@ -5359,14 +5359,14 @@ const initialState = {
               sources: ["1"],
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
       },
       "nodes.overview.4": {
         id: "nodes.overview.4",
         nextRequest: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.store.capacity",
@@ -5396,7 +5396,7 @@ const initialState = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
         data: {
           results: [
@@ -5413,243 +5413,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 536870912,
                 },
               ],
@@ -5667,243 +5667,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 536870912,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 536870912,
                 },
               ],
@@ -5921,243 +5921,243 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644253880000000000",
+                  timestamp_nanos: 1644253880000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253890000000000",
+                  timestamp_nanos: 1644253890000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253900000000000",
+                  timestamp_nanos: 1644253900000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253910000000000",
+                  timestamp_nanos: 1644253910000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253920000000000",
+                  timestamp_nanos: 1644253920000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253930000000000",
+                  timestamp_nanos: 1644253930000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253940000000000",
+                  timestamp_nanos: 1644253940000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253950000000000",
+                  timestamp_nanos: 1644253950000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253960000000000",
+                  timestamp_nanos: 1644253960000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253970000000000",
+                  timestamp_nanos: 1644253970000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253980000000000",
+                  timestamp_nanos: 1644253980000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644253990000000000",
+                  timestamp_nanos: 1644253990000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254000000000000",
+                  timestamp_nanos: 1644254000000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254010000000000",
+                  timestamp_nanos: 1644254010000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254020000000000",
+                  timestamp_nanos: 1644254020000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254030000000000",
+                  timestamp_nanos: 1644254030000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254040000000000",
+                  timestamp_nanos: 1644254040000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254050000000000",
+                  timestamp_nanos: 1644254050000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254060000000000",
+                  timestamp_nanos: 1644254060000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254070000000000",
+                  timestamp_nanos: 1644254070000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254080000000000",
+                  timestamp_nanos: 1644254080000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254090000000000",
+                  timestamp_nanos: 1644254090000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254100000000000",
+                  timestamp_nanos: 1644254100000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254110000000000",
+                  timestamp_nanos: 1644254110000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254120000000000",
+                  timestamp_nanos: 1644254120000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254130000000000",
+                  timestamp_nanos: 1644254130000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254140000000000",
+                  timestamp_nanos: 1644254140000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254150000000000",
+                  timestamp_nanos: 1644254150000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254160000000000",
+                  timestamp_nanos: 1644254160000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254170000000000",
+                  timestamp_nanos: 1644254170000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254180000000000",
+                  timestamp_nanos: 1644254180000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254190000000000",
+                  timestamp_nanos: 1644254190000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254200000000000",
+                  timestamp_nanos: 1644254200000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254210000000000",
+                  timestamp_nanos: 1644254210000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254220000000000",
+                  timestamp_nanos: 1644254220000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254230000000000",
+                  timestamp_nanos: 1644254230000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254240000000000",
+                  timestamp_nanos: 1644254240000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254250000000000",
+                  timestamp_nanos: 1644254250000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254260000000000",
+                  timestamp_nanos: 1644254260000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254270000000000",
+                  timestamp_nanos: 1644254270000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254280000000000",
+                  timestamp_nanos: 1644254280000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254290000000000",
+                  timestamp_nanos: 1644254290000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254300000000000",
+                  timestamp_nanos: 1644254300000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254310000000000",
+                  timestamp_nanos: 1644254310000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254320000000000",
+                  timestamp_nanos: 1644254320000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254330000000000",
+                  timestamp_nanos: 1644254330000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254340000000000",
+                  timestamp_nanos: 1644254340000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254350000000000",
+                  timestamp_nanos: 1644254350000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254360000000000",
+                  timestamp_nanos: 1644254360000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254370000000000",
+                  timestamp_nanos: 1644254370000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254380000000000",
+                  timestamp_nanos: 1644254380000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254390000000000",
+                  timestamp_nanos: 1644254390000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254400000000000",
+                  timestamp_nanos: 1644254400000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254410000000000",
+                  timestamp_nanos: 1644254410000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254420000000000",
+                  timestamp_nanos: 1644254420000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254430000000000",
+                  timestamp_nanos: 1644254430000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254440000000000",
+                  timestamp_nanos: 1644254440000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 0,
                 },
               ],
@@ -6165,8 +6165,8 @@ const initialState = {
           ],
         },
         request: {
-          start_nanos: "1644253883068000000",
-          end_nanos: "1644254483068000000",
+          start_nanos: 1644253883068000000,
+          end_nanos: 1644254483068000000,
           queries: [
             {
               name: "cr.store.capacity",
@@ -6196,14 +6196,14 @@ const initialState = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
       },
       qps: {
         id: "qps",
         nextRequest: {
-          start_nanos: "1644254450000000000",
-          end_nanos: "1644254480000000000",
+          start_nanos: 1644254450000000000,
+          end_nanos: 1644254480000000000,
           queries: [
             {
               name: "cr.node.sql.select.count",
@@ -6246,7 +6246,7 @@ const initialState = {
                   .NON_NEGATIVE_DERIVATIVE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
         data: {
           results: [
@@ -6264,15 +6264,15 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 25,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 25.1,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 25.900000000000002,
                 },
               ],
@@ -6291,15 +6291,15 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 7.7,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 13.100000000000001,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 10.9,
                 },
               ],
@@ -6318,15 +6318,15 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 0.1,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 0.1,
                 },
               ],
@@ -6345,15 +6345,15 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 0,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 0,
                 },
               ],
@@ -6361,8 +6361,8 @@ const initialState = {
           ],
         },
         request: {
-          start_nanos: "1644254450000000000",
-          end_nanos: "1644254480000000000",
+          start_nanos: 1644254450000000000,
+          end_nanos: 1644254480000000000,
           queries: [
             {
               name: "cr.node.sql.select.count",
@@ -6405,14 +6405,14 @@ const initialState = {
                   .NON_NEGATIVE_DERIVATIVE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
       },
       p99: {
         id: "p99",
         nextRequest: {
-          start_nanos: "1644254450000000000",
-          end_nanos: "1644254480000000000",
+          start_nanos: 1644254450000000000,
+          end_nanos: 1644254480000000000,
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
@@ -6424,7 +6424,7 @@ const initialState = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
         data: {
           results: [
@@ -6441,15 +6441,15 @@ const initialState = {
               },
               datapoints: [
                 {
-                  timestamp_nanos: "1644254450000000000",
+                  timestamp_nanos: 1644254450000000000,
                   value: 1835007,
                 },
                 {
-                  timestamp_nanos: "1644254460000000000",
+                  timestamp_nanos: 1644254460000000000,
                   value: 1769471,
                 },
                 {
-                  timestamp_nanos: "1644254470000000000",
+                  timestamp_nanos: 1644254470000000000,
                   value: 1703935,
                 },
               ],
@@ -6457,8 +6457,8 @@ const initialState = {
           ],
         },
         request: {
-          start_nanos: "1644254450000000000",
-          end_nanos: "1644254480000000000",
+          start_nanos: 1644254450000000000,
+          end_nanos: 1644254480000000000,
           queries: [
             {
               name: "cr.node.sql.service.latency-p99",
@@ -6470,7 +6470,7 @@ const initialState = {
                 protos.cockroach.ts.tspb.TimeSeriesQueryDerivative.NONE,
             },
           ],
-          sample_nanos: "10000000000",
+          sample_nanos: 10000000000,
         },
       },
     },

@@ -216,12 +216,6 @@ class MetricsDataProvider extends React.Component<
     if (this.props.metrics) {
       const { data, request } = this.props.metrics;
       // Josephine: data and request here are correctly defined
-      console.log(`queries: ${JSON.stringify(request.queries)}`);
-      console.log(
-        `prop queries: ${JSON.stringify(
-          this.requestMessage(this.props).queries,
-        )}`,
-      );
 
       // Do not attach data if queries are not equivalent.
       if (
@@ -230,6 +224,20 @@ class MetricsDataProvider extends React.Component<
         _.isEqual(request.queries, this.requestMessage(this.props).queries)
       ) {
         return data;
+      } else {
+        console.log(
+          `queries data: ${data}, ${_.isEqual(
+            request.queries,
+            this.requestMessage(this.props).queries,
+          )}`,
+        );
+        // console.log(`queries request: ${JSON.stringify(request)}`);
+        console.log(`queries: ${JSON.stringify(request.queries)}`);
+        console.log(
+          `prop queries: ${JSON.stringify(
+            this.requestMessage(this.props).queries,
+          )}`,
+        );
       }
     }
     return undefined;

@@ -38,15 +38,16 @@ import {
   QueryTimeInfo,
 } from "src/views/shared/components/metricQuery";
 import Visualization from "src/views/cluster/components/visualization";
-import { TimeScale, util } from "@cockroachlabs/cluster-ui";
+import {
+  defaultTimeScaleOptions,
+  findClosestTimeScale,
+  TimeScale,
+  TimeWindow,
+  util,
+} from "@cockroachlabs/cluster-ui";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
 import Long from "long";
-import {
-  findClosestTimeScale,
-  defaultTimeScaleOptions,
-  TimeWindow,
-} from "@cockroachlabs/cluster-ui";
 
 type TSResponse = protos.cockroach.ts.tspb.TimeSeriesQueryResponse;
 
@@ -338,10 +339,19 @@ function touPlot(
     return [[]];
   }
 
+  const foo = data.flatMap(series => series.values.map(d => d.timestamp_nanos));
+  if (foo.some(x => !x)) {
+    console.log(`testing ${data}`);
+  }
   const xValuesComplete: number[] = [
     ...new Set(
       data.flatMap(series =>
-        series.values.map(d => d.timestamp_nanos.toNumber()),
+        series.values.map(d => {
+          console.log(d.timestamp_nanos);
+          if (!d.timestamp_nanos) {
+          }
+          return d.timestamp_nanos.toNumber();
+        }),
       ),
     ),
   ].sort((a, b) => a - b);

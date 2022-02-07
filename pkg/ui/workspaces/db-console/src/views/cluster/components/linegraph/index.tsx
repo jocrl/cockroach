@@ -406,7 +406,6 @@ export function fillGaps(
 export class LineGraph extends React.Component<LineGraphProps, {}> {
   constructor(props: LineGraphProps) {
     super(props);
-
     this.setNewTimeRange = this.setNewTimeRange.bind(this);
   }
 

@@ -33,7 +33,13 @@ export default function(props: GraphDashboardProps) {
     storeSources,
     tooltipSelection,
   } = props;
-
+  console.log(`
+      nodeIDs: ${nodeIDs},\n
+    nodesSummary: ${nodesSummary},\n
+    nodeSources: ${nodeSources},\n
+    storeSources: ${storeSources},\n
+    tooltipSelection: ${tooltipSelection},\n
+  `);
   return [
     <LineGraph
       title="SQL Statements"

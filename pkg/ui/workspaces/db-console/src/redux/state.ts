@@ -52,9 +52,17 @@ const history = createHashHistory();
 
 const routerReducer = connectRouter(history);
 
+type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};
+
 // createAdminUIStore is a function that returns a new store for the admin UI.
 // It's in a function so it can be recreated as necessary for testing.
-export function createAdminUIStore(historyInst: History<any>) {
+export function createAdminUIStore(
+  historyInst: History<any>,
+  initialState?: any,
+  // initialState?: RecursivePartial<AdminUIState>,
+) {
   const sagaMiddleware = createSagaMiddleware();
 
   const s: Store<AdminUIState> = createStore(
@@ -69,6 +77,7 @@ export function createAdminUIStore(historyInst: History<any>) {
       uiData: uiDataReducer,
       login: loginReducer,
     }),
+    initialState || {},
     compose(
       applyMiddleware(thunk, sagaMiddleware, routerMiddleware(historyInst)),
       // Support for redux dev tools

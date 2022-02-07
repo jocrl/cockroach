@@ -3368,9 +3368,23 @@ import * as sinon from "sinon";
 import { assert } from "chai";
 import * as api from "src/util/api";
 
-import fetchMock from "oss/src/util/fetch-mock";
+import fetchMock from "src/util/fetch-mock";
 import * as protos from "src/js/protos";
 import { EventsResponseMessage, STATUS_PREFIX } from "src/util/api";
+import Long from "long";
+
+function createDatapoints(val: number) {
+  const result: protos.cockroach.ts.tspb.TimeSeriesDatapoint[] = [];
+  for (let i = 0; i < val; i++) {
+    result.push(
+      new protos.cockroach.ts.tspb.TimeSeriesDatapoint({
+        timestamp_nanos: new Long(val),
+        value: val,
+      }),
+    );
+  }
+  return result;
+}
 
 export const getMockNodeGraphsProps = (): NodeGraphsProps => {
   const history = H.createHashHistory();
@@ -3462,29 +3476,37 @@ describe("Metrics Page", () => {
       },
     });
 
-    // fetchMock.mock({
-    //   matcher: `${api.API_PREFIX}/ts/query`,
-    //   method: "GET",
-    //   response: (_url: string, requestObj: RequestInit) => {
-    //     // assert.isUndefined(requestObj.body);
-    //     // const response = new protos.cockroach.ts.tspb.TimeSeriesQueryResponse(
-    //     const response = {
-    //       results: [
-    //         {
-    //           datapoints: [],
-    //         },
-    //       ],
-    //     };
-    //     // );
-    //
-    //     const encodedResponse = protos.cockroach.ts.tspb.TimeSeriesQueryResponse.encode(
-    //       response,
-    //     ).finish();
-    //     return {
-    //       body: api.toArrayBuffer(encodedResponse),
-    //     };
-    //   },
-    // });
+    fetchMock.mock({
+      matcher: `${api.API_PREFIX}/ts/query`,
+      method: "GET",
+      response: (_url: string, requestObj: RequestInit) => {
+        // assert.isUndefined(requestObj.body);
+        // const response = new protos.cockroach.ts.tspb.TimeSeriesQueryResponse(
+        const response = {
+          results: [
+            {
+              queries: [
+                {
+                  name: "test.metric.1",
+                },
+                {
+                  name: "test.metric.2",
+                },
+              ],
+              datapoints: createDatapoints(30),
+            },
+          ],
+        };
+        // );
+
+        const encodedResponse = protos.cockroach.ts.tspb.TimeSeriesQueryResponse.encode(
+          response,
+        ).finish();
+        return {
+          body: api.toArrayBuffer(encodedResponse),
+        };
+      },
+    });
 
     const { container, getByText } = render(
       <Provider store={store}>

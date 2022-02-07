@@ -6663,10 +6663,11 @@ describe("Metrics Page", () => {
     const output = prettyDOM(container);
     const outputLength = (output.match(/\n/g) || []).length;
 
+    console.log("hiiii");
+    screen.debug(container, 99999999999999);
     assert(outputLength != 267, `still the old version without graphs`);
-    if (outputLength != 267) {
-      screen.debug(container, 99999999999999);
-    }
+    // if (outputLength != 267) {
+    // }
     assert(false);
     await waitFor(() => screen.getByText("queries"));
     // div.innerHTML = "<div><h1>Hello World</h1></div>";

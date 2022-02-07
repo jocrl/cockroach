@@ -215,46 +215,14 @@ class MetricsDataProvider extends React.Component<
   getData() {
     if (this.props.metrics) {
       const { data, request } = this.props.metrics;
-      // Josephine: data and request here are correctly defined
 
-      console.log(this.props.metrics.id);
-      // Do not attach data if queries are not equivalent.
-      // if (data && request) {
-      // }
       if (
         data &&
         request &&
         _.isEqual(request.queries, this.requestMessage(this.props).queries)
       ) {
+        // Josephine: data and request here are correctly defined, and gets here
         return data;
-      } else {
-        console.log(
-          _.isEqual(request.queries, this.requestMessage(this.props).queries),
-        );
-        console.log(request.queries[0]);
-        console.log(this.requestMessage(this.props).queries[0]);
-        // console.log(
-        //   `equal: ${_.isEqual(
-        //     request.queries[0].downsampler,
-        //     this.requestMessage(this.props).queries[0].downsampler,
-        //   )}, ${_.isEqual(
-        //     request.queries[0].source_aggregator,
-        //     this.requestMessage(this.props).queries[0].source_aggregator,
-        //   )}, ${_.isEqual(
-        //     request.queries[0].derivative,
-        //     this.requestMessage(this.props).queries[0].derivative,
-        //   )}, ${_.isEqual(
-        //     request.queries[0].name,
-        //     this.requestMessage(this.props).queries[0].name,
-        //   )}`,
-        // );
-        // // console.log(`queries request: ${JSON.stringify(request)}`);
-        // console.log(`queries: ${JSON.stringify(request.queries)}`);
-        // console.log(
-        //   `prop queries: ${JSON.stringify(
-        //     this.requestMessage(this.props).queries,
-        //   )}`,
-        // );
       }
     }
     return undefined;
@@ -272,7 +240,7 @@ class MetricsDataProvider extends React.Component<
       history: this.props.history,
       adjustTimeScaleOnChange,
     };
-    console.log(`props from provider perspective: ${dataProps.data}`);
+    // Josephine: dataProps.data is defined here
     return React.cloneElement(
       child as React.ReactElement<MetricsDataComponentProps>,
       dataProps,

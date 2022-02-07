@@ -6383,7 +6383,7 @@ export const getMockNodeGraphsProps = (): NodeGraphsProps => {
 
 describe("Metrics Page", () => {
   it.only("automatically polls for new data every 10 seconds", async () => {
-    const store = createAdminUIStore(createHashHistory(), initialState);
+    const store = createAdminUIStore(createHashHistory());
     //   const store: Store<AppState, Action> = createStore(
     //   combineReducers({
     //     adminUI: rootReducer,

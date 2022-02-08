@@ -578,7 +578,6 @@ export class LineGraph extends React.Component<LineGraphProps, {}> {
 
   render() {
     const { title, subtitle, tooltip, data, preCalcGraphSize } = this.props;
-    console.log(`  ${data}`);
 
     return (
       <Visualization

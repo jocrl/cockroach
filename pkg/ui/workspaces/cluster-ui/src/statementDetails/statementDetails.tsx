@@ -10,6 +10,7 @@
 
 import { Col, Row, Tabs } from "antd";
 import { Text, Heading } from "@cockroachlabs/ui-components";
+import { PageConfig, PageConfigItem } from "src/pageConfig";
 import _ from "lodash";
 import React, { ReactNode } from "react";
 import { Helmet } from "react-helmet";
@@ -64,7 +65,11 @@ import { commonStyles } from "src/common";
 import { NodeSummaryStats } from "../nodes";
 import { UIConfigState } from "../store";
 import moment from "moment";
-import { TimeScale, toDateRange } from "../timeScaleDropdown";
+import {
+  TimeScale,
+  TimeScaleDropdown,
+  toDateRange,
+} from "../timeScaleDropdown";
 import { StatementsRequest } from "src/api/statementsApi";
 import SQLActivityError from "../sqlActivity/errorComponent";
 import {
@@ -149,6 +154,7 @@ export interface StatementDetailsDispatchProps {
   ) => void;
   dismissStatementDiagnosticsAlertMessage?: () => void;
   onTabChanged?: (tabName: string) => void;
+  onTimeScaleChange: (ts: TimeScale) => void;
   onDiagnosticsModalOpen?: (statementFingerprint: string) => void;
   onDiagnosticBundleDownload?: (statementFingerprint?: string) => void;
   onDiagnosticCancelRequest?: (report: IStatementDiagnosticsReport) => void;
@@ -596,6 +602,14 @@ export class StatementDetails extends React.Component<
         activeKey={currentTab}
       >
         <TabPane tab="Overview" key="overview">
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
               <SqlBox value={statement} />
@@ -832,6 +846,14 @@ export class StatementDetails extends React.Component<
           </TabPane>
         )}
         <TabPane tab="Explain Plan" key="explain-plan">
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
           <SummaryCard>
             <PlanView
               title="Explain Plan"

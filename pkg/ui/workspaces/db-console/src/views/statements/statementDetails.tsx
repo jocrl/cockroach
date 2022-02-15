@@ -46,6 +46,7 @@ import {
 import {
   cancelStatementDiagnosticsReportAction,
   createStatementDiagnosticsReportAction,
+  setCombinedStatementsTimeScaleAction,
 } from "src/redux/statements";
 import { createStatementDiagnosticsAlertLocalSetting } from "src/redux/alerts";
 import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
@@ -253,6 +254,7 @@ const mapDispatchToProps: StatementDetailsDispatchProps = {
     createStatementDiagnosticsAlertLocalSetting.set({ show: false }),
   createStatementDiagnosticsReport: createStatementDiagnosticsReportAction,
   onTabChanged: trackStatementDetailsSubnavSelectionAction,
+  onTimeScaleChange: setCombinedStatementsTimeScaleAction,
   onDiagnosticBundleDownload: trackDownloadDiagnosticsBundleAction,
   onDiagnosticCancelRequest: (report: IStatementDiagnosticsReport) => {
     return (dispatch: AppDispatch) => {

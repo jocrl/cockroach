@@ -243,6 +243,7 @@ export const getStatementDetailsPropsFixture = (): StatementDetailsProps => ({
   refreshUserSQLRoles: noop,
   diagnosticsReports: [],
   dismissStatementDiagnosticsAlertMessage: noop,
+  onTimeScaleChange: noop,
   createStatementDiagnosticsReport: noop,
   uiConfig: {
     showStatementDiagnosticsLink: true,

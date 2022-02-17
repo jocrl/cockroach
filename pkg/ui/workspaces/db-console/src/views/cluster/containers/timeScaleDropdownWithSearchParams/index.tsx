@@ -116,11 +116,6 @@ const TimeScaleDropdownWithSearchParams = (
   return <TimeScaleDropdown {...props} setTimeScale={onTimeScaleChange} />;
 };
 
-// const scaleSelector = createSelector(
-//   (state: AdminUIState) => state?.timeScale,
-//   tw => tw?.scale,
-// );
-
 export default connect(
   (state: AdminUIState) => ({
     currentScale: statementsTimeScaleLocalSetting.selector(state),

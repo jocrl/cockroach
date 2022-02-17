@@ -251,11 +251,7 @@ class MetricsDataProvider extends React.Component<
 // timestamps, which can be sent with requests to the server.
 const timeInfoSelector = createSelector(
   statementsTimeScaleLocalSetting.selector,
-  // (state: AdminUIState) => statementsTimeScaleLocalSetting.selector(state),
-  // (state: AdminUIState) => state.localSettings["timeScale/SQLActivity"],
   ts => {
-    console.log(ts);
-    debugger;
     if (!_.isObject(ts)) {
       return null;
     }

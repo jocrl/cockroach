@@ -37,7 +37,7 @@ import {
 } from "@cockroachlabs/cluster-ui";
 import { History } from "history";
 import { refreshSettings } from "src/redux/apiReducers";
-import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeScale";
+import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
 
 /**
  * queryFromProps is a helper method which generates a TimeSeries Query data

@@ -113,6 +113,9 @@ class MetricsTimeManager extends React.Component<
       }
     } else {
       const fixedWindowEnd = props.timeScale.fixedWindowEnd;
+      if (typeof fixedWindowEnd == "string") {
+        debugger;
+      }
       // Update the metrics page window with the fixed, custom end time.
       props.setMetricsMovingWindow({
         start: fixedWindowEnd.clone().subtract(props.timeScale.windowSize),

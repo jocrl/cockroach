@@ -156,18 +156,18 @@ export const TimeScaleDropdown: React.FC<TimeScaleDropdownProps> = ({
     const seconds = windowSize.asSeconds();
     let selected = {};
     let key = currentScale.key;
-    let endTime = moment.utc(currentWindow.end);
+    let endTime;
 
     switch (direction) {
       case ArrowDirection.RIGHT:
-        endTime = endTime.add(seconds, "seconds");
+        endTime = moment.utc(currentWindow.end).add(seconds, "seconds");
         break;
       case ArrowDirection.LEFT:
-        endTime = endTime.subtract(seconds, "seconds");
+        endTime = moment.utc(currentWindow.end).subtract(seconds, "seconds");
         break;
       case ArrowDirection.CENTER:
         // CENTER is used to set the time window to the current time.
-        endTime = moment.utc();
+        endTime = false;
         break;
       default:
         console.error("Unknown direction: ", direction);

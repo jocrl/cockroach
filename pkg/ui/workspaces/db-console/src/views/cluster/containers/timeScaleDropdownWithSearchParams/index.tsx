@@ -70,6 +70,7 @@ const TimeScaleDropdownWithSearchParams = (
         timeScale.key = "Custom";
         timeScale.fixedWindowEnd = end;
       }
+      debugger;
       props.setTimeScale(timeScale);
     };
 

@@ -70,17 +70,18 @@ const TimeScaleDropdownWithSearchParams = (
         timeScale.key = "Custom";
         timeScale.fixedWindowEnd = end;
       }
-      debugger;
       props.setTimeScale(timeScale);
     };
 
     const urlSearchParams = new URLSearchParams(history.location.search);
     const queryStart = urlSearchParams.get("start");
     const queryEnd = urlSearchParams.get("end");
-    const start = queryStart && moment.unix(Number(queryStart)).utc();
-    const end = queryEnd && moment.unix(Number(queryEnd)).utc();
+    if (queryStart && queryEnd) {
+      const start = queryStart && moment.unix(Number(queryStart)).utc();
+      const end = queryEnd && moment.unix(Number(queryEnd)).utc();
 
-    setDatesByQueryParams({ start, end });
+      setDatesByQueryParams({ start, end });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

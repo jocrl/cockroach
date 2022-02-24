@@ -9,9 +9,10 @@
 // licenses/APL.txt.
 
 import { assert } from "chai";
-import { defaultTimeScaleOptions } from "@cockroachlabs/cluster-ui";
+import { localSettingsReducer } from "./localsettings";
 import * as timeScale from "./timeScale";
 import moment from "moment";
+import { TimeScale } from "./timeScale";
 
 describe("time scale reducer", function() {
   describe("actions", function() {
@@ -48,28 +49,23 @@ describe("time scale reducer", function() {
   describe("reducer", () => {
     it("should have the correct default value.", () => {
       assert.deepEqual(
-        timeScale.timeScaleReducer(undefined, { type: "unknown" }),
-        new timeScale.TimeScaleState(),
+        timeScale.metricsTimeReducer(undefined, { type: "unknown" }),
+        new timeScale.MetricsTimeState(),
       );
-      assert.deepEqual(new timeScale.TimeScaleState().scale, {
-        ...defaultTimeScaleOptions["Past 10 Minutes"],
-        key: "Past 10 Minutes",
-        fixedWindowEnd: false,
-      });
     });
 
     describe("setMetricsMovingWindow", () => {
       const start = moment();
       const end = start.add(10, "s");
       it("should correctly overwrite previous value", () => {
-        const expected = new timeScale.TimeScaleState();
+        const expected = new timeScale.MetricsTimeState();
         expected.metricsTime.currentWindow = {
           start,
           end,
         };
         expected.metricsTime.shouldUpdateMetricsWindowFromScale = false;
         assert.deepEqual(
-          timeScale.timeScaleReducer(
+          timeScale.metricsTimeReducer(
             undefined,
             timeScale.setMetricsMovingWindow({ start, end }),
           ),
@@ -79,29 +75,29 @@ describe("time scale reducer", function() {
     });
 
     describe("setTimeScale", () => {
-      const newSize = moment.duration(1, "h");
-      const newValid = moment.duration(1, "m");
-      const newSample = moment.duration(1, "m");
-      it("should correctly overwrite previous value", () => {
-        const expected = new timeScale.TimeScaleState();
-        expected.scale = {
-          windowSize: newSize,
-          windowValid: newValid,
-          sampleSize: newSample,
-          fixedWindowEnd: false,
-        };
-        expected.metricsTime.shouldUpdateMetricsWindowFromScale = true;
+      // const newSize =
+      // const newValid =
+      // const newSample =
+      const newTimeScale: TimeScale = {
+        windowSize: moment.duration(1, "h"),
+        windowValid: moment.duration(1, "m"),
+        sampleSize: moment.duration(1, "m"),
+        fixedWindowEnd: false,
+      };
+      const action = timeScale.setTimeScale(newTimeScale);
+      it("should correctly overwrite the metricsTime slice", () => {
+        const expectedMetricsTime = new timeScale.MetricsTimeState();
+        expectedMetricsTime.metricsTime.shouldUpdateMetricsWindowFromScale = true;
         assert.deepEqual(
-          timeScale.timeScaleReducer(
-            undefined,
-            timeScale.setTimeScale({
-              windowSize: newSize,
-              windowValid: newValid,
-              sampleSize: newSample,
-              fixedWindowEnd: false,
-            }),
-          ),
-          expected,
+          timeScale.metricsTimeReducer(undefined, action),
+          expectedMetricsTime,
+        );
+      });
+      it("should correctly overwrite the localSettings slice", () => {
+        const expectedLocalSettings = { "timeScale/SQLActivity": newTimeScale };
+        assert.deepEqual(
+          localSettingsReducer(undefined, action),
+          expectedLocalSettings,
         );
       });
     });

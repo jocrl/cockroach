@@ -21,7 +21,7 @@ import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeSca
 interface MetricsTimeManagerProps {
   // The current timescale redux state.
   timeScale: TimeScale;
-  metricsTime: timewindow.TimeScaleState;
+  metricsTime: timewindow.MetricsTimeState;
   // Callback function used to set a new time window.
   setMetricsMovingWindow: typeof timewindow.setMetricsMovingWindow;
   // Optional override method to obtain the current time. Used for tests.

@@ -156,18 +156,18 @@ export const TimeScaleDropdown: React.FC<TimeScaleDropdownProps> = ({
     const seconds = windowSize.asSeconds();
     let selected = {};
     let key = currentScale.key;
-    let endTime;
+    let newFixedWindowEnd;
 
     switch (direction) {
       case ArrowDirection.RIGHT:
-        endTime = moment.utc(currentWindow.end).add(seconds, "seconds");
+        newFixedWindowEnd = moment.utc(currentWindow.end).add(seconds, "seconds");
         break;
       case ArrowDirection.LEFT:
-        endTime = moment.utc(currentWindow.end).subtract(seconds, "seconds");
+        newFixedWindowEnd = moment.utc(currentWindow.end).subtract(seconds, "seconds");
         break;
       case ArrowDirection.CENTER:
         // CENTER is used to set the time window to the current time.
-        endTime = false;
+        newFixedWindowEnd = false;
         break;
       default:
         console.error("Unknown direction: ", direction);
@@ -175,9 +175,8 @@ export const TimeScaleDropdown: React.FC<TimeScaleDropdownProps> = ({
 
     // If the timescale extends into the future then fallback to a default
     // timescale. Otherwise set the key to "Custom" so it appears correctly.
-    // The first `!endTime` part of the if` clause seems unnecessary since endTime is always a specific time.
     // If endTime + windowValid > now. Unclear why this uses windowValid instead of windowSize.
-    if (!endTime || endTime > moment.utc().subtract(currentScale.windowValid)) {
+    if (!newFixedWindowEnd || newFixedWindowEnd > moment.utc().subtract(currentScale.windowValid)) {
       const foundTimeScale = Object.entries(options).find(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, value]) => value.windowSize.asSeconds() === windowSize.asSeconds(),
@@ -201,7 +200,7 @@ export const TimeScaleDropdown: React.FC<TimeScaleDropdownProps> = ({
 
     let timeScale: TimeScale = {
       ...currentScale,
-      fixedWindowEnd: endTime,
+      fixedWindowEnd: newFixedWindowEnd,
       windowSize,
       key,
       ...selected,

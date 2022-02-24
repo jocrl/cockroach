@@ -25,6 +25,7 @@ import { Action } from "redux";
 import { call, takeEvery } from "redux-saga/effects";
 
 import { PayloadAction } from "src/interfaces/action";
+import { SET_SCALE, TimeScale } from "src/redux/timeScale";
 
 const STORAGE_PREFIX = "cockroachui";
 const SET_UI_VALUE = `${STORAGE_PREFIX}/ui/SET_UI_VALUE`;
@@ -82,6 +83,12 @@ export function localSettingsReducer(
       const { payload } = action as PayloadAction<LocalSettingData>;
       state = _.clone(state);
       state[payload.key] = payload.value;
+      return state;
+    }
+    case SET_SCALE: {
+      const { payload: scale } = action as PayloadAction<TimeScale>;
+      state = _.clone(state);
+      state["timeScale/SQLActivity"] = scale;
       return state;
     }
     default:

@@ -15,10 +15,13 @@ import moment from "moment";
 import { AdminUIState } from "src/redux/state";
 import * as timewindow from "src/redux/timeScale";
 import _ from "lodash";
+import { TimeScale } from "src/redux/timeScale";
+import { statementsTimeScaleLocalSetting } from "oss/src/redux/statementsTimeScale";
 
 interface MetricsTimeManagerProps {
   // The current timescale redux state.
-  timeScale: timewindow.TimeScaleState;
+  timeScale: TimeScale;
+  metricsTime: timewindow.TimeScaleState;
   // Callback function used to set a new time window.
   setMetricsMovingWindow: typeof timewindow.setMetricsMovingWindow;
   // Optional override method to obtain the current time. Used for tests.
@@ -61,22 +64,22 @@ class MetricsTimeManager extends React.Component<
     // If there is no current window, or if scale have changed since this
     // window was generated, set one immediately.
     if (
-      !props.timeScale.metricsTime.currentWindow ||
-      props.timeScale.metricsTime.shouldUpdateMetricsWindowFromScale
+      !props.metricsTime.metricsTime.currentWindow ||
+      props.metricsTime.metricsTime.shouldUpdateMetricsWindowFromScale
     ) {
       this.setWindow(props);
       return;
     }
 
     // Fixed time ranges can't expire.
-    if (props.timeScale.scale.fixedWindowEnd) {
+    if (props.timeScale.fixedWindowEnd) {
       // this.setWindow(props);
       return;
     }
 
     const now = props.now ? props.now() : moment();
-    const currentEnd = props.timeScale.metricsTime.currentWindow.end;
-    const expires = currentEnd.clone().add(props.timeScale.scale.windowValid);
+    const currentEnd = props.metricsTime.metricsTime.currentWindow.end;
+    const expires = currentEnd.clone().add(props.timeScale.windowValid);
     if (now.isAfter(expires)) {
       // Current time window is expired, reset it.
       this.setWindow(props);
@@ -99,22 +102,23 @@ class MetricsTimeManager extends React.Component<
   setWindow(props: MetricsTimeManagerProps) {
     // The following two `if` blocks check two things that in theory should always be in sync.
     // They check if the time selection is a dynamic, moving, now.
-    if (!props.timeScale.scale.fixedWindowEnd) {
-      if (!props.timeScale.metricsTime.isFixedWindow) {
+    if (!props.timeScale.fixedWindowEnd) {
+      if (!props.metricsTime.metricsTime.isFixedWindow) {
         const now = props.now ? props.now() : moment();
         // Update the metrics page window with the new "now" time for polling.
         props.setMetricsMovingWindow({
-          start: now.clone().subtract(props.timeScale.scale.windowSize),
+          start: now.clone().subtract(props.timeScale.windowSize),
           end: now,
         });
       }
     } else {
-      const fixedWindowEnd = props.timeScale.scale.fixedWindowEnd;
+      const fixedWindowEnd = props.timeScale.fixedWindowEnd;
+      if (typeof fixedWindowEnd == "string") {
+        debugger;
+      }
       // Update the metrics page window with the fixed, custom end time.
       props.setMetricsMovingWindow({
-        start: fixedWindowEnd
-          .clone()
-          .subtract(props.timeScale.scale.windowSize),
+        start: fixedWindowEnd.clone().subtract(props.timeScale.windowSize),
         end: fixedWindowEnd,
       });
     }
@@ -139,7 +143,8 @@ class MetricsTimeManager extends React.Component<
 const metricsTimeManagerConnected = connect(
   (state: AdminUIState) => {
     return {
-      timeScale: state.timeScale,
+      timeScale: statementsTimeScaleLocalSetting.selector(state),
+      metricsTime: state.timeScale,
     };
   },
   {

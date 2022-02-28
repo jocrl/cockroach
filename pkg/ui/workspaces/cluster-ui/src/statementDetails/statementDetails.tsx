@@ -106,6 +106,8 @@ export type StatementDetailsProps = StatementDetailsOwnProps &
 export interface StatementDetailsState {
   sortSetting: SortSetting;
   currentTab?: string;
+  // Used to remember the statement text for the current details page, even if the time frame is changed such that the statements is no longer found in the time frame and thus `this.props.statement` is null
+  latestStatementText: string;
 }
 
 interface NumericStatRow {
@@ -355,6 +357,7 @@ export class StatementDetails extends React.Component<
         columnTitle: "statementTime",
       },
       currentTab: searchParams.get("tab") || "overview",
+      latestStatementText: "",
     };
     this.activateDiagnosticsRef = React.createRef();
   }
@@ -394,7 +397,7 @@ export class StatementDetails extends React.Component<
     }
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate(prevProps: StatementDetailsProps): void {
     this.refreshStatements();
     if (!this.props.isTenant) {
       this.props.refreshNodes();
@@ -402,6 +405,14 @@ export class StatementDetails extends React.Component<
       if (!this.props.hasViewActivityRedactedRole) {
         this.props.refreshStatementDiagnosticsRequests();
       }
+    }
+    if (
+      this.props.statement &&
+      prevProps.statement?.statement != this.props.statement.statement
+    ) {
+      this.setState({
+        latestStatementText: this.props.statement.statement,
+      });
     }
   }
 
@@ -475,6 +486,8 @@ export class StatementDetails extends React.Component<
     );
   }
 
+  getOverviewTabContent = (): React.ReactElement => {};
+
   renderContent = (): React.ReactElement => {
     const {
       diagnosticsReports,
@@ -513,7 +526,13 @@ export class StatementDetails extends React.Component<
                 />
               </PageConfigItem>
             </PageConfig>
-            {noDataMessage}
+            <section className={cx("section")}>
+              <SqlBox value={this.state.latestStatementText} />
+            </section>
+            <section className={cx("section")}>
+              <h3>Data not available for this time frame</h3>
+              Select a different time frame.
+            </section>
           </TabPane>
           {!isTenant && !hasViewActivityRedactedRole && (
             <TabPane tab={`Diagnostics`} key="diagnostics"></TabPane>
@@ -535,7 +554,6 @@ export class StatementDetails extends React.Component<
 
     const {
       stats,
-      statement,
       app,
       distSQL,
       vec,
@@ -553,7 +571,7 @@ export class StatementDetails extends React.Component<
       return (
         <React.Fragment>
           <section className={cx("section")}>
-            <SqlBox value={statement} />
+            <SqlBox value={this.state.latestStatementText} />
           </section>
           <section className={cx("section")}>
             <h3>Unable to find statement</h3>
@@ -659,7 +677,7 @@ export class StatementDetails extends React.Component<
           </PageConfig>
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
-              <SqlBox value={statement} />
+              <SqlBox value={this.state.latestStatementText} />
             </Col>
           </Row>
           <Row gutter={24}>
@@ -882,7 +900,7 @@ export class StatementDetails extends React.Component<
               diagnosticsReports={diagnosticsReports}
               dismissAlertMessage={dismissStatementDiagnosticsAlertMessage}
               hasData={hasDiagnosticReports}
-              statementFingerprint={statement}
+              statementFingerprint={this.state.latestStatementText}
               onDownloadDiagnosticBundleClick={onDiagnosticBundleDownload}
               onDiagnosticCancelRequestClick={onDiagnosticCancelRequest}
               showDiagnosticsViewLink={

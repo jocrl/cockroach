@@ -81,6 +81,7 @@ export interface TransactionDetailsStateProps {
   statements?: Statement[];
   transaction: TransactionInfo;
   transactionFingerprintId: string;
+  isLoading: boolean;
 }
 
 export interface TransactionDetailsDispatchProps {
@@ -237,9 +238,10 @@ export class TransactionDetails extends React.Component<
         <Loading
           error={error}
           page={"transaction details"}
-          loading={
-            statementsForTransaction.length == 0 || transactionText.length == 0
-          }
+          loading={this.props.isLoading}
+          // loading={
+          //   statementsForTransaction.length == 0 || transactionText.length == 0
+          // }
           render={() => {
             const { isTenant, hasViewActivityRedactedRole } = this.props;
             const { sortSetting, pagination } = this.state;

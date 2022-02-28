@@ -9,7 +9,7 @@
 // licenses/APL.txt.
 
 import { Col, Row, Tabs } from "antd";
-import { Text, Heading } from "@cockroachlabs/ui-components";
+import { Text, Heading, InlineAlert } from "@cockroachlabs/ui-components";
 import { PageConfig, PageConfigItem } from "src/pageConfig";
 import _ from "lodash";
 import React, { ReactNode } from "react";
@@ -176,6 +176,7 @@ export interface StatementDetailsStateProps {
   uiConfig?: UIConfigState["pages"]["statementDetails"];
   isTenant?: UIConfigState["isTenant"];
   hasViewActivityRedactedRole?: UIConfigState["hasViewActivityRedactedRole"];
+  isLoading: boolean;
 }
 
 export type StatementDetailsOwnProps = StatementDetailsDispatchProps &
@@ -450,7 +451,8 @@ export class StatementDetails extends React.Component<
         </div>
         <section className={cx("section", "section--container")}>
           <Loading
-            loading={_.isNil(this.props.statement)}
+            loading={this.props.isLoading}
+            // loading={_.isNil(this.props.statement)}
             page={"statement details"}
             error={this.props.statementsError}
             render={this.renderContent}
@@ -484,8 +486,14 @@ export class StatementDetails extends React.Component<
     const { currentTab } = this.state;
 
     if (!this.props.statement) {
-      return null;
+      return (
+        <InlineAlert
+          intent="info"
+          title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
+        />
+      );
     }
+
     const {
       stats,
       statement,

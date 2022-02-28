@@ -173,13 +173,13 @@ function filterByExecStatKey(
       apps.includes(stmt.app));
 }
 
-export const selectStatement = createSelector(
+export const selectIsLoadingAndStatement = createSelector(
   (state: AdminUIState) => state.cachedData.statements,
   (_state: AdminUIState, props: RouteComponentProps) => props,
   (statementsState, props) => {
     const statements = statementsState.data?.statements;
     if (!statements) {
-      return null;
+      return { isLoading: true, statement: null };
     }
 
     const internalAppNamePrefix =
@@ -198,6 +198,11 @@ export const selectStatement = createSelector(
       ),
     );
 
+    // modify comment from below
+    if (results.length == 0) {
+      return { isLoading: false, statement: null };
+    }
+
     // We expect a single result to be returned. The key used to retrieve results is specific per:
     // - statement fingerprint id
     // - aggregation timestamp
@@ -206,23 +211,27 @@ export const selectStatement = createSelector(
     const statement = results[0].statement;
 
     return {
-      statement,
-      stats: combineStatementStats(results.map(s => s.stats)),
-      byNode: coalesceNodeStats(results),
-      app: _.uniq(
-        results.map(s =>
-          s.app.startsWith(internalAppNamePrefix)
-            ? internalAppNamePrefix
-            : s.app,
+      // isLoading: true,
+      isLoading: false,
+      statement: {
+        statement,
+        stats: combineStatementStats(results.map(s => s.stats)),
+        byNode: coalesceNodeStats(results),
+        app: _.uniq(
+          results.map(s =>
+            s.app.startsWith(internalAppNamePrefix)
+              ? internalAppNamePrefix
+              : s.app,
+          ),
         ),
-      ),
-      database: queryByName(props.location, databaseAttr),
-      distSQL: fractionMatching(results, s => s.distSQL),
-      vec: fractionMatching(results, s => s.vec),
-      implicit_txn: fractionMatching(results, s => s.implicit_txn),
-      full_scan: fractionMatching(results, s => s.full_scan),
-      failed: fractionMatching(results, s => s.failed),
-      node_id: _.uniq(results.map(s => s.node_id)),
+        database: queryByName(props.location, databaseAttr),
+        distSQL: fractionMatching(results, s => s.distSQL),
+        vec: fractionMatching(results, s => s.vec),
+        implicit_txn: fractionMatching(results, s => s.implicit_txn),
+        full_scan: fractionMatching(results, s => s.full_scan),
+        failed: fractionMatching(results, s => s.failed),
+        node_id: _.uniq(results.map(s => s.node_id)),
+      },
     };
   },
 );
@@ -231,7 +240,7 @@ const mapStateToProps = (
   state: AdminUIState,
   props: StatementDetailsProps,
 ): StatementDetailsStateProps => {
-  const statement = selectStatement(state, props);
+  const { isLoading, statement } = selectIsLoadingAndStatement(state, props);
   const statementFingerprint = statement?.statement;
   return {
     statement,
@@ -244,6 +253,7 @@ const mapStateToProps = (
       statementFingerprint,
     ),
     hasViewActivityRedactedRole: selectHasViewActivityRedactedRole(state),
+    isLoading,
   };
 };
 

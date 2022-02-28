@@ -60,6 +60,7 @@ import {
 import { DiagnosticsView } from "./diagnostics/diagnosticsView";
 import sortedTableStyles from "src/sortedtable/sortedtable.module.scss";
 import summaryCardStyles from "src/summaryCard/summaryCard.module.scss";
+import loadingStyles from "src/loading/loading.module.scss";
 import styles from "./statementDetails.module.scss";
 import { commonStyles } from "src/common";
 import { NodeSummaryStats } from "../nodes";
@@ -183,6 +184,7 @@ export type StatementDetailsOwnProps = StatementDetailsDispatchProps &
   StatementDetailsStateProps;
 
 const cx = classNames.bind(styles);
+const loadingCx = classNames.bind(loadingStyles);
 const sortableTableCx = classNames.bind(sortedTableStyles);
 const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 
@@ -487,10 +489,12 @@ export class StatementDetails extends React.Component<
 
     if (!this.props.statement) {
       const noDataMessage = (
-        <InlineAlert
-          intent="info"
-          title="No data available for this time interval. Please select a different time interval."
-        />
+        <div className={loadingCx("alerts-container")}>
+          <InlineAlert
+            intent="info"
+            title="No data available for this time interval. Please select a different time interval."
+          />
+        </div>
       );
 
       return (

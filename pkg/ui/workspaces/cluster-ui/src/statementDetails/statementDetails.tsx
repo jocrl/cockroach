@@ -487,10 +487,46 @@ export class StatementDetails extends React.Component<
 
     if (!this.props.statement) {
       return (
-        <InlineAlert
-          intent="info"
-          title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
-        />
+        <Tabs
+          defaultActiveKey="1"
+          className={commonStyles("cockroach--tabs")}
+          onChange={this.onTabChange}
+          activeKey={currentTab}
+        >
+          <TabPane tab="Overview" key="overview">
+                   <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
+          <InlineAlert
+            intent="info"
+            title="No data available for this time interval. Please select a different time interval."
+          />
+          </TabPane>
+          {!isTenant && !hasViewActivityRedactedRole && (
+            <TabPane
+              tab={`Diagnostics ${
+                // hasDiagnosticReports ? `(${diagnosticsReports.length})` : ""
+              }`}
+              key="diagnostics"
+            ></TabPane>
+          )}
+          <TabPane tab="Explain Plan" key="explain-plan">
+            {" "}
+          </TabPane>
+          <TabPane
+            tab="Execution Stats"
+            key="execution-stats"
+            className={cx("fit-content-width")}
+          ></TabPane>
+        </Tabs>
+        // <>
+
+        // </>
       );
     }
 

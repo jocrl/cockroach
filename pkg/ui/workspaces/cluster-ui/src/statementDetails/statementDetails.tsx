@@ -486,6 +486,13 @@ export class StatementDetails extends React.Component<
     const { currentTab } = this.state;
 
     if (!this.props.statement) {
+      const noDataMessage = (
+        <InlineAlert
+          intent="info"
+          title="No data available for this time interval. Please select a different time interval."
+        />
+      );
+
       return (
         <Tabs
           defaultActiveKey="1"
@@ -494,26 +501,18 @@ export class StatementDetails extends React.Component<
           activeKey={currentTab}
         >
           <TabPane tab="Overview" key="overview">
-                   <PageConfig>
-            <PageConfigItem>
-              <TimeScaleDropdown
-                currentScale={this.props.timeScale}
-                setTimeScale={this.props.onTimeScaleChange}
-              />
-            </PageConfigItem>
-          </PageConfig>
-          <InlineAlert
-            intent="info"
-            title="No data available for this time interval. Please select a different time interval."
-          />
+            <PageConfig>
+              <PageConfigItem>
+                <TimeScaleDropdown
+                  currentScale={this.props.timeScale}
+                  setTimeScale={this.props.onTimeScaleChange}
+                />
+              </PageConfigItem>
+            </PageConfig>
+            {noDataMessage}
           </TabPane>
           {!isTenant && !hasViewActivityRedactedRole && (
-            <TabPane
-              tab={`Diagnostics ${
-                // hasDiagnosticReports ? `(${diagnosticsReports.length})` : ""
-              }`}
-              key="diagnostics"
-            ></TabPane>
+            <TabPane tab={`Diagnostics`} key="diagnostics"></TabPane>
           )}
           <TabPane tab="Explain Plan" key="explain-plan">
             {" "}

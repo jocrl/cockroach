@@ -156,14 +156,17 @@ export const TimeScaleDropdown: React.FC<TimeScaleDropdownProps> = ({
     const seconds = windowSize.asSeconds();
     let selected = {};
     let key = currentScale.key;
-    let newFixedWindowEnd;
-
+    let newFixedWindowEnd: moment.Moment | false;
     switch (direction) {
       case ArrowDirection.RIGHT:
-        newFixedWindowEnd = moment.utc(currentWindow.end).add(seconds, "seconds");
+        newFixedWindowEnd = moment
+          .utc(currentWindow.end)
+          .add(seconds, "seconds");
         break;
       case ArrowDirection.LEFT:
-        newFixedWindowEnd = moment.utc(currentWindow.end).subtract(seconds, "seconds");
+        newFixedWindowEnd = moment
+          .utc(currentWindow.end)
+          .subtract(seconds, "seconds");
         break;
       case ArrowDirection.CENTER:
         // CENTER is used to set the time window to the current time.
@@ -176,7 +179,10 @@ export const TimeScaleDropdown: React.FC<TimeScaleDropdownProps> = ({
     // If the timescale extends into the future then fallback to a default
     // timescale. Otherwise set the key to "Custom" so it appears correctly.
     // If endTime + windowValid > now. Unclear why this uses windowValid instead of windowSize.
-    if (!newFixedWindowEnd || newFixedWindowEnd > moment.utc().subtract(currentScale.windowValid)) {
+    if (
+      !newFixedWindowEnd ||
+      newFixedWindowEnd > moment.utc().subtract(currentScale.windowValid)
+    ) {
       const foundTimeScale = Object.entries(options).find(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, value]) => value.windowSize.asSeconds() === windowSize.asSeconds(),

@@ -984,6 +984,7 @@ func importPlanHook(
 			return err
 		}
 
+		log.Infof(ctx, "job id: %d, starting from import planning", sj.ID())
 		if err := sj.Start(ctx); err != nil {
 			return err
 		}

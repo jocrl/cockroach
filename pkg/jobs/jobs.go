@@ -278,6 +278,7 @@ func (j *Job) started(ctx context.Context, txn *kv.Txn) error {
 		//
 		// TODO (sajjad): Update this comment after version 22.2 has been released.
 		if md.RunStats != nil {
+			log.Infof(ctx, "incrementing num runs")
 			ju.UpdateRunStats(md.RunStats.NumRuns+1, j.registry.clock.Now().GoTime())
 		}
 		return nil

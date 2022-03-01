@@ -1113,6 +1113,7 @@ func (r *Registry) stepThroughStateMachine(
 		}
 		resumeCtx := logtags.AddTag(ctx, "job", job.ID())
 
+		log.Infof(ctx, "job id: %d, starting from step through state machine", job.ID())
 		if err := job.started(ctx, nil /* txn */); err != nil {
 			return err
 		}

@@ -8,7 +8,8 @@
 // by the Apache License, Version 2.0, included in the file
 // licenses/APL.txt.
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import _ from "lodash";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { AdminUIState } from "src/redux/state";
@@ -26,6 +27,14 @@ import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
 import moment from "moment";
 import { query } from "express";
 
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 // The time scale dropdown from cluster-ui that updates route params as
 // options are selected.
 const TimeScaleDropdownWithSearchParams = (
@@ -38,6 +47,7 @@ const TimeScaleDropdownWithSearchParams = (
   const queryEndString = urlSearchParams.get("end");
 
   const { setTimeScale, currentScale } = props;
+  const previousScale = usePrevious(currentScale);
 
   const {
     location: { pathname, search },
@@ -69,34 +79,78 @@ const TimeScaleDropdownWithSearchParams = (
       setTimeScale(timeScale);
     };
 
-    // Query params take precedence. If they are present, set state from query params
-    if (queryStartString && queryEndString) {
-      const queryStart = moment.unix(Number(queryStartString)).utc();
-      const queryEnd = moment.unix(Number(queryEndString)).utc();
-      const [stateStart, stateEnd] = toDateRange(currentScale);
-      if (queryStart != stateStart || queryEnd != stateEnd) {
-        console.log("setTimeScaleFromQueryParams");
-        setTimeScaleFromQueryParams(queryStart, queryEnd);
+    const setQueryParamsFromTimeScale = () => {
+      const [start, end] = toDateRange(currentScale);
+      const urlParams = new URLSearchParams(search);
+      urlParams.set("start", moment.utc(start).format("X"));
+      urlParams.set("end", moment.utc(end).format("X"));
+
+      push({
+        pathname,
+        search: urlParams.toString(),
+      });
+    };
+
+    if (previousScale && !_.isEqual(previousScale, currentScale)) {
+      console.log(
+        `scale has changed ${JSON.stringify(previousScale)}, ${JSON.stringify(
+          currentScale,
+        )}`,
+      );
+      //  scale has changed
+      if (queryStartString && queryEndString) {
+        console.log(" there are query params");
+        //  there are query params
+        const queryStart = moment.unix(Number(queryStartString)).utc();
+        const queryEnd = moment.unix(Number(queryEndString)).utc();
+        const [stateStart, stateEnd] = toDateRange(currentScale);
+        if (queryStart != stateStart || queryEnd != stateEnd) {
+          console.log(
+            "override the query params with the value from scale, if they are discrepant",
+          );
+          // override the query params with the value from scale, if they are discrepant
+          console.log("setQueryParamsFromTimeScale");
+          setQueryParamsFromTimeScale();
+        }
       } else {
-        //  do nothing, we're in sync
+        console.log("setQueryParamsFromTimeScale");
+        setQueryParamsFromTimeScale();
       }
     } else {
-      const setQueryParamsFromTimeScale = () => {
-        const [start, end] = toDateRange(currentScale);
-        const urlParams = new URLSearchParams(search);
-        urlParams.set("start", moment.utc(start).format("X"));
-        urlParams.set("end", moment.utc(end).format("X"));
-
-        push({
-          pathname,
-          search: urlParams.toString(),
-        });
-      };
-
-      console.log("setQueryParamsFromTimeScale");
-      // Query params take precedence. If they are absent, set query params from state.
-      setQueryParamsFromTimeScale();
+      console.log("scale did not change");
+      // scale did not change
+      if (queryStartString && queryEndString) {
+        console.log(" there are query params");
+        //  there are query params
+        const queryStart = moment.unix(Number(queryStartString)).utc();
+        const queryEnd = moment.unix(Number(queryEndString)).utc();
+        const [stateStart, stateEnd] = toDateRange(currentScale);
+        if (queryStart != stateStart || queryEnd != stateEnd) {
+          console.log("setTimeScaleFromQueryParams");
+          setTimeScaleFromQueryParams(queryStart, queryEnd);
+        }
+      } else {
+        console.log("setQueryParamsFromTimeScale");
+        setQueryParamsFromTimeScale();
+      }
     }
+
+    // Query params take precedence. If they are present, set state from query params
+    // if (queryStartString && queryEndString) {
+    //   const queryStart = moment.unix(Number(queryStartString)).utc();
+    //   const queryEnd = moment.unix(Number(queryEndString)).utc();
+    //   const [stateStart, stateEnd] = toDateRange(currentScale);
+    //   if (queryStart != stateStart || queryEnd != stateEnd) {
+    //     console.log("setTimeScaleFromQueryParams");
+    //     setTimeScaleFromQueryParams(queryStart, queryEnd);
+    //   } else {
+    //     //  do nothing, we're in sync
+    //   }
+    // } else {
+    //   console.log("setQueryParamsFromTimeScale");
+    //   // Query params take precedence. If they are absent, set query params from state.
+    //   setQueryParamsFromTimeScale();
+    // }
   }, [queryStartString, queryEndString, currentScale, push, pathname, search]);
   // }, [setTimeScale, queryStartString, queryEndString]);
 

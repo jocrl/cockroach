@@ -62,7 +62,6 @@ export interface TimeScale {
 }
 
 export class MetricsTimeState {
-  scale: TimeScale;
   /**
    * Timekeeping for the db console metrics page. Due to tech debt, this duplicates part of state currently in scale.
    * e.g.,

@@ -56,11 +56,16 @@ const TimeScaleDropdownWithSearchParams = (
 
       // Check if the end is close to now, with "close" defined as being no more than `sampleSize` behind.
       const now = moment.utc();
+      console.log(`${now > end.add(timeScale.sampleSize)}`);
       if (now > end.add(timeScale.sampleSize)) {
+        console.log("too far");
         // The end is far enough away from now, thus this is a custom selection.
         timeScale.key = "Custom";
         timeScale.fixedWindowEnd = end;
+      } else {
+        console.log("close enough");
       }
+      console.log(`setting scale ${JSON.stringify(timeScale)}`);
       setTimeScale(timeScale);
     };
 
@@ -74,32 +79,31 @@ const TimeScaleDropdownWithSearchParams = (
     push,
   } = history;
   useEffect(() => {
-    const setQueryParamsByDates = (
-      // duration: moment.Duration,
-      start: moment.Moment,
-      end: moment.Moment,
-    ) => {
-      // const { pathname, search } = history.location;
-      const urlParams = new URLSearchParams(window.location.search);
-      // const urlParams = new URLSearchParams(search);
-      // const seconds = duration.clone().asSeconds();
-      // const end = dateEnd.clone();
-      // const start = moment
-      //   .utc(end)
-      //   .subtract(seconds, "seconds")
-      //   .format("X");
-
-      urlParams.set("start", start.format("X"));
-      urlParams.set("end", end.format("X"));
-
-      console.log(`pushing ${urlParams.toString()}`);
-      push({
-        pathname,
-        search: urlParams.toString(),
-      });
-    };
+    // const setQueryParamsByDates = (
+    //   // duration: moment.Duration,
+    //   start: moment.Moment,
+    //   end: moment.Moment,
+    // ) => {
+    //   const urlParams = new URLSearchParams(window.location.search);
+    // };
+    const urlParams = new URLSearchParams(window.location.search);
     const [start, end] = toDateRange(currentScale);
-    setQueryParamsByDates(start, end);
+    console.log(
+      `pushing ${urlParams.get("start")} -> ${start.format(
+        "X",
+      )} and ${urlParams.get("end")} -> ${end.format("X")}`,
+    );
+    urlParams.set("start", start.format("X"));
+    urlParams.set("end", end.format("X"));
+
+    push({
+      pathname,
+      search: urlParams.toString(),
+    });
+    // if (currentScale.fixedWindowEnd) {
+    //   // setQueryParamsByDates(start, end);
+    // } else {
+    // }
   }, [currentScale, push]);
 
   const setQueryParamsByDates = (

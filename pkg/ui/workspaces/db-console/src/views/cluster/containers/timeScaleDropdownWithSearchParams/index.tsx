@@ -111,8 +111,8 @@ const TimeScaleDropdownWithSearchParams = (
         setQueryParamsFromTimeScale();
       }
     } else {
-    // else, this was triggered by something other than a change in time scale, e.g. landing on the page or a change in route
-          // follow the query params if available, else follow the time scale
+      // else, this was triggered by something other than a change in time scale, e.g. landing on the page or a change in route
+      // follow the query params if available, else follow the time scale
       if (queryStartString && queryEndString) {
         //  there are query params
         const queryStart = moment.unix(Number(queryStartString)).utc();
@@ -125,9 +125,9 @@ const TimeScaleDropdownWithSearchParams = (
       } else {
         console.log("set query params");
         setQueryParamsFromTimeScale();
+      }
     }
-      
-  }, [currentScale, push, pathname, search]);
+  }, [previousScale, currentScale, setTimeScale, push, pathname, search]);
   // }, [setTimeScale, queryStartString, queryEndString]);
 
   useEffect(() => {

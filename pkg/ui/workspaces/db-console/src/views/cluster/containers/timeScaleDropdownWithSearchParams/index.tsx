@@ -21,7 +21,7 @@ import {
   TimeWindow,
   findClosestTimeScale,
 } from "@cockroachlabs/cluster-ui";
-import { createSelector } from "reselect";
+import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
 import moment from "moment";
 
 // The time scale dropdown from cluster-ui that updates route params as
@@ -76,10 +76,12 @@ const TimeScaleDropdownWithSearchParams = (
     const urlSearchParams = new URLSearchParams(history.location.search);
     const queryStart = urlSearchParams.get("start");
     const queryEnd = urlSearchParams.get("end");
-    const start = queryStart && moment.unix(Number(queryStart)).utc();
-    const end = queryEnd && moment.unix(Number(queryEnd)).utc();
+    if (queryStart && queryEnd) {
+      const start = queryStart && moment.unix(Number(queryStart)).utc();
+      const end = queryEnd && moment.unix(Number(queryEnd)).utc();
 
-    setDatesByQueryParams({ start, end });
+      setDatesByQueryParams({ start, end });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -116,14 +118,9 @@ const TimeScaleDropdownWithSearchParams = (
   return <TimeScaleDropdown {...props} setTimeScale={onTimeScaleChange} />;
 };
 
-const scaleSelector = createSelector(
-  (state: AdminUIState) => state?.timeScale,
-  tw => tw?.scale,
-);
-
 export default connect(
   (state: AdminUIState) => ({
-    currentScale: scaleSelector(state),
+    currentScale: statementsTimeScaleLocalSetting.selector(state),
   }),
   {
     setTimeScale: timewindow.setTimeScale,

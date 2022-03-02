@@ -16,7 +16,6 @@
 import { Action } from "redux";
 import { PayloadAction } from "src/interfaces/action";
 import _ from "lodash";
-import { defaultTimeScaleOptions } from "@cockroachlabs/cluster-ui";
 import moment from "moment";
 
 export const SET_SCALE = "cockroachui/timewindow/SET_SCALE";
@@ -62,8 +61,7 @@ export interface TimeScale {
   fixedWindowEnd: moment.Moment | false;
 }
 
-export class TimeScaleState {
-  // Currently selected scale.
+export class MetricsTimeState {
   scale: TimeScale;
   /**
    * Timekeeping for the db console metrics page. Due to tech debt, this duplicates part of state currently in scale.
@@ -84,11 +82,6 @@ export class TimeScaleState {
   };
 
   constructor() {
-    this.scale = {
-      ...defaultTimeScaleOptions["Past 10 Minutes"],
-      key: "Past 10 Minutes",
-      fixedWindowEnd: false,
-    };
     this.metricsTime = {
       // This is explicitly initialized as undefined to match the prior implementation while satisfying Typescript.
       currentWindow: undefined,
@@ -100,10 +93,10 @@ export class TimeScaleState {
   }
 }
 
-export function timeScaleReducer(
-  state = new TimeScaleState(),
+export function metricsTimeReducer(
+  state = new MetricsTimeState(),
   action: Action,
-): TimeScaleState {
+): MetricsTimeState {
   switch (action.type) {
     case SET_SCALE: {
       const { payload: scale } = action as PayloadAction<TimeScale>;
@@ -113,7 +106,6 @@ export function timeScaleReducer(
       } else {
         state.metricsTime.isFixedWindow = false;
       }
-      state.scale = scale;
       state.metricsTime.shouldUpdateMetricsWindowFromScale = true;
       return state;
     }

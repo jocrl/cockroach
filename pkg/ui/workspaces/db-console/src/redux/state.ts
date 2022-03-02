@@ -31,7 +31,7 @@ import { hoverReducer, HoverState } from "./hover";
 import { localSettingsReducer, LocalSettingsState } from "./localsettings";
 import { metricsReducer, MetricsState } from "./metrics";
 import { queryManagerReducer, QueryManagerState } from "./queryManager/reducer";
-import { timeScaleReducer, TimeScaleState } from "./timeScale";
+import { metricsTimeReducer, MetricsTimeState } from "./timeScale";
 import { uiDataReducer, UIDataState } from "./uiData";
 import { loginReducer, LoginAPIState } from "./login";
 import rootSaga from "./sagas";
@@ -43,7 +43,7 @@ export interface AdminUIState {
   metrics: MetricsState;
   queryManager: QueryManagerState;
   router: RouterState;
-  timeScale: TimeScaleState;
+  timeScale: MetricsTimeState;
   uiData: UIDataState;
   login: LoginAPIState;
 }
@@ -65,7 +65,7 @@ export function createAdminUIStore(historyInst: History<any>) {
       metrics: metricsReducer,
       queryManager: queryManagerReducer,
       router: routerReducer,
-      timeScale: timeScaleReducer,
+      timeScale: metricsTimeReducer,
       uiData: uiDataReducer,
       login: loginReducer,
     }),

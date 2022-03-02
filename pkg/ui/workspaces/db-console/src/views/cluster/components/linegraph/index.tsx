@@ -470,6 +470,7 @@ export class LineGraph extends React.Component<LineGraphProps, {}> {
       );
     }
     this.props.setMetricsFixedWindow(newTimeWindow);
+    debugger;
     this.props.setTimeScale(newTimeScale);
     const { pathname, search } = this.props.history.location;
     const urlParams = new URLSearchParams(search);

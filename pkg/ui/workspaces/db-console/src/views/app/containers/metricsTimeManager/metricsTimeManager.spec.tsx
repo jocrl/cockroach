@@ -18,21 +18,26 @@ import _ from "lodash";
 import "src/enzymeInit";
 import { MetricsTimeManagerUnconnected as MetricsTimeManager } from "./";
 import * as timewindow from "src/redux/timeScale";
+import { defaultTimeScaleSelected } from "@cockroachlabs/cluster-ui";
+import { TimeScale } from "src/redux/timeScale";
 
 describe("<MetricsTimeManager>", function() {
   let spy: sinon.SinonSpy;
-  let state: timewindow.TimeScaleState;
+  let metricsTimeState: timewindow.MetricsTimeState;
+  let timeScaleState: TimeScale;
   const now = () => moment("11-12-1955 10:04PM -0800", "MM-DD-YYYY hh:mma Z");
 
   beforeEach(function() {
     spy = sinon.spy();
-    state = new timewindow.TimeScaleState();
+    metricsTimeState = new timewindow.MetricsTimeState();
+    timeScaleState = _.clone(defaultTimeScaleSelected);
   });
 
   const getManager = () =>
     shallow(
       <MetricsTimeManager
-        timeScale={_.clone(state)}
+        metricsTime={_.clone(metricsTimeState)}
+        timeScale={_.clone(timeScaleState)}
         setMetricsMovingWindow={spy}
         now={now}
       />,
@@ -42,48 +47,48 @@ describe("<MetricsTimeManager>", function() {
     getManager();
     assert.isTrue(spy.calledOnce);
     assert.deepEqual(spy.firstCall.args[0], {
-      start: now().subtract(state.scale.windowSize),
+      start: now().subtract(timeScaleState.windowSize),
       end: now(),
     });
   });
 
   it("resets time window immediately if expired", function() {
-    state.metricsTime.currentWindow = {
-      start: now().subtract(state.scale.windowSize),
+    metricsTimeState.metricsTime.currentWindow = {
+      start: now().subtract(timeScaleState.windowSize),
       end: now()
-        .subtract(state.scale.windowValid)
+        .subtract(timeScaleState.windowValid)
         .subtract(1),
     };
 
     getManager();
     assert.isTrue(spy.calledOnce);
     assert.deepEqual(spy.firstCall.args[0], {
-      start: now().subtract(state.scale.windowSize),
+      start: now().subtract(timeScaleState.windowSize),
       end: now(),
     });
   });
 
   it("resets time window immediately if scale has changed", function() {
     // valid window.
-    state.metricsTime.currentWindow = {
-      start: now().subtract(state.scale.windowSize),
+    metricsTimeState.metricsTime.currentWindow = {
+      start: now().subtract(timeScaleState.windowSize),
       end: now(),
     };
-    state.metricsTime.shouldUpdateMetricsWindowFromScale = true;
+    metricsTimeState.metricsTime.shouldUpdateMetricsWindowFromScale = true;
 
     getManager();
     assert.isTrue(spy.calledOnce);
     assert.deepEqual(spy.firstCall.args[0], {
-      start: now().subtract(state.scale.windowSize),
+      start: now().subtract(timeScaleState.windowSize),
       end: now(),
     });
   });
 
   it("resets time window later if current window is valid", function() {
-    state.metricsTime.currentWindow = {
-      start: now().subtract(state.scale.windowSize),
+    metricsTimeState.metricsTime.currentWindow = {
+      start: now().subtract(timeScaleState.windowSize),
       // 5 milliseconds until expiration.
-      end: now().subtract(state.scale.windowValid.asMilliseconds() - 5),
+      end: now().subtract(timeScaleState.windowValid.asMilliseconds() - 5),
     };
 
     getManager();
@@ -94,7 +99,7 @@ describe("<MetricsTimeManager>", function() {
       setTimeout(() => {
         assert.isTrue(spy.calledOnce);
         assert.deepEqual(spy.firstCall.args[0], {
-          start: now().subtract(state.scale.windowSize),
+          start: now().subtract(timeScaleState.windowSize),
           end: now(),
         });
         resolve();
@@ -105,23 +110,23 @@ describe("<MetricsTimeManager>", function() {
   // TODO (maxlang): Fix this test to actually change the state to catch the
   // issue that caused #7590. Tracked in #8595.
   it("has only a single timeout at a time.", function() {
-    state.metricsTime.currentWindow = {
-      start: now().subtract(state.scale.windowSize),
+    metricsTimeState.metricsTime.currentWindow = {
+      start: now().subtract(timeScaleState.windowSize),
       // 5 milliseconds until expiration.
-      end: now().subtract(state.scale.windowValid.asMilliseconds() - 5),
+      end: now().subtract(timeScaleState.windowValid.asMilliseconds() - 5),
     };
 
     const manager = getManager();
     assert.isTrue(spy.notCalled);
 
     // Set new props on currentWindow. The previous timeout should be abandoned.
-    state.metricsTime.currentWindow = {
-      start: now().subtract(state.scale.windowSize),
+    metricsTimeState.metricsTime.currentWindow = {
+      start: now().subtract(timeScaleState.windowSize),
       // 10 milliseconds until expiration.
-      end: now().subtract(state.scale.windowValid.asMilliseconds() - 10),
+      end: now().subtract(timeScaleState.windowValid.asMilliseconds() - 10),
     };
     manager.setProps({
-      timeWindow: state,
+      timeWindow: metricsTimeState,
     });
     assert.isTrue(spy.notCalled);
 
@@ -130,7 +135,7 @@ describe("<MetricsTimeManager>", function() {
       setTimeout(() => {
         assert.isTrue(spy.calledOnce);
         assert.deepEqual(spy.firstCall.args[0], {
-          start: now().subtract(state.scale.windowSize),
+          start: now().subtract(timeScaleState.windowSize),
           end: now(),
         });
         resolve();

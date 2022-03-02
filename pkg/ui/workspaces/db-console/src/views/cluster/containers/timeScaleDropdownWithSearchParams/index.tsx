@@ -35,7 +35,6 @@ const TimeScaleDropdownWithSearchParams = (
   const urlSearchParams = new URLSearchParams(queryParams);
   const queryStart = urlSearchParams.get("start");
   const queryEnd = urlSearchParams.get("end");
-  console.log(`params: ${queryParams} ${queryStart} ${queryEnd}`);
 
   const { setTimeScale, currentScale } = props;
   useEffect(() => {
@@ -45,7 +44,6 @@ const TimeScaleDropdownWithSearchParams = (
     ) => {
       const start = moment.unix(Number(queryStart)).utc();
       const end = moment.unix(Number(queryEnd)).utc();
-      console.log(`foo ${queryEnd} ${moment.utc(end).format("X")}`);
       const seconds = end.diff(start, "seconds");
 
       // Find the closest time scale just by window size.
@@ -58,35 +56,15 @@ const TimeScaleDropdownWithSearchParams = (
 
       // Check if the end is close to now, with "close" defined as being no more than `sampleSize` behind.
       const now = moment.utc();
-      // console.log(`${now > end.add(timeScale.sampleSize)}`);
       if (now > end.clone().add(timeScale.sampleSize)) {
-        console.log("too far");
         // The end is far enough away from now, thus this is a custom selection.
         timeScale.key = "Custom";
         timeScale.fixedWindowEnd = end;
-      } else {
-        console.log("close enough");
       }
-      const [startRange, endRange] = toDateRange(timeScale);
-
-      console.log(
-        `was ${queryEnd} ${moment.utc(end).format("X")} ${timeScale.key} ${
-          timeScale.fixedWindowEnd
-            ? timeScale.fixedWindowEnd.format("X")
-            : timeScale.fixedWindowEnd
-        } ${endRange.format("X")}`,
-      );
-      // console.log(
-      //   `was ${queryStart} ${queryEnd}` +
-      //     ` setting scale ${timeScale.key} ${
-      //       timeScale.fixedWindowEnd
-      //         ? timeScale.fixedWindowEnd.format("X")
-      //         : timeScale.fixedWindowEnd
-      //     } ${startRange.format("X")} ${endRange.format("X")}`,
-      // );
       setTimeScale(timeScale);
     };
 
+    // Query params take precedence. If they are present, set state from query params
     if (queryStart && queryEnd) {
       setTimeScaleFromQueryParams(queryStart, queryEnd);
     }
@@ -97,29 +75,9 @@ const TimeScaleDropdownWithSearchParams = (
     push,
   } = history;
   useEffect(() => {
-    // const setQueryParamsByDates = (
-    //   // duration: moment.Duration,
-    //   start: moment.Moment,
-    //   end: moment.Moment,
-    // ) => {
-    //   const urlParams = new URLSearchParams(window.location.search);
-    // };
-    // Query params take precedence. If there are no query params, set query params from state.
-    if (!(queryStart && queryEnd)) {
-      const urlParams = new URLSearchParams(search);
+    const setQueryParamsFromTimeScale = () => {
       const [start, end] = toDateRange(currentScale);
-      console.log(
-        `pushing ${urlParams.get("end")} -> ${moment.utc(end).format("X")}. ${
-          currentScale.key
-        } ${
-          currentScale.fixedWindowEnd
-            ? currentScale.fixedWindowEnd.format("X")
-            : currentScale.fixedWindowEnd
-        }`,
-        // `pushing ${urlParams.get("start")} -> ${start.format(
-        //   "X",
-        // )} and ${urlParams.get("end")} -> ${end.format("X")}`,
-      );
+      const urlParams = new URLSearchParams(search);
       urlParams.set("start", moment.utc(start).format("X"));
       urlParams.set("end", moment.utc(end).format("X"));
 
@@ -127,44 +85,45 @@ const TimeScaleDropdownWithSearchParams = (
         pathname,
         search: urlParams.toString(),
       });
-      // if (currentScale.fixedWindowEnd) {
-      //   // setQueryParamsByDates(start, end);
-      // } else {
-      // }
+    };
+
+    // Query params take precedence. If they are absent, set query params from state.
+    if (!(queryStart && queryEnd)) {
+      setQueryParamsFromTimeScale();
     }
-  }, [queryStart, queryEnd, currentScale, push, search]);
+  }, [queryStart, queryEnd, currentScale, push, pathname, search]);
 
-  const setQueryParamsByDates = (
-    duration: moment.Duration,
-    dateEnd: moment.Moment,
-  ) => {
-    const { pathname, search } = history.location;
-    const urlParams = new URLSearchParams(search);
-    const seconds = duration.clone().asSeconds();
-    const end = dateEnd.clone();
-    const start = moment
-      .utc(end)
-      .subtract(seconds, "seconds")
-      .format("X");
-
-    urlParams.set("start", start);
-    urlParams.set("end", moment.utc(dateEnd).format("X"));
-
-    console.log(`pushing ${urlParams.toString()}`);
-    history.push({
-      pathname,
-      search: urlParams.toString(),
-    });
-  };
+  // const setQueryParamsByDates = (
+  //   duration: moment.Duration,
+  //   dateEnd: moment.Moment,
+  // ) => {
+  //   const { pathname, search } = history.location;
+  //   const urlParams = new URLSearchParams(search);
+  //   const seconds = duration.clone().asSeconds();
+  //   const end = dateEnd.clone();
+  //   const start = moment
+  //     .utc(end)
+  //     .subtract(seconds, "seconds")
+  //     .format("X");
+  //
+  //   urlParams.set("start", start);
+  //   urlParams.set("end", moment.utc(dateEnd).format("X"));
+  //
+  //   console.log(`pushing ${urlParams.toString()}`);
+  //   history.push({
+  //     pathname,
+  //     search: urlParams.toString(),
+  //   });
+  // };
 
   const onTimeScaleChange = (timeScale: TimeScale) => {
     props.setTimeScale(timeScale);
     // todo(josephine) the line below needs to be moved to a useEffect
     // it would also set query params from other sources of changing state
-    setQueryParamsByDates(
-      timeScale.windowSize,
-      timeScale.fixedWindowEnd || moment.utc(),
-    );
+    // setQueryParamsByDates(
+    //   timeScale.windowSize,
+    //   timeScale.fixedWindowEnd || moment.utc(),
+    // );
   };
 
   return <TimeScaleDropdown {...props} setTimeScale={onTimeScaleChange} />;

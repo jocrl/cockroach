@@ -119,6 +119,7 @@ const TimeScaleDropdownWithSearchParams = (
         if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
           setTimeScaleFromQueryParams(queryStart, queryEnd);
         }
+        //  else, don't do anything. query params and state are already in sync.
       } else {
         setQueryParamsFromTimeScale();
       }

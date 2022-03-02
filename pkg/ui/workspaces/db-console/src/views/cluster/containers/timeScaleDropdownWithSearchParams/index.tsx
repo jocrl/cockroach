@@ -22,10 +22,8 @@ import {
   findClosestTimeScale,
   toDateRange,
 } from "@cockroachlabs/cluster-ui";
-import useCustomCompareEffect from "use-custom-compare-effect";
 import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
 import moment from "moment";
-import { query } from "express";
 
 function usePrevious(value) {
   const ref = useRef();
@@ -126,16 +124,9 @@ const TimeScaleDropdownWithSearchParams = (
       }
     }
   }, [previousScale, currentScale, setTimeScale, push, pathname, search]);
-  // }, [setTimeScale, queryStartString, queryEndString]);
 
   const onTimeScaleChange = (timeScale: TimeScale) => {
     props.setTimeScale(timeScale);
-    // todo(josephine) the line below needs to be moved to a useEffect
-    // it would also set query params from other sources of changing state
-    // setQueryParamsByDates(
-    //   timeScale.windowSize,
-    //   timeScale.fixedWindowEnd || moment.utc(),
-    // );
   };
 
   return <TimeScaleDropdown {...props} setTimeScale={onTimeScaleChange} />;

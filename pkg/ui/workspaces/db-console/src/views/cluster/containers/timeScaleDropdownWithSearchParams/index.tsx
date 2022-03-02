@@ -91,54 +91,72 @@ const TimeScaleDropdownWithSearchParams = (
       });
     };
 
-    if (previousScale && !_.isEqual(previousScale, currentScale)) {
-      console.log(
-        `scale has changed
-        `,
-        // ${JSON.stringify(previousScale)}, ${JSON.stringify(
-        //   currentScale)}
-      );
-      //  scale has changed
+    // if this was triggered by landing on the page/a change in route
+    if (previousScale == undefined || _.isEqual(previousScale, currentScale)) {
+      // follow the query params if available, else follow the time scale
       if (queryStartString && queryEndString) {
-        console.log(" there are query params");
         //  there are query params
         const queryStart = moment.unix(Number(queryStartString)).utc();
         const queryEnd = moment.unix(Number(queryEndString)).utc();
         const [stateStart, stateEnd] = toDateRange(currentScale);
         if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
-          console.log(
-            `is discrepant. override the query params with the value from scale \n
-            `,
-            // ${queryStart}, ${stateStart}. ${queryEnd}, ${stateEnd}
-          );
-          // override the query params with the value from scale, if they are discrepant
-          console.log("setQueryParamsFromTimeScale");
-          setQueryParamsFromTimeScale();
-        } else {
-          console.log("query params and state are the same. doing nothing");
+          console.log("set scale");
+          setTimeScaleFromQueryParams(queryStart, queryEnd);
         }
       } else {
-        console.log("setQueryParamsFromTimeScale");
+        console.log("set query params");
         setQueryParamsFromTimeScale();
       }
     } else {
-      console.log("scale did not change");
-      // scale did not change
+      // else, this was triggered by a change in time scale
+      // console.log("set query params");
+      // if not already equal
+      // setQueryParamsFromTimeScale();
+
       if (queryStartString && queryEndString) {
-        console.log(" there are query params");
         //  there are query params
         const queryStart = moment.unix(Number(queryStartString)).utc();
         const queryEnd = moment.unix(Number(queryEndString)).utc();
         const [stateStart, stateEnd] = toDateRange(currentScale);
-        if (queryStart != stateStart || queryEnd != stateEnd) {
-          console.log("setTimeScaleFromQueryParams");
-          setTimeScaleFromQueryParams(queryStart, queryEnd);
+        if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
+          // override the query params with the value from scale, if they are discrepant
+          setQueryParamsFromTimeScale();
         }
+        //  else, don't do anything. query params and state are already in sync.
       } else {
-        console.log("setQueryParamsFromTimeScale");
         setQueryParamsFromTimeScale();
       }
     }
+
+    // if (!_.isEqual(previousScale, currentScale) && previousScale != undefined) {
+    //   // scale has changed and it is not the starting initialization
+    //   if (queryStartString && queryEndString) {
+    //     //  there are query params
+    //     const queryStart = moment.unix(Number(queryStartString)).utc();
+    //     const queryEnd = moment.unix(Number(queryEndString)).utc();
+    //     const [stateStart, stateEnd] = toDateRange(currentScale);
+    //     if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
+    //       // override the query params with the value from scale, if they are discrepant
+    //       setQueryParamsFromTimeScale();
+    //     }
+    //     //  else, don't do anything. query params and state are already in sync.
+    //   } else {
+    //     setQueryParamsFromTimeScale();
+    //   }
+    // } else {
+    //   // scale did not change
+    //   if (queryStartString && queryEndString) {
+    //     //  there are query params
+    //     const queryStart = moment.unix(Number(queryStartString)).utc();
+    //     const queryEnd = moment.unix(Number(queryEndString)).utc();
+    //     const [stateStart, stateEnd] = toDateRange(currentScale);
+    //     if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
+    //       setTimeScaleFromQueryParams(queryStart, queryEnd);
+    //     }
+    //   } else {
+    //     setQueryParamsFromTimeScale();
+    //   }
+    // }
 
     // Query params take precedence. If they are present, set state from query params
     // if (queryStartString && queryEndString) {

@@ -192,12 +192,16 @@ class MetricsDataProvider extends React.Component<
   refreshMetricsIfStale(props: MetricsDataProviderProps) {
     const request = this.requestMessage(props);
     if (!request) {
+      console.log("early return");
       return;
     }
     const { metrics, requestMetrics, id } = props;
     const nextRequest = metrics && metrics.nextRequest;
     if (!nextRequest || !_.isEqual(nextRequest, request)) {
+      console.log("differnet");
       requestMetrics(id, request);
+    } else {
+      console.log("same");
     }
   }
 
@@ -210,6 +214,7 @@ class MetricsDataProvider extends React.Component<
   componentDidUpdate() {
     // Refresh nodes status query when props are received; this will immediately
     // trigger a new request if previous results are invalidated.
+    console.log("componentDidUpdate");
     this.refreshMetricsIfStale(this.props);
   }
 

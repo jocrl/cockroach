@@ -24,6 +24,7 @@ import {
 import useCustomCompareEffect from "use-custom-compare-effect";
 import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
 import moment from "moment";
+import { query } from "express";
 
 // The time scale dropdown from cluster-ui that updates route params as
 // options are selected.
@@ -33,17 +34,21 @@ const TimeScaleDropdownWithSearchParams = (
   const history = useHistory();
   const queryParams = history.location.search;
   const urlSearchParams = new URLSearchParams(queryParams);
-  const queryStart = urlSearchParams.get("start");
-  const queryEnd = urlSearchParams.get("end");
+  const queryStartString = urlSearchParams.get("start");
+  const queryEndString = urlSearchParams.get("end");
 
   const { setTimeScale, currentScale } = props;
+
+  const {
+    location: { pathname, search },
+    push,
+  } = history;
+
   useEffect(() => {
     const setTimeScaleFromQueryParams = (
-      queryStart: string,
-      queryEnd: string,
+      start: moment.Moment,
+      end: moment.Moment,
     ) => {
-      const start = moment.unix(Number(queryStart)).utc();
-      const end = moment.unix(Number(queryEnd)).utc();
       const seconds = end.diff(start, "seconds");
 
       // Find the closest time scale just by window size.
@@ -65,33 +70,54 @@ const TimeScaleDropdownWithSearchParams = (
     };
 
     // Query params take precedence. If they are present, set state from query params
-    if (queryStart && queryEnd) {
-      setTimeScaleFromQueryParams(queryStart, queryEnd);
-    }
-  }, [setTimeScale, queryStart, queryEnd]);
+    if (queryStartString && queryEndString) {
+      const queryStart = moment.unix(Number(queryStartString)).utc();
+      const queryEnd = moment.unix(Number(queryEndString)).utc();
+      const [stateStart, stateEnd] = toDateRange(currentScale);
+      if (queryStart != stateStart || queryEnd != stateEnd) {
+        console.log("setTimeScaleFromQueryParams");
+        setTimeScaleFromQueryParams(queryStart, queryEnd);
+      } else {
+        //  do nothing, we're in sync
+      }
+    } else {
+      const setQueryParamsFromTimeScale = () => {
+        const [start, end] = toDateRange(currentScale);
+        const urlParams = new URLSearchParams(search);
+        urlParams.set("start", moment.utc(start).format("X"));
+        urlParams.set("end", moment.utc(end).format("X"));
 
-  const {
-    location: { pathname, search },
-    push,
-  } = history;
-  useEffect(() => {
-    const setQueryParamsFromTimeScale = () => {
-      const [start, end] = toDateRange(currentScale);
-      const urlParams = new URLSearchParams(search);
-      urlParams.set("start", moment.utc(start).format("X"));
-      urlParams.set("end", moment.utc(end).format("X"));
+        push({
+          pathname,
+          search: urlParams.toString(),
+        });
+      };
 
-      push({
-        pathname,
-        search: urlParams.toString(),
-      });
-    };
-
-    // Query params take precedence. If they are absent, set query params from state.
-    if (!(queryStart && queryEnd)) {
+      console.log("setQueryParamsFromTimeScale");
+      // Query params take precedence. If they are absent, set query params from state.
       setQueryParamsFromTimeScale();
     }
-  }, [queryStart, queryEnd, currentScale, push, pathname, search]);
+  }, [queryStartString, queryEndString, currentScale, push, pathname, search]);
+  // }, [setTimeScale, queryStartString, queryEndString]);
+
+  useEffect(() => {
+    // const setQueryParamsFromTimeScale = () => {
+    //   const [start, end] = toDateRange(currentScale);
+    //   const urlParams = new URLSearchParams(search);
+    //   urlParams.set("start", moment.utc(start).format("X"));
+    //   urlParams.set("end", moment.utc(end).format("X"));
+    //
+    //   push({
+    //     pathname,
+    //     search: urlParams.toString(),
+    //   });
+    // };
+    //
+    // // Query params take precedence. If they are absent, set query params from state.
+    // if (!(queryStartString && queryEndString)) {
+    //   setQueryParamsFromTimeScale();
+    // }
+  }, [queryStartString, queryEndString, currentScale, push, pathname, search]);
 
   // const setQueryParamsByDates = (
   //   duration: moment.Duration,

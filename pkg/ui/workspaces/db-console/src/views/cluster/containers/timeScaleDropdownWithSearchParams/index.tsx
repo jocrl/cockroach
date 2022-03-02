@@ -30,31 +30,25 @@ const TimeScaleDropdownWithSearchParams = (
   props: TimeScaleDropdownProps,
 ): React.ReactElement => {
   const history = useHistory();
+  const queryParams = history.location.search;
+  const urlSearchParams = new URLSearchParams(queryParams);
+  const queryStart = urlSearchParams.get("start");
+  const queryEnd = urlSearchParams.get("end");
+
+  const {
+    currentScale: { windowSize },
+    setTimeScale,
+  } = props;
+
+  console.log(`here ${queryParams}, ${windowSize}`);
 
   useEffect(() => {
-    const setDatesByQueryParams = (dates: Partial<TimeWindow>) => {
-      const now = moment.utc();
-      // `currentWindow` is derived from `scale`, and does not have to do with the `currentWindow` for the metrics page.
-      const currentWindow: TimeWindow = {
-        start: moment(now).subtract(props.currentScale.windowSize),
-        end: now,
-      };
-      /**
-       * Prioritize an end defined in the query params.
-       * Else, use window end.
-       * Else, a seemingly unreachable option says otherwise use now, but that should never happen since it is set in
-       *  the line above (and is the same value anyway, always now).
-       */
-      const end = dates.end?.utc() || currentWindow.end?.utc() || now;
-      /**
-       * Prioritize start as defined in the query params.
-       * Else, use now minus the window size.
-       * Else, a final seemingly unreachable option (since start is always set above) is to do ten minutes before now.
-       */
-      const start =
-        dates.start?.utc() ||
-        currentWindow.start?.utc() ||
-        moment(now).subtract(10, "minutes");
+    const setTimeScaleFromQueryParams = (
+      queryStart: string,
+      queryEnd: string,
+    ) => {
+      const start = moment.unix(Number(queryStart)).utc();
+      const end = moment.unix(Number(queryEnd)).utc();
       const seconds = end.diff(start, "seconds");
 
       // Find the closest time scale just by window size.
@@ -64,26 +58,72 @@ const TimeScaleDropdownWithSearchParams = (
         windowSize: moment.duration(end.diff(start)),
         fixedWindowEnd: false,
       };
+
       // Check if the end is close to now, with "close" defined as being no more than `sampleSize` behind.
-      if (now > end.subtract(timeScale.sampleSize)) {
+      const now = moment.utc();
+      if (now > end.add(timeScale.sampleSize)) {
         // The end is far enough away from now, thus this is a custom selection.
         timeScale.key = "Custom";
         timeScale.fixedWindowEnd = end;
+        console.log(`too far ${end} ${now} ${timeScale.sampleSize}`);
+      } else {
+        console.log("close enough");
       }
-      props.setTimeScale(timeScale);
+      setTimeScale(timeScale);
+
+      // =============================
+      // const now = moment.utc();
+      // // `currentWindow` is derived from `scale`, and does not have to do with the `currentWindow` for the metrics page.
+      // const currentWindow: TimeWindow = {
+      //   start: moment(now).subtract(windowSize),
+      //   end: now,
+      // };
+      // /**
+      //  * Prioritize an end defined in the query params.
+      //  * Else, use window end.
+      //  * Else, a seemingly unreachable option says otherwise use now, but that should never happen since it is set in
+      //  *  the line above (and is the same value anyway, always now).
+      //  */
+      // const end = dates.end?.utc() || currentWindow.end?.utc() || now;
+      // /**
+      //  * Prioritize start as defined in the query params.
+      //  * Else, use now minus the window size.
+      //  * Else, a final seemingly unreachable option (since start is always set above) is to do ten minutes before now.
+      //  */
+      // const start =
+      //   dates.start?.utc() ||
+      //   currentWindow.start?.utc() ||
+      //   moment(now).subtract(10, "minutes");
+      // const seconds = end.diff(start, "seconds");
+
+      // // Find the closest time scale just by window size.
+      // // And temporarily assume the end is "now" with fixedWindowEnd=false.
+      // const timeScale: TimeScale = {
+      //   ...findClosestTimeScale(defaultTimeScaleOptions, seconds),
+      //   windowSize: moment.duration(end.diff(start)),
+      //   fixedWindowEnd: false,
+      // };
+      // // Check if the end is close to now, with "close" defined as being no more than `sampleSize` behind.
+      // if (now > end.subtract(timeScale.sampleSize)) {
+      //   // The end is far enough away from now, thus this is a custom selection.
+      //   timeScale.key = "Custom";
+      //   timeScale.fixedWindowEnd = end;
+      // }
+      // setTimeScale(timeScale);
     };
 
-    const urlSearchParams = new URLSearchParams(history.location.search);
-    const queryStart = urlSearchParams.get("start");
-    const queryEnd = urlSearchParams.get("end");
-    if (queryStart && queryEnd) {
-      const start = queryStart && moment.unix(Number(queryStart)).utc();
-      const end = queryEnd && moment.unix(Number(queryEnd)).utc();
+    // const urlSearchParams = new URLSearchParams(queryParams);
+    // const queryStart = urlSearchParams.get("start");
+    // const queryEnd = urlSearchParams.get("end");
+    // // if (queryStart && queryEnd) {
+    // const start = queryStart && moment.unix(Number(queryStart)).utc();
+    // const end = queryEnd && moment.unix(Number(queryEnd)).utc();
+    // }
 
-      setDatesByQueryParams({ start, end });
+    if (queryStart && queryEnd) {
+      setTimeScaleFromQueryParams(queryStart, queryEnd);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setTimeScale, queryStart, queryEnd]);
 
   const setQueryParamsByDates = (
     duration: moment.Duration,
@@ -101,6 +141,7 @@ const TimeScaleDropdownWithSearchParams = (
     urlParams.set("start", start);
     urlParams.set("end", moment.utc(dateEnd).format("X"));
 
+    console.log(`pushing ${urlParams.toString()}`);
     history.push({
       pathname,
       search: urlParams.toString(),
@@ -109,6 +150,8 @@ const TimeScaleDropdownWithSearchParams = (
 
   const onTimeScaleChange = (timeScale: TimeScale) => {
     props.setTimeScale(timeScale);
+    // todo(josephine) the line below needs to be moved to a useEffect
+    // it would also set query params from other sources of changing state
     setQueryParamsByDates(
       timeScale.windowSize,
       timeScale.fixedWindowEnd || moment.utc(),

@@ -35,6 +35,7 @@ const TimeScaleDropdownWithSearchParams = (
   const urlSearchParams = new URLSearchParams(queryParams);
   const queryStart = urlSearchParams.get("start");
   const queryEnd = urlSearchParams.get("end");
+  console.log(`params: ${queryParams} ${queryStart} ${queryEnd}`);
 
   const { setTimeScale, currentScale } = props;
   useEffect(() => {
@@ -44,6 +45,7 @@ const TimeScaleDropdownWithSearchParams = (
     ) => {
       const start = moment.unix(Number(queryStart)).utc();
       const end = moment.unix(Number(queryEnd)).utc();
+      console.log(`foo ${queryEnd} ${moment.utc(end).format("X")}`);
       const seconds = end.diff(start, "seconds");
 
       // Find the closest time scale just by window size.
@@ -56,8 +58,8 @@ const TimeScaleDropdownWithSearchParams = (
 
       // Check if the end is close to now, with "close" defined as being no more than `sampleSize` behind.
       const now = moment.utc();
-      console.log(`${now > end.add(timeScale.sampleSize)}`);
-      if (now > end.add(timeScale.sampleSize)) {
+      // console.log(`${now > end.add(timeScale.sampleSize)}`);
+      if (now > end.clone().add(timeScale.sampleSize)) {
         console.log("too far");
         // The end is far enough away from now, thus this is a custom selection.
         timeScale.key = "Custom";
@@ -65,7 +67,23 @@ const TimeScaleDropdownWithSearchParams = (
       } else {
         console.log("close enough");
       }
-      console.log(`setting scale ${JSON.stringify(timeScale)}`);
+      const [startRange, endRange] = toDateRange(timeScale);
+
+      console.log(
+        `was ${queryEnd} ${moment.utc(end).format("X")} ${timeScale.key} ${
+          timeScale.fixedWindowEnd
+            ? timeScale.fixedWindowEnd.format("X")
+            : timeScale.fixedWindowEnd
+        } ${endRange.format("X")}`,
+      );
+      // console.log(
+      //   `was ${queryStart} ${queryEnd}` +
+      //     ` setting scale ${timeScale.key} ${
+      //       timeScale.fixedWindowEnd
+      //         ? timeScale.fixedWindowEnd.format("X")
+      //         : timeScale.fixedWindowEnd
+      //     } ${startRange.format("X")} ${endRange.format("X")}`,
+      // );
       setTimeScale(timeScale);
     };
 
@@ -86,15 +104,22 @@ const TimeScaleDropdownWithSearchParams = (
     // ) => {
     //   const urlParams = new URLSearchParams(window.location.search);
     // };
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(search);
     const [start, end] = toDateRange(currentScale);
     console.log(
-      `pushing ${urlParams.get("start")} -> ${start.format(
-        "X",
-      )} and ${urlParams.get("end")} -> ${end.format("X")}`,
+      `pushing ${urlParams.get("end")} -> ${end.format("X")}. ${
+        currentScale.key
+      } ${
+        currentScale.fixedWindowEnd
+          ? currentScale.fixedWindowEnd.format("X")
+          : currentScale.fixedWindowEnd
+      }`,
+      // `pushing ${urlParams.get("start")} -> ${start.format(
+      //   "X",
+      // )} and ${urlParams.get("end")} -> ${end.format("X")}`,
     );
-    urlParams.set("start", start.format("X"));
-    urlParams.set("end", end.format("X"));
+    urlParams.set("start", moment.utc(start).format("X"));
+    urlParams.set("end", moment.utc(end).format("X"));
 
     push({
       pathname,
@@ -104,7 +129,7 @@ const TimeScaleDropdownWithSearchParams = (
     //   // setQueryParamsByDates(start, end);
     // } else {
     // }
-  }, [currentScale, push]);
+  }, [currentScale, push, search]);
 
   const setQueryParamsByDates = (
     duration: moment.Duration,

@@ -130,48 +130,6 @@ const TimeScaleDropdownWithSearchParams = (
   }, [previousScale, currentScale, setTimeScale, push, pathname, search]);
   // }, [setTimeScale, queryStartString, queryEndString]);
 
-  useEffect(() => {
-    // const setQueryParamsFromTimeScale = () => {
-    //   const [start, end] = toDateRange(currentScale);
-    //   const urlParams = new URLSearchParams(search);
-    //   urlParams.set("start", moment.utc(start).format("X"));
-    //   urlParams.set("end", moment.utc(end).format("X"));
-    //
-    //   push({
-    //     pathname,
-    //     search: urlParams.toString(),
-    //   });
-    // };
-    //
-    // // Query params take precedence. If they are absent, set query params from state.
-    // if (!(queryStartString && queryEndString)) {
-    //   setQueryParamsFromTimeScale();
-    // }
-  }, [queryStartString, queryEndString, currentScale, push, pathname, search]);
-
-  // const setQueryParamsByDates = (
-  //   duration: moment.Duration,
-  //   dateEnd: moment.Moment,
-  // ) => {
-  //   const { pathname, search } = history.location;
-  //   const urlParams = new URLSearchParams(search);
-  //   const seconds = duration.clone().asSeconds();
-  //   const end = dateEnd.clone();
-  //   const start = moment
-  //     .utc(end)
-  //     .subtract(seconds, "seconds")
-  //     .format("X");
-  //
-  //   urlParams.set("start", start);
-  //   urlParams.set("end", moment.utc(dateEnd).format("X"));
-  //
-  //   console.log(`pushing ${urlParams.toString()}`);
-  //   history.push({
-  //     pathname,
-  //     search: urlParams.toString(),
-  //   });
-  // };
-
   const onTimeScaleChange = (timeScale: TimeScale) => {
     props.setTimeScale(timeScale);
     // todo(josephine) the line below needs to be moved to a useEffect

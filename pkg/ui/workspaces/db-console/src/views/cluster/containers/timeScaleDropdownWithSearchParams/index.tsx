@@ -93,9 +93,10 @@ const TimeScaleDropdownWithSearchParams = (
 
     if (previousScale && !_.isEqual(previousScale, currentScale)) {
       console.log(
-        `scale has changed ${JSON.stringify(previousScale)}, ${JSON.stringify(
-          currentScale,
-        )}`,
+        `scale has changed
+        `,
+        // ${JSON.stringify(previousScale)}, ${JSON.stringify(
+        //   currentScale)}
       );
       //  scale has changed
       if (queryStartString && queryEndString) {
@@ -106,7 +107,9 @@ const TimeScaleDropdownWithSearchParams = (
         const [stateStart, stateEnd] = toDateRange(currentScale);
         if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
           console.log(
-            `is discrepant. override the query params with the value from scale \n ${queryStart}, ${stateStart}. ${queryEnd}, ${stateEnd}`,
+            `is discrepant. override the query params with the value from scale \n
+            `,
+            // ${queryStart}, ${stateStart}. ${queryEnd}, ${stateEnd}
           );
           // override the query params with the value from scale, if they are discrepant
           console.log("setQueryParamsFromTimeScale");

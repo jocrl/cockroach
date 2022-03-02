@@ -71,7 +71,6 @@ import ClearStats from "../sqlActivity/clearStats";
 import SQLActivityError from "../sqlActivity/errorComponent";
 import {
   TimeScaleDropdown,
-  defaultTimeScaleSelected,
   TimeScale,
   toDateRange,
 } from "../timeScaleDropdown";

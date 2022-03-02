@@ -104,32 +104,35 @@ const TimeScaleDropdownWithSearchParams = (
     // ) => {
     //   const urlParams = new URLSearchParams(window.location.search);
     // };
-    const urlParams = new URLSearchParams(search);
-    const [start, end] = toDateRange(currentScale);
-    console.log(
-      `pushing ${urlParams.get("end")} -> ${end.format("X")}. ${
-        currentScale.key
-      } ${
-        currentScale.fixedWindowEnd
-          ? currentScale.fixedWindowEnd.format("X")
-          : currentScale.fixedWindowEnd
-      }`,
-      // `pushing ${urlParams.get("start")} -> ${start.format(
-      //   "X",
-      // )} and ${urlParams.get("end")} -> ${end.format("X")}`,
-    );
-    urlParams.set("start", moment.utc(start).format("X"));
-    urlParams.set("end", moment.utc(end).format("X"));
+    // Query params take precedence. If there are no query params, set query params from state.
+    if (!(queryStart && queryEnd)) {
+      const urlParams = new URLSearchParams(search);
+      const [start, end] = toDateRange(currentScale);
+      console.log(
+        `pushing ${urlParams.get("end")} -> ${moment.utc(end).format("X")}. ${
+          currentScale.key
+        } ${
+          currentScale.fixedWindowEnd
+            ? currentScale.fixedWindowEnd.format("X")
+            : currentScale.fixedWindowEnd
+        }`,
+        // `pushing ${urlParams.get("start")} -> ${start.format(
+        //   "X",
+        // )} and ${urlParams.get("end")} -> ${end.format("X")}`,
+      );
+      urlParams.set("start", moment.utc(start).format("X"));
+      urlParams.set("end", moment.utc(end).format("X"));
 
-    push({
-      pathname,
-      search: urlParams.toString(),
-    });
-    // if (currentScale.fixedWindowEnd) {
-    //   // setQueryParamsByDates(start, end);
-    // } else {
-    // }
-  }, [currentScale, push, search]);
+      push({
+        pathname,
+        search: urlParams.toString(),
+      });
+      // if (currentScale.fixedWindowEnd) {
+      //   // setQueryParamsByDates(start, end);
+      // } else {
+      // }
+    }
+  }, [queryStart, queryEnd, currentScale, push, search]);
 
   const setQueryParamsByDates = (
     duration: moment.Duration,

@@ -62,7 +62,6 @@ import SQLActivityError from "../sqlActivity/errorComponent";
 import { commonStyles } from "../common";
 import {
   TimeScaleDropdown,
-  defaultTimeScaleSelected,
   TimeScale,
   toDateRange,
 } from "../timeScaleDropdown";

@@ -18,9 +18,10 @@ import {
   TimeScaleDropdown,
   TimeScaleDropdownProps,
   TimeScale,
-  TimeWindow,
   findClosestTimeScale,
+  toDateRange,
 } from "@cockroachlabs/cluster-ui";
+import useCustomCompareEffect from "use-custom-compare-effect";
 import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
 import moment from "moment";
 
@@ -35,13 +36,7 @@ const TimeScaleDropdownWithSearchParams = (
   const queryStart = urlSearchParams.get("start");
   const queryEnd = urlSearchParams.get("end");
 
-  const {
-    currentScale: { windowSize },
-    setTimeScale,
-  } = props;
-
-  console.log(`here ${queryParams}, ${windowSize}`);
-
+  const { setTimeScale, currentScale } = props;
   useEffect(() => {
     const setTimeScaleFromQueryParams = (
       queryStart: string,
@@ -65,65 +60,47 @@ const TimeScaleDropdownWithSearchParams = (
         // The end is far enough away from now, thus this is a custom selection.
         timeScale.key = "Custom";
         timeScale.fixedWindowEnd = end;
-        console.log(`too far ${end} ${now} ${timeScale.sampleSize}`);
-      } else {
-        console.log("close enough");
       }
       setTimeScale(timeScale);
-
-      // =============================
-      // const now = moment.utc();
-      // // `currentWindow` is derived from `scale`, and does not have to do with the `currentWindow` for the metrics page.
-      // const currentWindow: TimeWindow = {
-      //   start: moment(now).subtract(windowSize),
-      //   end: now,
-      // };
-      // /**
-      //  * Prioritize an end defined in the query params.
-      //  * Else, use window end.
-      //  * Else, a seemingly unreachable option says otherwise use now, but that should never happen since it is set in
-      //  *  the line above (and is the same value anyway, always now).
-      //  */
-      // const end = dates.end?.utc() || currentWindow.end?.utc() || now;
-      // /**
-      //  * Prioritize start as defined in the query params.
-      //  * Else, use now minus the window size.
-      //  * Else, a final seemingly unreachable option (since start is always set above) is to do ten minutes before now.
-      //  */
-      // const start =
-      //   dates.start?.utc() ||
-      //   currentWindow.start?.utc() ||
-      //   moment(now).subtract(10, "minutes");
-      // const seconds = end.diff(start, "seconds");
-
-      // // Find the closest time scale just by window size.
-      // // And temporarily assume the end is "now" with fixedWindowEnd=false.
-      // const timeScale: TimeScale = {
-      //   ...findClosestTimeScale(defaultTimeScaleOptions, seconds),
-      //   windowSize: moment.duration(end.diff(start)),
-      //   fixedWindowEnd: false,
-      // };
-      // // Check if the end is close to now, with "close" defined as being no more than `sampleSize` behind.
-      // if (now > end.subtract(timeScale.sampleSize)) {
-      //   // The end is far enough away from now, thus this is a custom selection.
-      //   timeScale.key = "Custom";
-      //   timeScale.fixedWindowEnd = end;
-      // }
-      // setTimeScale(timeScale);
     };
-
-    // const urlSearchParams = new URLSearchParams(queryParams);
-    // const queryStart = urlSearchParams.get("start");
-    // const queryEnd = urlSearchParams.get("end");
-    // // if (queryStart && queryEnd) {
-    // const start = queryStart && moment.unix(Number(queryStart)).utc();
-    // const end = queryEnd && moment.unix(Number(queryEnd)).utc();
-    // }
 
     if (queryStart && queryEnd) {
       setTimeScaleFromQueryParams(queryStart, queryEnd);
     }
   }, [setTimeScale, queryStart, queryEnd]);
+
+  const {
+    location: { pathname, search },
+    push,
+  } = history;
+  useEffect(() => {
+    const setQueryParamsByDates = (
+      // duration: moment.Duration,
+      start: moment.Moment,
+      end: moment.Moment,
+    ) => {
+      // const { pathname, search } = history.location;
+      const urlParams = new URLSearchParams(window.location.search);
+      // const urlParams = new URLSearchParams(search);
+      // const seconds = duration.clone().asSeconds();
+      // const end = dateEnd.clone();
+      // const start = moment
+      //   .utc(end)
+      //   .subtract(seconds, "seconds")
+      //   .format("X");
+
+      urlParams.set("start", start.format("X"));
+      urlParams.set("end", end.format("X"));
+
+      console.log(`pushing ${urlParams.toString()}`);
+      push({
+        pathname,
+        search: urlParams.toString(),
+      });
+    };
+    const [start, end] = toDateRange(currentScale);
+    setQueryParamsByDates(start, end);
+  }, [currentScale, push]);
 
   const setQueryParamsByDates = (
     duration: moment.Duration,

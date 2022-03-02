@@ -41,10 +41,10 @@ const TimeScaleDropdownWithSearchParams = (
   props: TimeScaleDropdownProps,
 ): React.ReactElement => {
   const history = useHistory();
-  const queryParams = history.location.search;
-  const urlSearchParams = new URLSearchParams(queryParams);
-  const queryStartString = urlSearchParams.get("start");
-  const queryEndString = urlSearchParams.get("end");
+  // const queryParams = history.location.search;
+  // const urlSearchParams = new URLSearchParams(queryParams);
+  // const queryStartString = urlSearchParams.get("start");
+  // const queryEndString = urlSearchParams.get("end");
 
   const { setTimeScale, currentScale } = props;
   const previousScale = usePrevious(currentScale);
@@ -91,28 +91,12 @@ const TimeScaleDropdownWithSearchParams = (
       });
     };
 
-    // if this was triggered by landing on the page/a change in route
-    if (previousScale == undefined || _.isEqual(previousScale, currentScale)) {
-      // follow the query params if available, else follow the time scale
-      if (queryStartString && queryEndString) {
-        //  there are query params
-        const queryStart = moment.unix(Number(queryStartString)).utc();
-        const queryEnd = moment.unix(Number(queryEndString)).utc();
-        const [stateStart, stateEnd] = toDateRange(currentScale);
-        if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
-          console.log("set scale");
-          setTimeScaleFromQueryParams(queryStart, queryEnd);
-        }
-      } else {
-        console.log("set query params");
-        setQueryParamsFromTimeScale();
-      }
-    } else {
-      // else, this was triggered by a change in time scale
-      // console.log("set query params");
-      // if not already equal
-      // setQueryParamsFromTimeScale();
+    const urlSearchParams = new URLSearchParams(search);
+    const queryStartString = urlSearchParams.get("start");
+    const queryEndString = urlSearchParams.get("end");
 
+    // if this was triggered by a change in time scale (other than initialization), follow the changing timescale
+    if (!_.isEqual(previousScale, currentScale) && previousScale != undefined) {
       if (queryStartString && queryEndString) {
         //  there are query params
         const queryStart = moment.unix(Number(queryStartString)).utc();
@@ -126,55 +110,24 @@ const TimeScaleDropdownWithSearchParams = (
       } else {
         setQueryParamsFromTimeScale();
       }
+    } else {
+    // else, this was triggered by something other than a change in time scale, e.g. landing on the page or a change in route
+          // follow the query params if available, else follow the time scale
+      if (queryStartString && queryEndString) {
+        //  there are query params
+        const queryStart = moment.unix(Number(queryStartString)).utc();
+        const queryEnd = moment.unix(Number(queryEndString)).utc();
+        const [stateStart, stateEnd] = toDateRange(currentScale);
+        if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
+          console.log("set scale");
+          setTimeScaleFromQueryParams(queryStart, queryEnd);
+        }
+      } else {
+        console.log("set query params");
+        setQueryParamsFromTimeScale();
     }
-
-    // if (!_.isEqual(previousScale, currentScale) && previousScale != undefined) {
-    //   // scale has changed and it is not the starting initialization
-    //   if (queryStartString && queryEndString) {
-    //     //  there are query params
-    //     const queryStart = moment.unix(Number(queryStartString)).utc();
-    //     const queryEnd = moment.unix(Number(queryEndString)).utc();
-    //     const [stateStart, stateEnd] = toDateRange(currentScale);
-    //     if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
-    //       // override the query params with the value from scale, if they are discrepant
-    //       setQueryParamsFromTimeScale();
-    //     }
-    //     //  else, don't do anything. query params and state are already in sync.
-    //   } else {
-    //     setQueryParamsFromTimeScale();
-    //   }
-    // } else {
-    //   // scale did not change
-    //   if (queryStartString && queryEndString) {
-    //     //  there are query params
-    //     const queryStart = moment.unix(Number(queryStartString)).utc();
-    //     const queryEnd = moment.unix(Number(queryEndString)).utc();
-    //     const [stateStart, stateEnd] = toDateRange(currentScale);
-    //     if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
-    //       setTimeScaleFromQueryParams(queryStart, queryEnd);
-    //     }
-    //   } else {
-    //     setQueryParamsFromTimeScale();
-    //   }
-    // }
-
-    // Query params take precedence. If they are present, set state from query params
-    // if (queryStartString && queryEndString) {
-    //   const queryStart = moment.unix(Number(queryStartString)).utc();
-    //   const queryEnd = moment.unix(Number(queryEndString)).utc();
-    //   const [stateStart, stateEnd] = toDateRange(currentScale);
-    //   if (queryStart != stateStart || queryEnd != stateEnd) {
-    //     console.log("setTimeScaleFromQueryParams");
-    //     setTimeScaleFromQueryParams(queryStart, queryEnd);
-    //   } else {
-    //     //  do nothing, we're in sync
-    //   }
-    // } else {
-    //   console.log("setQueryParamsFromTimeScale");
-    //   // Query params take precedence. If they are absent, set query params from state.
-    //   setQueryParamsFromTimeScale();
-    // }
-  }, [queryStartString, queryEndString, currentScale, push, pathname, search]);
+      
+  }, [currentScale, push, pathname, search]);
   // }, [setTimeScale, queryStartString, queryEndString]);
 
   useEffect(() => {

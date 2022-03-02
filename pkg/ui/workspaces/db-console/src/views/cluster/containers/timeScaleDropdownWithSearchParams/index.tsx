@@ -104,13 +104,15 @@ const TimeScaleDropdownWithSearchParams = (
         const queryStart = moment.unix(Number(queryStartString)).utc();
         const queryEnd = moment.unix(Number(queryEndString)).utc();
         const [stateStart, stateEnd] = toDateRange(currentScale);
-        if (queryStart != stateStart || queryEnd != stateEnd) {
+        if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
           console.log(
-            "override the query params with the value from scale, if they are discrepant",
+            `is discrepant. override the query params with the value from scale \n ${queryStart}, ${stateStart}. ${queryEnd}, ${stateEnd}`,
           );
           // override the query params with the value from scale, if they are discrepant
           console.log("setQueryParamsFromTimeScale");
           setQueryParamsFromTimeScale();
+        } else {
+          console.log("query params and state are the same. doing nothing");
         }
       } else {
         console.log("setQueryParamsFromTimeScale");

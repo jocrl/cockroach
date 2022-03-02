@@ -119,25 +119,16 @@ const TimeScaleDropdownWithSearchParams = (
         const queryEnd = moment.unix(Number(queryEndString)).utc();
         const [stateStart, stateEnd] = toDateRange(currentScale);
         if (!queryStart.isSame(stateStart) || !queryEnd.isSame(stateEnd)) {
-          console.log("set scale");
           setTimeScaleFromQueryParams(queryStart, queryEnd);
         }
       } else {
-        console.log("set query params");
         setQueryParamsFromTimeScale();
       }
     }
   }, [previousScale, currentScale, setTimeScale, push, pathname, search]);
-  // }, [setTimeScale, queryStartString, queryEndString]);
 
   const onTimeScaleChange = (timeScale: TimeScale) => {
     props.setTimeScale(timeScale);
-    // todo(josephine) the line below needs to be moved to a useEffect
-    // it would also set query params from other sources of changing state
-    // setQueryParamsByDates(
-    //   timeScale.windowSize,
-    //   timeScale.fixedWindowEnd || moment.utc(),
-    // );
   };
 
   return <TimeScaleDropdown {...props} setTimeScale={onTimeScaleChange} />;

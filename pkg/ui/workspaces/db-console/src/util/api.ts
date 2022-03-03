@@ -692,11 +692,15 @@ export function getStatements(
   req: StatementsRequestMessage,
   timeout?: moment.Duration,
 ): Promise<StatementsResponseMessage> {
-  const queryStr = propsToQueryString({
-    combined: req.combined,
-    start: req.start.toInt(),
-    end: req.end.toInt(),
-  });
+  let queryStr = "";
+  debugger;
+  if (req) {
+    queryStr = propsToQueryString({
+      start: req.start.toInt(),
+      end: req.end.toInt(),
+      combined: req.combined,
+    });
+  }
   return timeoutFetch(
     serverpb.StatementsResponse,
     `${STATUS_PREFIX}/statements?${queryStr}`,

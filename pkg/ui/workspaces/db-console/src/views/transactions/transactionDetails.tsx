@@ -28,6 +28,7 @@ import {
   TransactionDetails,
   util,
 } from "@cockroachlabs/cluster-ui";
+import { setCombinedStatementsTimeScaleAction } from "src/redux/statements";
 
 export const selectTransaction = createSelector(
   (state: AdminUIState) => state.cachedData.statements,
@@ -77,6 +78,10 @@ export default withRouter(
         ),
       };
     },
-    { refreshData: refreshStatements, refreshUserSQLRoles },
+    {
+      refreshData: refreshStatements,
+      refreshUserSQLRoles,
+      onTimeScaleChange: setCombinedStatementsTimeScaleAction,
+    },
   )(TransactionDetails),
 );

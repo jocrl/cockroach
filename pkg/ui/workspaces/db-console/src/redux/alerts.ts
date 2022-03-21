@@ -126,6 +126,13 @@ export function setInstructionsBoxCollapsed(collapsed: boolean) {
 ////////////////////////////////////////
 // Version mismatch.
 ////////////////////////////////////////
+export const hasStaggeredVersionsSelector = createSelector(
+  numNodesByVersionsSelector,
+  (versionsMap): boolean => {
+    return versionsMap && versionsMap.size > 1;
+  },
+);
+
 export const staggeredVersionDismissedSetting = new LocalSetting(
   "staggered_version_dismissed",
   localSettingsSelector,
@@ -137,13 +144,14 @@ export const staggeredVersionDismissedSetting = new LocalSetting(
  * This excludes decommissioned nodes.
  */
 export const staggeredVersionWarningSelector = createSelector(
+  hasStaggeredVersionsSelector,
   numNodesByVersionsSelector,
   staggeredVersionDismissedSetting.selector,
-  (versionsMap, versionMismatchDismissed): Alert => {
+  (hasStaggeredVersions, versionsMap, versionMismatchDismissed): Alert => {
     if (versionMismatchDismissed) {
       return undefined;
     }
-    if (!versionsMap || versionsMap.size < 2) {
+    if (!hasStaggeredVersions) {
       return undefined;
     }
     const versionsText = Array.from(versionsMap)

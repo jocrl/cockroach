@@ -9,7 +9,8 @@
 // licenses/APL.txt.
 
 import { Col, Row, Tabs } from "antd";
-import { Text, Heading } from "@cockroachlabs/ui-components";
+import { Text, Heading, InlineAlert } from "@cockroachlabs/ui-components";
+import { PageConfig, PageConfigItem } from "src/pageConfig";
 import _ from "lodash";
 import React, { ReactNode } from "react";
 import { Helmet } from "react-helmet";
@@ -52,13 +53,18 @@ import {
 import { DiagnosticsView } from "./diagnostics/diagnosticsView";
 import sortedTableStyles from "src/sortedtable/sortedtable.module.scss";
 import summaryCardStyles from "src/summaryCard/summaryCard.module.scss";
+import loadingStyles from "src/loading/loading.module.scss";
 import styles from "./statementDetails.module.scss";
 import { commonStyles } from "src/common";
 import { NodeSummaryStats } from "../nodes";
 import { UIConfigState } from "../store";
 import moment from "moment";
-import { TimeScale, toRoundedDateRange } from "../timeScaleDropdown";
 import { StatementDetailsRequest } from "src/api/statementsApi";
+import {
+  TimeScale,
+  TimeScaleDropdown,
+  toRoundedDateRange,
+} from "../timeScaleDropdown";
 import SQLActivityError from "../sqlActivity/errorComponent";
 import {
   ActivateDiagnosticsModalRef,
@@ -81,6 +87,8 @@ export type StatementDetailsProps = StatementDetailsOwnProps &
 export interface StatementDetailsState {
   sortSetting: SortSetting;
   currentTab?: string;
+  // Used to remember the statement text for the current details page, even if the time frame is changed such that the statements is no longer found in the time frame and thus `this.props.statement` is null
+  latestStatementText: string;
 }
 
 interface NumericStatRow {
@@ -130,6 +138,7 @@ export interface StatementDetailsDispatchProps {
   ) => void;
   dismissStatementDiagnosticsAlertMessage?: () => void;
   onTabChanged?: (tabName: string) => void;
+  onTimeScaleChange: (ts: TimeScale) => void;
   onDiagnosticsModalOpen?: (statementFingerprint: string) => void;
   onDiagnosticBundleDownload?: (statementFingerprint?: string) => void;
   onDiagnosticCancelRequest?: (report: IStatementDiagnosticsReport) => void;
@@ -151,12 +160,14 @@ export interface StatementDetailsStateProps {
   uiConfig?: UIConfigState["pages"]["statementDetails"];
   isTenant?: UIConfigState["isTenant"];
   hasViewActivityRedactedRole?: UIConfigState["hasViewActivityRedactedRole"];
+  isLoading: boolean;
 }
 
 export type StatementDetailsOwnProps = StatementDetailsDispatchProps &
   StatementDetailsStateProps;
 
 const cx = classNames.bind(styles);
+const loadingCx = classNames.bind(loadingStyles);
 const sortableTableCx = classNames.bind(sortedTableStyles);
 const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 
@@ -308,6 +319,7 @@ export class StatementDetails extends React.Component<
         columnTitle: "statementTime",
       },
       currentTab: searchParams.get("tab") || "overview",
+      latestStatementText: "",
     };
     this.activateDiagnosticsRef = React.createRef();
   }
@@ -347,7 +359,7 @@ export class StatementDetails extends React.Component<
     }
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate(prevProps: StatementDetailsProps): void {
     this.refreshStatementDetails();
     if (!this.props.isTenant) {
       this.props.refreshNodes();
@@ -355,6 +367,16 @@ export class StatementDetails extends React.Component<
       if (!this.props.hasViewActivityRedactedRole) {
         this.props.refreshStatementDiagnosticsRequests();
       }
+    }
+    if (
+      this.props.statementDetails.statement.metadata.formatted_query &&
+      prevProps.statementDetails?.statement.metadata.formatted_query !=
+        this.props.statementDetails.statement.metadata.formatted_query
+    ) {
+      this.setState({
+        latestStatementText: this.props.statementDetails.statement.metadata
+          .formatted_query,
+      });
     }
   }
 
@@ -406,7 +428,7 @@ export class StatementDetails extends React.Component<
         </div>
         <section className={cx("section", "section--container")}>
           <Loading
-            loading={_.isNil(this.props.statementDetails)}
+            loading={this.props.isLoading}
             page={"statement details"}
             error={this.props.statementsError}
             render={this.renderContent}
@@ -426,6 +448,8 @@ export class StatementDetails extends React.Component<
       </div>
     );
   }
+
+  // getOverviewTabContent = (): React.ReactElement => {};
 
   renderContent = (): React.ReactElement => {
     const {
@@ -454,23 +478,70 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      const sourceApp = queryByName(this.props.location, appAttr);
-      const listUrl =
-        "/sql-activity?tab=Statements" +
-        (sourceApp ? "&" + appAttr + "=" + sourceApp : "");
-
       return (
-        <React.Fragment>
-          <section className={cx("section")}>
-            <h3>Unable to find statement</h3>
-            There are no execution statistics for this statement.{" "}
-            <Link className={cx("back-link")} to={listUrl}>
-              Back to Statements
-            </Link>
-          </section>
-        </React.Fragment>
+        <Tabs
+          defaultActiveKey="1"
+          className={commonStyles("cockroach--tabs")}
+          onChange={this.onTabChange}
+          activeKey={currentTab}
+        >
+          <TabPane tab="Overview" key="overview">
+            <PageConfig>
+              <PageConfigItem>
+                <TimeScaleDropdown
+                  currentScale={this.props.timeScale}
+                  setTimeScale={this.props.onTimeScaleChange}
+                />
+              </PageConfigItem>
+            </PageConfig>
+            <section className={cx("section")}>
+              <SqlBox value={this.state.latestStatementText} />
+            </section>
+            <section className={cx("section")}>
+              <div className={loadingCx("alerts-container")}>
+                <InlineAlert
+                  intent="info"
+                  title="Data not available for this time frame. Select a different time frame."
+                />
+              </div>
+            </section>
+          </TabPane>
+          {!isTenant && !hasViewActivityRedactedRole && (
+            <TabPane tab={`Diagnostics`} key="diagnostics"></TabPane>
+          )}
+          <TabPane tab="Explain Plan" key="explain-plan">
+            {" "}
+          </TabPane>
+          <TabPane
+            tab="Execution Stats"
+            key="execution-stats"
+            className={cx("fit-content-width")}
+          ></TabPane>
+        </Tabs>
       );
     }
+
+    // if (Number(stats.count) == 0) {
+    //   const sourceApp = queryByName(this.props.location, appAttr);
+    //   const listUrl =
+    //     "/sql-activity?tab=Statements" +
+    //     (sourceApp ? "&" + appAttr + "=" + sourceApp : "");
+    //
+    //   return (
+    //     <React.Fragment>
+    //       <section className={cx("section")}>
+    //         <SqlBox value={this.state.latestStatementText} />
+    //       </section>
+    //       <section className={cx("section")}>
+    //         <h3>Unable to find statement</h3>
+    //         There are no execution statistics for this statement.{" "}
+    //         <Link className={cx("back-link")} to={listUrl}>
+    //           Back to Statements
+    //         </Link>
+    //       </section>
+    //     </React.Fragment>
+    //   );
+    // }
 
     const count = FixLong(stats.count).toInt();
     const { statement } = this.props.statementDetails;
@@ -533,9 +604,20 @@ export class StatementDetails extends React.Component<
         activeKey={currentTab}
       >
         <TabPane tab="Overview" key="overview">
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
-              <SqlBox value={formatted_query} size={SqlBoxSize.small} />
+              <SqlBox
+                value={this.state.latestStatementText}
+                size={SqlBoxSize.small}
+              />
             </Col>
           </Row>
           <Row gutter={24}>
@@ -751,6 +833,14 @@ export class StatementDetails extends React.Component<
           </Row>
         </TabPane>
         <TabPane tab="Explain Plans" key="explain-plan">
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
               <SqlBox value={formatted_query} size={SqlBoxSize.small} />
@@ -771,6 +861,8 @@ export class StatementDetails extends React.Component<
               diagnosticsReports={diagnosticsReports}
               dismissAlertMessage={dismissStatementDiagnosticsAlertMessage}
               hasData={hasDiagnosticReports}
+              // todo: ask Marylia what should be here
+              // statementFingerprint={this.state.latestStatementText}
               statementFingerprint={query}
               onDownloadDiagnosticBundleClick={onDiagnosticBundleDownload}
               onDiagnosticCancelRequestClick={onDiagnosticCancelRequest}

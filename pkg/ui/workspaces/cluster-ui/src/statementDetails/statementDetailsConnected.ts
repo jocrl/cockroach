@@ -30,6 +30,7 @@ import {
   nodeRegionsByIDSelector,
 } from "../store/nodes";
 import { actions as sqlDetailsStatsActions } from "src/store/statementDetails";
+import { actions as sqlStatsActions } from "src/store/sqlStats";
 import {
   actions as statementDiagnosticsActions,
   selectDiagnosticsReportsByStatementFingerprint,
@@ -41,6 +42,7 @@ import { actions as nodeLivenessActions } from "../store/liveness";
 import { selectTimeScale } from "../statementsPage/statementsPage.selectors";
 import { cockroach, google } from "@cockroachlabs/crdb-protobuf-client";
 import { StatementDetailsRequest } from "../api";
+import { TimeScale } from "../timeScaleDropdown";
 type IDuration = google.protobuf.IDuration;
 type IStatementDiagnosticsReport = cockroach.server.serverpb.IStatementDiagnosticsReport;
 
@@ -84,6 +86,13 @@ const mapDispatchToProps = (
   refreshNodes: () => dispatch(nodesActions.refresh()),
   refreshNodesLiveness: () => dispatch(nodeLivenessActions.refresh()),
   refreshUserSQLRoles: () => dispatch(uiConfigActions.refreshUserSQLRoles()),
+  onTimeScaleChange: (ts: TimeScale) => {
+    dispatch(
+      sqlStatsActions.updateTimeScale({
+        ts: ts,
+      }),
+    );
+  },
   dismissStatementDiagnosticsAlertMessage: () =>
     dispatch(
       localStorageActions.update({

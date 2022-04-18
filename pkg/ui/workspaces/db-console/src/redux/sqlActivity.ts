@@ -13,7 +13,7 @@ import { WithID } from "oss/src/redux/metrics";
  * metadata relevant to server queries.
  */
 export class SqlActivityState {
-  //
+  // Used to remember the statement text for the current details page, even if the time frame is changed such that the statements is no longer found in the time frame and thus `this.props.statement` is null
   statementDetailsLatestFormattedQuery: string;
   statementDetailsLatestQuery: string;
 }

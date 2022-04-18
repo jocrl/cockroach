@@ -87,8 +87,6 @@ export type StatementDetailsProps = StatementDetailsOwnProps &
 export interface StatementDetailsState {
   sortSetting: SortSetting;
   currentTab?: string;
-  // Used to remember the statement text for the current details page, even if the time frame is changed such that the statements is no longer found in the time frame and thus `this.props.statement` is null
-  latestStatementFormatedQuery: string;
 }
 
 interface NumericStatRow {
@@ -321,7 +319,6 @@ export class StatementDetails extends React.Component<
         columnTitle: "statementTime",
       },
       currentTab: searchParams.get("tab") || "overview",
-      latestStatementFormatedQuery: "",
     };
     this.activateDiagnosticsRef = React.createRef();
   }
@@ -373,16 +370,12 @@ export class StatementDetails extends React.Component<
     if (
       this.props.statementDetails &&
       this.props.statementDetails.statement.metadata.formatted_query &&
-      prevProps.statementDetails?.statement.metadata.formatted_query !=
+      this.props.statementDetailsLatestFormattedQuery !=
         this.props.statementDetails.statement.metadata.formatted_query
     ) {
       this.props.onStatementDetailsFormattedQueryChange(
         this.props.statementDetails.statement.metadata.formatted_query,
       );
-      this.setState({
-        latestStatementFormatedQuery: this.props.statementDetails.statement
-          .metadata.formatted_query,
-      });
     }
   }
 

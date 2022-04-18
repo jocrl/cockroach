@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import _ from "lodash";
-import { statementDetailsReducerObj } from "oss/src/redux/apiReducers";
+import { statementDetailsReducerObj } from "src/redux/apiReducers";
 
 /**
  * SqlActivityState maintains a MetricQuerySet collection, along with some
@@ -28,8 +28,8 @@ export function sqlActivityReducer(
       return state;
 
     // fixme
-    case this.cachedDataReducer.RECEIVE:
-    case this.cachedDataReducer.ERROR:
+    case statementDetailsReducerObj.cachedDataReducer.RECEIVE:
+    case statementDetailsReducerObj.cachedDataReducer.ERROR:
       state = _.clone(state);
       state.statementDetailsIsLoading = false;
       return state;

@@ -89,6 +89,11 @@ export const selectStatementDetails = createSelector(
   },
 );
 
+export const selectStatementDetailsIsLoading = createSelector(
+  (state: AdminUIState) => state.sqlActivity,
+  sqlActivity => sqlActivity.statementDetailsIsLoading,
+);
+
 const mapStateToProps = (
   state: AdminUIState,
   props: RouteComponentProps,
@@ -96,7 +101,7 @@ const mapStateToProps = (
   const statementDetails = selectStatementDetails(state, props);
   const statementFingerprint = statementDetails?.statement.metadata.query;
   return {
-    isLoading: false,
+    isLoading: selectStatementDetailsIsLoading(state),
     statementDetails,
     statementsError: state.cachedData.statements.lastError,
     timeScale: statementsTimeScaleLocalSetting.selector(state),

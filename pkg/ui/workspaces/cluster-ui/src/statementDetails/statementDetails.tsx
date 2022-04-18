@@ -448,6 +448,53 @@ export class StatementDetails extends React.Component<
       </div>
     );
   }
+  renderNoData = (
+    currentTab: any,
+    isTenant: any,
+    hasViewActivityRedactedRole: any,
+  ): React.ReactElement => {
+    return (
+      <Tabs
+        defaultActiveKey="1"
+        className={commonStyles("cockroach--tabs")}
+        onChange={this.onTabChange}
+        activeKey={currentTab}
+      >
+        <TabPane tab="Overview" key="overview">
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
+          <section className={cx("section")}>
+            <SqlBox value={this.state.latestStatementText} />
+          </section>
+          <section className={cx("section")}>
+            <div className={loadingCx("alerts-container")}>
+              <InlineAlert
+                intent="info"
+                title="Data not available for this time frame. Select a different time frame."
+              />
+            </div>
+          </section>
+        </TabPane>
+        {!isTenant && !hasViewActivityRedactedRole && (
+          <TabPane tab={`Diagnostics`} key="diagnostics"></TabPane>
+        )}
+        <TabPane tab="Explain Plan" key="explain-plan">
+          {" "}
+        </TabPane>
+        <TabPane
+          tab="Execution Stats"
+          key="execution-stats"
+          className={cx("fit-content-width")}
+        ></TabPane>
+      </Tabs>
+    );
+  };
 
   // getOverviewTabContent = (): React.ReactElement => {};
 
@@ -462,6 +509,15 @@ export class StatementDetails extends React.Component<
       hasViewActivityRedactedRole,
     } = this.props;
     const { currentTab } = this.state;
+    // this needs to be conditionalized somehow
+    // if (!this.props.statementDetails) {
+    //   return this.renderNoData(
+    //     currentTab,
+    //     isTenant,
+    //     hasViewActivityRedactedRole,
+    //   );
+    // }
+
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
     const {
@@ -478,46 +534,10 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      return (
-        <Tabs
-          defaultActiveKey="1"
-          className={commonStyles("cockroach--tabs")}
-          onChange={this.onTabChange}
-          activeKey={currentTab}
-        >
-          <TabPane tab="Overview" key="overview">
-            <PageConfig>
-              <PageConfigItem>
-                <TimeScaleDropdown
-                  currentScale={this.props.timeScale}
-                  setTimeScale={this.props.onTimeScaleChange}
-                />
-              </PageConfigItem>
-            </PageConfig>
-            <section className={cx("section")}>
-              <SqlBox value={this.state.latestStatementText} />
-            </section>
-            <section className={cx("section")}>
-              <div className={loadingCx("alerts-container")}>
-                <InlineAlert
-                  intent="info"
-                  title="Data not available for this time frame. Select a different time frame."
-                />
-              </div>
-            </section>
-          </TabPane>
-          {!isTenant && !hasViewActivityRedactedRole && (
-            <TabPane tab={`Diagnostics`} key="diagnostics"></TabPane>
-          )}
-          <TabPane tab="Explain Plan" key="explain-plan">
-            {" "}
-          </TabPane>
-          <TabPane
-            tab="Execution Stats"
-            key="execution-stats"
-            className={cx("fit-content-width")}
-          ></TabPane>
-        </Tabs>
+      return this.renderNoData(
+        currentTab,
+        isTenant,
+        hasViewActivityRedactedRole,
       );
     }
 

@@ -33,7 +33,7 @@ export const getStatementDetailsPropsFixture = (): StatementDetailsProps => ({
       statement: "4705782015019656142",
     },
   },
-  isLoading: false,
+  statementDetailsIsLoading: false,
   timeScale: {
     windowSize: moment.duration(5, "day"),
     sampleSize: moment.duration(5, "minutes"),

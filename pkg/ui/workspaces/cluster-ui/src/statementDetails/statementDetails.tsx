@@ -88,7 +88,7 @@ export interface StatementDetailsState {
   sortSetting: SortSetting;
   currentTab?: string;
   // Used to remember the statement text for the current details page, even if the time frame is changed such that the statements is no longer found in the time frame and thus `this.props.statement` is null
-  latestStatementText: string;
+  latestStatementFormatedQuery: string;
 }
 
 interface NumericStatRow {
@@ -148,10 +148,13 @@ export interface StatementDetailsDispatchProps {
     ascending: boolean,
   ) => void;
   onBackToStatementsClick?: () => void;
+  onStatementDetailsFormattedQueryChange: (formattedQuery: string) => void;
 }
 
 export interface StatementDetailsStateProps {
   statementDetails: StatementDetailsResponse;
+  statementDetailsIsLoading: boolean;
+  statementDetailsLatestFormattedQuery: string;
   statementsError: Error | null;
   timeScale: TimeScale;
   nodeNames: { [nodeId: string]: string };
@@ -160,7 +163,6 @@ export interface StatementDetailsStateProps {
   uiConfig?: UIConfigState["pages"]["statementDetails"];
   isTenant?: UIConfigState["isTenant"];
   hasViewActivityRedactedRole?: UIConfigState["hasViewActivityRedactedRole"];
-  isLoading: boolean;
 }
 
 export type StatementDetailsOwnProps = StatementDetailsDispatchProps &
@@ -319,7 +321,7 @@ export class StatementDetails extends React.Component<
         columnTitle: "statementTime",
       },
       currentTab: searchParams.get("tab") || "overview",
-      latestStatementText: "",
+      latestStatementFormatedQuery: "",
     };
     this.activateDiagnosticsRef = React.createRef();
   }
@@ -374,9 +376,12 @@ export class StatementDetails extends React.Component<
       prevProps.statementDetails?.statement.metadata.formatted_query !=
         this.props.statementDetails.statement.metadata.formatted_query
     ) {
+      this.props.onStatementDetailsFormattedQueryChange(
+        this.props.statementDetails.statement.metadata.formatted_query,
+      );
       this.setState({
-        latestStatementText: this.props.statementDetails.statement.metadata
-          .formatted_query,
+        latestStatementFormatedQuery: this.props.statementDetails.statement
+          .metadata.formatted_query,
       });
     }
   }
@@ -429,7 +434,7 @@ export class StatementDetails extends React.Component<
         </div>
         <section className={cx("section", "section--container")}>
           <Loading
-            loading={this.props.isLoading}
+            loading={this.props.statementDetailsIsLoading}
             page={"statement details"}
             error={this.props.statementsError}
             render={this.renderContent}
@@ -508,8 +513,8 @@ export class StatementDetails extends React.Component<
           </PageConfigItem>
         </PageConfig>
         <section className={cx("section")}>
-          {this.state.latestStatementText && (
-            <SqlBox value={this.state.latestStatementText} />
+          {this.props.statementDetailsLatestFormattedQuery && (
+            <SqlBox value={this.props.statementDetailsLatestFormattedQuery} />
           )}
         </section>
         <section className={cx("section")}>
@@ -707,7 +712,7 @@ export class StatementDetails extends React.Component<
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
               <SqlBox
-                value={this.state.latestStatementText}
+                value={this.props.statementDetailsLatestFormattedQuery}
                 size={SqlBoxSize.small}
               />
             </Col>

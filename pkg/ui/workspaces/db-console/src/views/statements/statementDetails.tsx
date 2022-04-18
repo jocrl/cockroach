@@ -52,6 +52,7 @@ import { StatementDetailsResponseMessage } from "src/util/api";
 import { getMatchParamByName, queryByName } from "src/util/query";
 
 import { appNamesAttr, statementAttr } from "src/util/constants";
+import { statementDetailsLatestFormattedQueryAction } from "oss/src/redux/sqlActivity";
 type IStatementDiagnosticsReport = protos.cockroach.server.serverpb.IStatementDiagnosticsReport;
 
 const { generateStmtDetailsToID } = util;
@@ -95,6 +96,11 @@ export const selectStatementDetails = createSelector(
   },
 );
 
+export const statementDetailsLatestFormattedQuerySelector = createSelector(
+  (state: AdminUIState) => state.sqlActivity,
+  sqlActivity => sqlActivity.statementDetailsLatestFormattedQuery,
+);
+
 // export const selectStatementDetailsIsLoading = createSelector(
 //   (state: AdminUIState) => state.sqlActivity,
 //   sqlActivity => sqlActivity.statementDetailsIsLoading,
@@ -108,7 +114,10 @@ const mapStateToProps = (
   const statementFingerprint = statementDetails?.statement.metadata.query;
   return {
     statementDetails,
-    isLoading,
+    statementDetailsIsLoading: isLoading,
+    statementDetailsLatestFormattedQuery: statementDetailsLatestFormattedQuerySelector(
+      state,
+    ),
     statementsError: state.cachedData.statements.lastError,
     timeScale: statementsTimeScaleLocalSetting.selector(state),
     nodeNames: nodeDisplayNameByIDSelector(state),
@@ -138,6 +147,7 @@ const mapDispatchToProps: StatementDetailsDispatchProps = {
       );
     };
   },
+  onStatementDetailsFormattedQueryChange: statementDetailsLatestFormattedQueryAction,
   refreshNodes: refreshNodes,
   refreshNodesLiveness: refreshLiveness,
   refreshUserSQLRoles: refreshUserSQLRoles,

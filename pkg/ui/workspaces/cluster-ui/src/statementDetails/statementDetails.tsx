@@ -474,7 +474,7 @@ export class StatementDetails extends React.Component<
             // statementFingerprint={this.state.latestStatementText}
             // statementFingerprint={query}
             statementFingerprint={
-              this.props.statementDetails?.statement.metadata.query
+              this.props.statementDetails.statement.metadata.query
             }
             onDownloadDiagnosticBundleClick={
               this.props.onDiagnosticBundleDownload
@@ -523,6 +523,22 @@ export class StatementDetails extends React.Component<
       </>
     );
 
+    const getDiagnosticsTabOrNoData = () => {
+      if (this.props.statementDetails) {
+        return this.renderDiagnosticsTab();
+      } else {
+        return (
+          <TabPane tab={`Diagnostics`} key="diagnostics">
+            <section className={cx("section")}>
+              <div className={loadingCx("alerts-container")}>
+                <InlineAlert intent="info" title="No data available." />
+              </div>
+            </section>
+          </TabPane>
+        );
+      }
+    };
+
     return (
       <Tabs
         defaultActiveKey="1"
@@ -536,7 +552,7 @@ export class StatementDetails extends React.Component<
         <TabPane tab="Explain Plan" key="explain-plan">
           {overviewAndExplainPlanNoData}
         </TabPane>
-        {this.renderDiagnosticsTab()}
+        {getDiagnosticsTabOrNoData()}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"

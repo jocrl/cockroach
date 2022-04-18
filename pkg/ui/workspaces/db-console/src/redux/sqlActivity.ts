@@ -51,7 +51,7 @@ export function sqlActivityReducer(
   action: Action,
 ): SqlActivityState {
   switch (action.type) {
-    case statementDetailsLatestFormattedQueryAction: {
+    case SET_STATEMENT_DETAILS_LATEST_FORMATTED_QUERY: {
       const { payload: formattedQuery } = action as PayloadAction<string>;
       state = _.clone(state);
       state.statementDetailsLatestFormattedQuery = formattedQuery;

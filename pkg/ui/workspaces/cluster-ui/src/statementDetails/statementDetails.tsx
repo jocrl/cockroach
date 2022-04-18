@@ -369,6 +369,7 @@ export class StatementDetails extends React.Component<
       }
     }
     if (
+      this.props.statementDetails &&
       this.props.statementDetails.statement.metadata.formatted_query &&
       prevProps.statementDetails?.statement.metadata.formatted_query !=
         this.props.statementDetails.statement.metadata.formatted_query
@@ -510,13 +511,13 @@ export class StatementDetails extends React.Component<
     } = this.props;
     const { currentTab } = this.state;
     // this needs to be conditionalized somehow
-    // if (!this.props.statementDetails) {
-    //   return this.renderNoData(
-    //     currentTab,
-    //     isTenant,
-    //     hasViewActivityRedactedRole,
-    //   );
-    // }
+    if (!this.props.statementDetails) {
+      return this.renderNoData(
+        currentTab,
+        isTenant,
+        hasViewActivityRedactedRole,
+      );
+    }
 
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;

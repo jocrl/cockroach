@@ -90,9 +90,36 @@ export const selectStatementDetails = createSelector(
 );
 
 export const selectStatementDetailsIsLoading = createSelector(
-  (state: AdminUIState) => state.sqlActivity,
-  sqlActivity => sqlActivity.statementDetailsIsLoading,
+  (_state: AdminUIState, props: RouteComponentProps): string =>
+    getMatchParamByName(props.match, statementAttr),
+  (_state: AdminUIState, props: RouteComponentProps): string =>
+    queryByName(props.location, appNamesAttr),
+  (state: AdminUIState): TimeScale =>
+    statementsTimeScaleLocalSetting.selector(state),
+  (state: AdminUIState) => state.cachedData.statementDetails,
+  (fingerprintID, appNames, timeScale, statementDetailsStats): boolean => {
+    // Since the aggregation interval is 1h, we want to round the selected timeScale to include
+    // the full hour. If a timeScale is between 14:32 - 15:17 we want to search for values
+    // between 14:00 - 16:00. We don't encourage the aggregation interval to be modified, but
+    // in case that changes in the future we might consider changing this function to use the
+    // cluster settings value for the rounding function.
+    const [start, end] = toRoundedDateRange(timeScale);
+    const key = generateStmtDetailsToID(
+      fingerprintID,
+      appNames,
+      Long.fromNumber(start.unix()),
+      Long.fromNumber(end.unix()),
+    );
+    if (Object.keys(statementDetailsStats).includes(key)) {
+      return statementDetailsStats[key].inFlight;
+    }
+    return false;
+  },
 );
+// export const selectStatementDetailsIsLoading = createSelector(
+//   (state: AdminUIState) => state.sqlActivity,
+//   sqlActivity => sqlActivity.statementDetailsIsLoading,
+// );
 
 const mapStateToProps = (
   state: AdminUIState,
@@ -101,7 +128,7 @@ const mapStateToProps = (
   const statementDetails = selectStatementDetails(state, props);
   const statementFingerprint = statementDetails?.statement.metadata.query;
   return {
-    isLoading: selectStatementDetailsIsLoading(state),
+    isLoading: selectStatementDetailsIsLoading(state, props),
     statementDetails,
     statementsError: state.cachedData.statements.lastError,
     timeScale: statementsTimeScaleLocalSetting.selector(state),

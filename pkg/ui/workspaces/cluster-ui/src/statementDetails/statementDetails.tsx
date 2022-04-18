@@ -449,11 +449,80 @@ export class StatementDetails extends React.Component<
       </div>
     );
   }
-  renderNoData = (
+
+  renderDiagnosticsTab = (): React.ReactElement => {
+    const hasDiagnosticReports = this.props.diagnosticsReports.length > 0;
+    if (!this.props.isTenant && !this.props.hasViewActivityRedactedRole) {
+      return (
+        <TabPane
+          tab={`Diagnostics ${
+            hasDiagnosticReports
+              ? `(${this.props.diagnosticsReports.length})`
+              : ""
+          }`}
+          key="diagnostics"
+        >
+          <DiagnosticsView
+            activateDiagnosticsRef={this.activateDiagnosticsRef}
+            diagnosticsReports={this.props.diagnosticsReports}
+            dismissAlertMessage={
+              this.props.dismissStatementDiagnosticsAlertMessage
+            }
+            hasData={hasDiagnosticReports}
+            // todo: ask Marylia what should be here
+            // need to handle empty case
+            // statementFingerprint={this.state.latestStatementText}
+            // statementFingerprint={query}
+            statementFingerprint={
+              this.props.statementDetails?.statement.metadata.query
+            }
+            onDownloadDiagnosticBundleClick={
+              this.props.onDiagnosticBundleDownload
+            }
+            onDiagnosticCancelRequestClick={
+              this.props.onDiagnosticCancelRequest
+            }
+            showDiagnosticsViewLink={
+              this.props.uiConfig.showStatementDiagnosticsLink
+            }
+            onSortingChange={this.props.onSortingChange}
+          />
+        </TabPane>
+      );
+    }
+  };
+
+  renderNoStatementDetailsData = (
     currentTab: any,
-    isTenant: any,
-    hasViewActivityRedactedRole: any,
+    isTenant,
+    hasViewActivityRedactedRole,
   ): React.ReactElement => {
+    const overviewAndExplainPlanNoData = (
+      <>
+        <PageConfig>
+          <PageConfigItem>
+            <TimeScaleDropdown
+              currentScale={this.props.timeScale}
+              setTimeScale={this.props.onTimeScaleChange}
+            />
+          </PageConfigItem>
+        </PageConfig>
+        <section className={cx("section")}>
+          {this.state.latestStatementText && (
+            <SqlBox value={this.state.latestStatementText} />
+          )}
+        </section>
+        <section className={cx("section")}>
+          <div className={loadingCx("alerts-container")}>
+            <InlineAlert
+              intent="info"
+              title="Data not available for this time frame. Select a different time frame."
+            />
+          </div>
+        </section>
+      </>
+    );
+
     return (
       <Tabs
         defaultActiveKey="1"
@@ -462,37 +531,23 @@ export class StatementDetails extends React.Component<
         activeKey={currentTab}
       >
         <TabPane tab="Overview" key="overview">
-          <PageConfig>
-            <PageConfigItem>
-              <TimeScaleDropdown
-                currentScale={this.props.timeScale}
-                setTimeScale={this.props.onTimeScaleChange}
-              />
-            </PageConfigItem>
-          </PageConfig>
-          <section className={cx("section")}>
-            <SqlBox value={this.state.latestStatementText} />
-          </section>
-          <section className={cx("section")}>
-            <div className={loadingCx("alerts-container")}>
-              <InlineAlert
-                intent="info"
-                title="Data not available for this time frame. Select a different time frame."
-              />
-            </div>
-          </section>
+          {overviewAndExplainPlanNoData}
         </TabPane>
-        {!isTenant && !hasViewActivityRedactedRole && (
-          <TabPane tab={`Diagnostics`} key="diagnostics"></TabPane>
-        )}
         <TabPane tab="Explain Plan" key="explain-plan">
-          {" "}
+          {overviewAndExplainPlanNoData}
         </TabPane>
+        {this.renderDiagnosticsTab()}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"
           className={cx("fit-content-width")}
-        ></TabPane>
+        >
+          <section className={cx("section")}>
+            <div className={loadingCx("alerts-container")}>
+              <InlineAlert intent="info" title="No data available." />
+            </div>
+          </section>
+        </TabPane>
       </Tabs>
     );
   };
@@ -512,7 +567,7 @@ export class StatementDetails extends React.Component<
     const { currentTab } = this.state;
     // this needs to be conditionalized somehow
     if (!this.props.statementDetails) {
-      return this.renderNoData(
+      return this.renderNoStatementDetailsData(
         currentTab,
         isTenant,
         hasViewActivityRedactedRole,
@@ -535,7 +590,7 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      return this.renderNoData(
+      return this.renderNoStatementDetailsData(
         currentTab,
         isTenant,
         hasViewActivityRedactedRole,
@@ -870,30 +925,7 @@ export class StatementDetails extends React.Component<
           <p className={summaryCardStylesCx("summary--card__divider")} />
           <PlanDetails plans={statement_statistics_per_plan_hash} />
         </TabPane>
-        {!isTenant && !hasViewActivityRedactedRole && (
-          <TabPane
-            tab={`Diagnostics ${
-              hasDiagnosticReports ? `(${diagnosticsReports.length})` : ""
-            }`}
-            key="diagnostics"
-          >
-            <DiagnosticsView
-              activateDiagnosticsRef={this.activateDiagnosticsRef}
-              diagnosticsReports={diagnosticsReports}
-              dismissAlertMessage={dismissStatementDiagnosticsAlertMessage}
-              hasData={hasDiagnosticReports}
-              // todo: ask Marylia what should be here
-              // statementFingerprint={this.state.latestStatementText}
-              statementFingerprint={query}
-              onDownloadDiagnosticBundleClick={onDiagnosticBundleDownload}
-              onDiagnosticCancelRequestClick={onDiagnosticCancelRequest}
-              showDiagnosticsViewLink={
-                this.props.uiConfig.showStatementDiagnosticsLink
-              }
-              onSortingChange={this.props.onSortingChange}
-            />
-          </TabPane>
-        )}
+        {this.renderDiagnosticsTab()}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"

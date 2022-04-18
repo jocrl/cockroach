@@ -35,14 +35,12 @@ import { timeScaleReducer, TimeScaleState } from "./timeScale";
 import { uiDataReducer, UIDataState } from "./uiData";
 import { loginReducer, LoginAPIState } from "./login";
 import rootSaga from "./sagas";
-import { sqlActivityReducer, SqlActivityState } from "src/redux/sqlActivity";
 
 export interface AdminUIState {
   cachedData: APIReducersState;
   hover: HoverState;
   localSettings: LocalSettingsState;
   metrics: MetricsState;
-  sqlActivity: SqlActivityState;
   queryManager: QueryManagerState;
   router: RouterState;
   timeScale: TimeScaleState;
@@ -65,7 +63,6 @@ export function createAdminUIStore(historyInst: History<any>) {
       hover: hoverReducer,
       localSettings: localSettingsReducer,
       metrics: metricsReducer,
-      sqlActivity: sqlActivityReducer,
       queryManager: queryManagerReducer,
       router: routerReducer,
       timeScale: timeScaleReducer,

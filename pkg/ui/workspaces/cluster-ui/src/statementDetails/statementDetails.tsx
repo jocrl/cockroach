@@ -151,6 +151,7 @@ export interface StatementDetailsDispatchProps {
 }
 
 export interface StatementDetailsStateProps {
+  statementFingerprintID: string;
   statementDetails: StatementDetailsResponse;
   statementDetailsIsLoading: boolean;
   statementDetailsLatestQuery: string;
@@ -177,10 +178,11 @@ function statementDetailsRequestFromProps(
   props: StatementDetailsProps,
 ): cockroach.server.serverpb.StatementDetailsRequest {
   const [start, end] = toRoundedDateRange(props.timeScale);
-  const statementFingerprintID = getMatchParamByName(
-    props.match,
-    statementAttr,
-  );
+  const statementFingerprintID = props.statementFingerprintID;
+  // const statementFingerprintID = getMatchParamByName(
+  //   props.match,
+  //   statementAttr,
+  // );
 
   return new cockroach.server.serverpb.StatementDetailsRequest({
     fingerprint_id: statementFingerprintID,
@@ -370,7 +372,7 @@ export class StatementDetails extends React.Component<
       }
     }
 
-    if (this.props.match.params.statement != prevProps.match.params.statement) {
+    if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
       this.props.onStatementDetailsQueryChange("");
       this.props.onStatementDetailsFormattedQueryChange("");
     }

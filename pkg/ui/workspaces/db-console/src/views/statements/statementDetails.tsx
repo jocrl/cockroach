@@ -114,6 +114,7 @@ const mapStateToProps = (
 ): StatementDetailsStateProps => {
   const { statementDetails, isLoading } = selectStatementDetails(state, props);
   return {
+    statementFingerprintID: getMatchParamByName(props.match, statementAttr),
     statementDetails,
     statementDetailsIsLoading: isLoading,
     statementDetailsLatestQuery: statementDetailsLatestQuerySelector(state),

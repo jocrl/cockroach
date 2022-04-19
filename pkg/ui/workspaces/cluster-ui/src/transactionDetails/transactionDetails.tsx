@@ -21,7 +21,7 @@ import {
   SortSetting,
 } from "../sortedtable";
 import { PageConfig, PageConfigItem } from "src/pageConfig";
-import { Tooltip } from "@cockroachlabs/ui-components";
+import { InlineAlert, Tooltip } from "@cockroachlabs/ui-components";
 import { Pagination } from "../pagination";
 import { TableStatistics } from "../tableStatistics";
 import { baseHeadingClasses } from "../transactionsPage/transactionsPageClasses";
@@ -98,7 +98,7 @@ interface TState {
   sortSetting: SortSetting;
   pagination: ISortedTablePagination;
   statementsForTransaction: Statement[];
-  transactionText: string;
+  transactionFingerprintIdToText: { [key: string]: string };
 }
 
 function statementsRequestFromProps(
@@ -129,7 +129,7 @@ export class TransactionDetails extends React.Component<
         current: 1,
       },
       statementsForTransaction: [],
-      transactionText: "",
+      transactionFingerprintIdToText: {},
     };
   }
 
@@ -139,7 +139,12 @@ export class TransactionDetails extends React.Component<
   };
 
   getTransactionStateInfo = (): void => {
-    const { transaction, aggregatedTs, statements } = this.props;
+    const {
+      transaction,
+      transactionFingerprintId,
+      aggregatedTs,
+      statements,
+    } = this.props;
     const statementFingerprintIds =
       transaction?.stats_data?.statement_fingerprint_ids;
 
@@ -163,12 +168,22 @@ export class TransactionDetails extends React.Component<
     if (
       statementsForTransaction?.toString() !=
         this.state.statementsForTransaction?.toString() ||
-      transactionText != this.state.transactionText
+      (transactionText &&
+        transactionText !=
+          this.state.transactionFingerprintIdToText[transactionFingerprintId])
     ) {
-      this.setState({
+      const newState = {
         statementsForTransaction,
-        transactionText,
-      });
+        transactionFingerprintIdToText: {
+          ...this.state.transactionFingerprintIdToText,
+        },
+      };
+      if (transactionText) {
+        newState.transactionFingerprintIdToText[
+          transactionFingerprintId
+        ] = transactionText;
+      }
+      this.setState(newState);
     }
   };
 
@@ -209,7 +224,12 @@ export class TransactionDetails extends React.Component<
       transaction,
       transactionFingerprintId,
     } = this.props;
-    const { transactionText, statementsForTransaction } = this.state;
+    const {
+      transactionFingerprintIdToText,
+      statementsForTransaction,
+    } = this.state;
+    const transactionText =
+      transactionFingerprintIdToText[transactionFingerprintId];
     const transactionStats = transaction?.stats_data?.stats;
 
     return (
@@ -257,6 +277,10 @@ export class TransactionDetails extends React.Component<
                       />
                     </Col>
                   </Row>
+                  <InlineAlert
+                    intent="info"
+                    title="Data not available for this time frame. Select a different time frame."
+                  />
                 </section>
               );
             }

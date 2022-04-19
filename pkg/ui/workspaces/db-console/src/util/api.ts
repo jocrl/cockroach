@@ -706,7 +706,7 @@ export function getStores(
 }
 
 // getCombinedStatements returns statements the cluster has recently executed, and some stats about them.
-export function getCombinedStatements(
+export async function getCombinedStatements(
   req: StatementsRequestMessage,
   timeout?: moment.Duration,
 ): Promise<StatementsResponseMessage> {
@@ -715,6 +715,9 @@ export function getCombinedStatements(
     start: req.start.toInt(),
     end: req.end.toInt(),
   });
+  // await new Promise(r => setTimeout(r, 2000)); // two seconds
+  // await new Promise(r => setTimeout(r, 200000)); // two seconds
+  // await new Promise(r => setTimeout(r, 2000000)); // two seconds
   return timeoutFetch(
     serverpb.StatementsResponse,
     `${STATUS_PREFIX}/statements?${queryStr}`,

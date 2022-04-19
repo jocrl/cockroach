@@ -628,6 +628,12 @@ export class StatementsPage extends React.Component<
           title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
         />
       );
+    // const longLoadingMessage = (
+    //   <InlineAlert
+    //     intent="info"
+    //     title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
+    //   />
+    // );
 
     return (
       <div className={cx("root")}>

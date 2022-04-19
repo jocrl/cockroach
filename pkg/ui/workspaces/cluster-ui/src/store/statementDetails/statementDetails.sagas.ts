@@ -21,6 +21,7 @@ import { actions as sqlDetailsStatsActions } from "./statementDetails.reducer";
 import { CACHE_INVALIDATION_PERIOD } from "src/store/utils";
 import { generateStmtDetailsToID } from "../../util";
 
+// export function refreshSQLDetailsStatsSagaFactory(action: PayloadAction<StatementDetailsRequest>) {
 export function* refreshSQLDetailsStatsSaga(
   action: PayloadAction<StatementDetailsRequest>,
 ) {

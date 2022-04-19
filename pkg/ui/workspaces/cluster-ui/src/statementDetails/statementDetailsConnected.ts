@@ -172,8 +172,8 @@ const mapDispatchToProps = (
         page: "Statement Details",
       }),
     ),
-  onStatementDetailsQueryChange: () => {},
-  onStatementDetailsFormattedQueryChange: () => {},
+  onStatementDetailsQueryChange: statementDetailsLatestQueryAction,
+  onStatementDetailsFormattedQueryChange: statementDetailsLatestFormattedQueryAction,
 });
 
 export const ConnectedStatementDetailsPage = withRouter<any, any>(

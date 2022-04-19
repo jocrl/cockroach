@@ -649,6 +649,7 @@ export class StatementDetails extends React.Component<
     ) : (
       <Text className={cx("app-name", "app-name__unset")}>(unset)</Text>
     );
+    console.log("high");
 
     return (
       <Tabs

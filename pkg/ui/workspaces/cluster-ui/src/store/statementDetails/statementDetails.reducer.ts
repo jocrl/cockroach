@@ -12,7 +12,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { DOMAIN_NAME } from "../utils";
 import {
   ErrorWithKey,
-  StatementDetailsRequest,
+  StatementDetailsRequestWithKey,
   StatementDetailsResponse,
   StatementDetailsResponseWithKey,
 } from "src/api/statementsApi";
@@ -21,13 +21,18 @@ export type SQLDetailsStatsState = {
   data: StatementDetailsResponse;
   lastError: Error;
   valid: boolean;
+  inFlight: boolean;
 };
 
 export type SQLDetailsStatsReducerState = {
-  [id: string]: SQLDetailsStatsState;
+  cachedData: {
+    [id: string]: SQLDetailsStatsState;
+  };
 };
 
-const initialState: SQLDetailsStatsReducerState = {};
+const initialState: SQLDetailsStatsReducerState = {
+  cachedData: {},
+};
 
 const sqlDetailsStatsSlice = createSlice({
   name: `${DOMAIN_NAME}/sqlDetailsStats`,
@@ -37,30 +42,46 @@ const sqlDetailsStatsSlice = createSlice({
       state,
       action: PayloadAction<StatementDetailsResponseWithKey>,
     ) => {
-      state[action.payload.key] = {
+      state.cachedData[action.payload.key] = {
         data: action.payload.stmtResponse,
         valid: true,
         lastError: null,
+        inFlight: false,
       };
     },
     failed: (state, action: PayloadAction<ErrorWithKey>) => {
-      state[action.payload.key] = {
+      state.cachedData[action.payload.key] = {
         data: null,
         valid: false,
         lastError: action.payload.err,
+        inFlight: false,
       };
     },
     invalidated: (state, action: PayloadAction<{ key: string }>) => {
-      delete state[action.payload.key];
+      delete state.cachedData[action.payload.key];
     },
     invalidateAll: state => {
       const keys = Object.keys(state);
       for (const key in keys) {
-        delete state[key];
+        delete state.cachedData[key];
       }
     },
-    refresh: (_, action: PayloadAction<StatementDetailsRequest>) => {},
-    request: (_, action: PayloadAction<StatementDetailsRequest>) => {},
+    refresh: (state, action: PayloadAction<StatementDetailsRequestWithKey>) => {
+      state.cachedData[action.payload.key] = {
+        data: null,
+        valid: false,
+        lastError: null,
+        inFlight: true,
+      };
+    },
+    request: (state, action: PayloadAction<StatementDetailsRequestWithKey>) => {
+      state.cachedData[action.payload.key] = {
+        data: null,
+        valid: false,
+        lastError: null,
+        inFlight: true,
+      };
+    },
   },
 });
 

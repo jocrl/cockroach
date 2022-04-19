@@ -503,10 +503,7 @@ export class StatementDetails extends React.Component<
     }
   };
 
-  renderNoStatementDetailsData = (
-    currentTab: any,
-    overviewMessage: string,
-  ): React.ReactElement => {
+  renderNoStatementDetailsData = (currentTab: any): React.ReactElement => {
     const overviewAndExplainPlanNoData = (
       <>
         <PageConfig>
@@ -528,7 +525,10 @@ export class StatementDetails extends React.Component<
               </Col>
             </Row>
           )}
-          <InlineAlert intent="info" title={overviewMessage} />
+          <InlineAlert
+            intent="info"
+            title="Data not available for this time frame. Select a different time frame."
+          />
         </section>
       </>
     );
@@ -592,10 +592,7 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      return this.renderNoStatementDetailsData(
-        currentTab,
-        "Data not available for this time frame. Select a different time frame.",
-      );
+      return this.renderNoStatementDetailsData(currentTab);
     }
 
     const count = FixLong(stats.count).toInt();

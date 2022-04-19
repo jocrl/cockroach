@@ -243,6 +243,24 @@ export class TransactionDetails extends React.Component<
           //   statementsForTransaction.length == 0 || transactionText.length == 0
           // }
           render={() => {
+            if (!transaction) {
+              return (
+                <section className={containerClass}>
+                  <Row
+                    gutter={16}
+                    className={transactionDetailsStylesCx("summary-columns")}
+                  >
+                    <Col span={16}>
+                      <SqlBox
+                        value={transactionText}
+                        className={transactionDetailsStylesCx("summary-card")}
+                      />
+                    </Col>
+                  </Row>
+                </section>
+              );
+            }
+
             const { isTenant, hasViewActivityRedactedRole } = this.props;
             const { sortSetting, pagination } = this.state;
             const txnScopedStmts = statementsForTransaction.filter(

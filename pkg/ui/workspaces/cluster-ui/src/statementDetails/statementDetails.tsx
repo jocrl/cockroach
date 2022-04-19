@@ -521,7 +521,10 @@ export class StatementDetails extends React.Component<
     }
   };
 
-  renderNoStatementDetailsData = (currentTab: any): React.ReactElement => {
+  renderNoStatementDetailsData = (
+    currentTab: any,
+    overviewMessage: string,
+  ): React.ReactElement => {
     const overviewAndExplainPlanNoData = (
       <>
         <PageConfig>
@@ -539,10 +542,7 @@ export class StatementDetails extends React.Component<
         </section>
         <section className={cx("section")}>
           <div className={loadingCx("alerts-container")}>
-            <InlineAlert
-              intent="info"
-              title="Data not available for this time frame. Select a different time frame."
-            />
+            <InlineAlert intent="info" title={overviewMessage} />
           </div>
         </section>
       </>
@@ -596,19 +596,14 @@ export class StatementDetails extends React.Component<
   // getOverviewTabContent = (): React.ReactElement => {};
 
   renderContent = (): React.ReactElement => {
-    const {
-      diagnosticsReports,
-      dismissStatementDiagnosticsAlertMessage,
-      onDiagnosticBundleDownload,
-      onDiagnosticCancelRequest,
-      nodeRegions,
-      isTenant,
-      hasViewActivityRedactedRole,
-    } = this.props;
+    const { diagnosticsReports, nodeRegions, isTenant } = this.props;
     const { currentTab } = this.state;
     // this needs to be conditionalized somehow
     if (!this.props.statementDetails) {
-      return this.renderNoStatementDetailsData(currentTab);
+      return this.renderNoStatementDetailsData(
+        currentTab,
+        "Data not available for this time frame. Select a different time frame.",
+      );
     }
 
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
@@ -616,7 +611,6 @@ export class StatementDetails extends React.Component<
     const {
       app_names,
       formatted_query,
-      query,
       databases,
       dist_sql_count,
       failed_count,
@@ -627,30 +621,11 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      return this.renderNoStatementDetailsData(currentTab);
+      return this.renderNoStatementDetailsData(
+        currentTab,
+        "There are no executions statistics for this statement.",
+      );
     }
-
-    // if (Number(stats.count) == 0) {
-    //   const sourceApp = queryByName(this.props.location, appAttr);
-    //   const listUrl =
-    //     "/sql-activity?tab=Statements" +
-    //     (sourceApp ? "&" + appAttr + "=" + sourceApp : "");
-    //
-    //   return (
-    //     <React.Fragment>
-    //       <section className={cx("section")}>
-    //         <SqlBox value={this.state.latestStatementText} />
-    //       </section>
-    //       <section className={cx("section")}>
-    //         <h3>Unable to find statement</h3>
-    //         There are no execution statistics for this statement.{" "}
-    //         <Link className={cx("back-link")} to={listUrl}>
-    //           Back to Statements
-    //         </Link>
-    //       </section>
-    //     </React.Fragment>
-    //   );
-    // }
 
     const count = FixLong(stats.count).toInt();
     const { statement } = this.props.statementDetails;
@@ -677,7 +652,6 @@ export class StatementDetails extends React.Component<
     ).sort();
 
     const duration = (v: number) => Duration(v * 1e9);
-    const hasDiagnosticReports = diagnosticsReports.length > 0;
     const lastExec =
       stats.last_exec_timestamp &&
       moment(stats.last_exec_timestamp.seconds.low * 1e3).format(

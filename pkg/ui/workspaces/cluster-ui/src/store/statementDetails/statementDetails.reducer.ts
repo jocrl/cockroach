@@ -103,6 +103,14 @@ const sqlDetailsStatsSlice = createSlice({
         inFlight: true,
       };
     },
+    setLatestQuery: (state, action: PayloadAction<string>) => {
+      console.log("latest");
+      state.latestQuery = action.payload;
+    },
+    setLatestFormattedQuery: (state, action: PayloadAction<string>) => {
+      console.log("formatted");
+      state.latestFormattedQuery = action.payload;
+    },
   },
 });
 

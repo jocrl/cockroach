@@ -33,12 +33,16 @@ export const getStatementDetailsPropsFixture = (): StatementDetailsProps => ({
       statement: "4705782015019656142",
     },
   },
+  statementDetailsIsLoading: false,
   timeScale: {
     windowSize: moment.duration(5, "day"),
     sampleSize: moment.duration(5, "minutes"),
     fixedWindowEnd: moment.utc("2021.12.12"),
     key: "Custom",
   },
+  statementDetailsLatestQuery: "SELECT * FROM crdb_internal.node_build_info",
+  statementDetailsLatestFormattedQuery:
+    "SELECT * FROM crdb_internal.node_build_info\n",
   statementDetails: {
     statement: {
       metadata: {
@@ -745,7 +749,10 @@ export const getStatementDetailsPropsFixture = (): StatementDetailsProps => ({
   refreshUserSQLRoles: noop,
   diagnosticsReports: [],
   dismissStatementDiagnosticsAlertMessage: noop,
+  onTimeScaleChange: noop,
   createStatementDiagnosticsReport: noop,
+  onStatementDetailsQueryChange: noop,
+  onStatementDetailsFormattedQueryChange: noop,
   uiConfig: {
     showStatementDiagnosticsLink: true,
   },

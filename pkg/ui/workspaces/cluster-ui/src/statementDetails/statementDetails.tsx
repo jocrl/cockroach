@@ -9,7 +9,8 @@
 // licenses/APL.txt.
 
 import { Col, Row, Tabs } from "antd";
-import { Text, Heading } from "@cockroachlabs/ui-components";
+import { Text, Heading, InlineAlert } from "@cockroachlabs/ui-components";
+import { PageConfig, PageConfigItem } from "src/pageConfig";
 import _ from "lodash";
 import React, { ReactNode } from "react";
 import { Helmet } from "react-helmet";
@@ -52,13 +53,18 @@ import {
 import { DiagnosticsView } from "./diagnostics/diagnosticsView";
 import sortedTableStyles from "src/sortedtable/sortedtable.module.scss";
 import summaryCardStyles from "src/summaryCard/summaryCard.module.scss";
+import loadingStyles from "src/loading/loading.module.scss";
 import styles from "./statementDetails.module.scss";
 import { commonStyles } from "src/common";
 import { NodeSummaryStats } from "../nodes";
 import { UIConfigState } from "../store";
 import moment from "moment";
-import { TimeScale, toRoundedDateRange } from "../timeScaleDropdown";
 import { StatementDetailsRequest } from "src/api/statementsApi";
+import {
+  TimeScale,
+  TimeScaleDropdown,
+  toRoundedDateRange,
+} from "../timeScaleDropdown";
 import SQLActivityError from "../sqlActivity/errorComponent";
 import {
   ActivateDiagnosticsModalRef,
@@ -76,7 +82,7 @@ export interface Fraction {
 }
 
 export type StatementDetailsProps = StatementDetailsOwnProps &
-  RouteComponentProps;
+  RouteComponentProps<{ statement: string }>;
 
 export interface StatementDetailsState {
   sortSetting: SortSetting;
@@ -130,6 +136,7 @@ export interface StatementDetailsDispatchProps {
   ) => void;
   dismissStatementDiagnosticsAlertMessage?: () => void;
   onTabChanged?: (tabName: string) => void;
+  onTimeScaleChange: (ts: TimeScale) => void;
   onDiagnosticsModalOpen?: (statementFingerprint: string) => void;
   onDiagnosticBundleDownload?: (statementFingerprint?: string) => void;
   onDiagnosticCancelRequest?: (report: IStatementDiagnosticsReport) => void;
@@ -139,10 +146,15 @@ export interface StatementDetailsDispatchProps {
     ascending: boolean,
   ) => void;
   onBackToStatementsClick?: () => void;
+  onStatementDetailsQueryChange: (query: string) => void;
+  onStatementDetailsFormattedQueryChange: (formattedQuery: string) => void;
 }
 
 export interface StatementDetailsStateProps {
   statementDetails: StatementDetailsResponse;
+  statementDetailsIsLoading: boolean;
+  statementDetailsLatestQuery: string;
+  statementDetailsLatestFormattedQuery: string;
   statementsError: Error | null;
   timeScale: TimeScale;
   nodeNames: { [nodeId: string]: string };
@@ -157,6 +169,7 @@ export type StatementDetailsOwnProps = StatementDetailsDispatchProps &
   StatementDetailsStateProps;
 
 const cx = classNames.bind(styles);
+const loadingCx = classNames.bind(loadingStyles);
 const sortableTableCx = classNames.bind(sortedTableStyles);
 const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 
@@ -347,7 +360,7 @@ export class StatementDetails extends React.Component<
     }
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate(prevProps: StatementDetailsProps): void {
     this.refreshStatementDetails();
     if (!this.props.isTenant) {
       this.props.refreshNodes();
@@ -355,6 +368,33 @@ export class StatementDetails extends React.Component<
       if (!this.props.hasViewActivityRedactedRole) {
         this.props.refreshStatementDiagnosticsRequests();
       }
+    }
+
+    if (this.props.match.params.statement != prevProps.match.params.statement) {
+      this.props.onStatementDetailsQueryChange("");
+      this.props.onStatementDetailsFormattedQueryChange("");
+    }
+
+    if (
+      this.props.statementDetails &&
+      this.props.statementDetails.statement.metadata.formatted_query &&
+      this.props.statementDetailsLatestFormattedQuery !=
+        this.props.statementDetails.statement.metadata.formatted_query
+    ) {
+      this.props.onStatementDetailsFormattedQueryChange(
+        this.props.statementDetails.statement.metadata.formatted_query,
+      );
+    }
+
+    if (
+      this.props.statementDetails &&
+      this.props.statementDetails.statement.metadata.query &&
+      this.props.statementDetailsLatestQuery !=
+        this.props.statementDetails.statement.metadata.query
+    ) {
+      this.props.onStatementDetailsQueryChange(
+        this.props.statementDetails.statement.metadata.query,
+      );
     }
   }
 
@@ -377,6 +417,19 @@ export class StatementDetails extends React.Component<
     if (this.props.onBackToStatementsClick) {
       this.props.onBackToStatementsClick();
     }
+  };
+
+  getLatestQuery = () => {
+    return (
+      this.props.statementDetails?.statement.metadata.query ||
+      this.props.statementDetailsLatestQuery
+    );
+  };
+  getLatestFormattedQuery = () => {
+    return (
+      this.props.statementDetails?.statement.metadata.formatted_query ||
+      this.props.statementDetailsLatestFormattedQuery
+    );
   };
 
   render(): React.ReactElement {
@@ -406,7 +459,7 @@ export class StatementDetails extends React.Component<
         </div>
         <section className={cx("section", "section--container")}>
           <Loading
-            loading={_.isNil(this.props.statementDetails)}
+            loading={this.props.statementDetailsIsLoading}
             page={"statement details"}
             error={this.props.statementsError}
             render={this.renderContent}
@@ -427,6 +480,121 @@ export class StatementDetails extends React.Component<
     );
   }
 
+  renderDiagnosticsTab = (): React.ReactElement => {
+    const hasDiagnosticReports = this.props.diagnosticsReports.length > 0;
+    if (!this.props.isTenant && !this.props.hasViewActivityRedactedRole) {
+      return (
+        <TabPane
+          tab={`Diagnostics ${
+            hasDiagnosticReports
+              ? `(${this.props.diagnosticsReports.length})`
+              : ""
+          }`}
+          key="diagnostics"
+        >
+          <DiagnosticsView
+            activateDiagnosticsRef={this.activateDiagnosticsRef}
+            diagnosticsReports={this.props.diagnosticsReports}
+            dismissAlertMessage={
+              this.props.dismissStatementDiagnosticsAlertMessage
+            }
+            hasData={hasDiagnosticReports}
+            statementFingerprint={this.props.statementDetailsLatestQuery}
+            // statementFingerprint={this.state.latestStatementText}
+            // statementFingerprint={query}
+            // statementFingerprint={
+            //   this.props.statementDetails.statement.metadata.query
+            // }
+            onDownloadDiagnosticBundleClick={
+              this.props.onDiagnosticBundleDownload
+            }
+            onDiagnosticCancelRequestClick={
+              this.props.onDiagnosticCancelRequest
+            }
+            showDiagnosticsViewLink={
+              this.props.uiConfig.showStatementDiagnosticsLink
+            }
+            onSortingChange={this.props.onSortingChange}
+          />
+        </TabPane>
+      );
+    }
+  };
+
+  renderNoStatementDetailsData = (currentTab: any): React.ReactElement => {
+    const overviewAndExplainPlanNoData = (
+      <>
+        <PageConfig>
+          <PageConfigItem>
+            <TimeScaleDropdown
+              currentScale={this.props.timeScale}
+              setTimeScale={this.props.onTimeScaleChange}
+            />
+          </PageConfigItem>
+        </PageConfig>
+        <section className={cx("section")}>
+          {this.getLatestFormattedQuery() && (
+            <SqlBox value={this.getLatestFormattedQuery()} />
+          )}
+        </section>
+        <section className={cx("section")}>
+          <div className={loadingCx("alerts-container")}>
+            <InlineAlert
+              intent="info"
+              title="Data not available for this time frame. Select a different time frame."
+            />
+          </div>
+        </section>
+      </>
+    );
+
+    const getDiagnosticsTabOrNoData = () => {
+      if (this.props.statementDetailsLatestQuery) {
+        return this.renderDiagnosticsTab();
+      } else {
+        return (
+          <TabPane tab={`Diagnostics`} key="diagnostics">
+            <section className={cx("section")}>
+              <div className={loadingCx("alerts-container")}>
+                <InlineAlert intent="info" title="No data available." />
+              </div>
+            </section>
+          </TabPane>
+        );
+      }
+    };
+
+    return (
+      <Tabs
+        defaultActiveKey="1"
+        className={commonStyles("cockroach--tabs")}
+        onChange={this.onTabChange}
+        activeKey={currentTab}
+      >
+        <TabPane tab="Overview" key="overview">
+          {overviewAndExplainPlanNoData}
+        </TabPane>
+        <TabPane tab="Explain Plans" key="explain-plan">
+          {overviewAndExplainPlanNoData}
+        </TabPane>
+        {getDiagnosticsTabOrNoData()}
+        <TabPane
+          tab="Execution Stats"
+          key="execution-stats"
+          className={cx("fit-content-width")}
+        >
+          <section className={cx("section")}>
+            <div className={loadingCx("alerts-container")}>
+              <InlineAlert intent="info" title="No data available." />
+            </div>
+          </section>
+        </TabPane>
+      </Tabs>
+    );
+  };
+
+  // getOverviewTabContent = (): React.ReactElement => {};
+
   renderContent = (): React.ReactElement => {
     const {
       diagnosticsReports,
@@ -438,6 +606,11 @@ export class StatementDetails extends React.Component<
       hasViewActivityRedactedRole,
     } = this.props;
     const { currentTab } = this.state;
+    // this needs to be conditionalized somehow
+    if (!this.props.statementDetails) {
+      return this.renderNoStatementDetailsData(currentTab);
+    }
+
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
     const {
@@ -454,23 +627,30 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      const sourceApp = queryByName(this.props.location, appAttr);
-      const listUrl =
-        "/sql-activity?tab=Statements" +
-        (sourceApp ? "&" + appAttr + "=" + sourceApp : "");
-
-      return (
-        <React.Fragment>
-          <section className={cx("section")}>
-            <h3>Unable to find statement</h3>
-            There are no execution statistics for this statement.{" "}
-            <Link className={cx("back-link")} to={listUrl}>
-              Back to Statements
-            </Link>
-          </section>
-        </React.Fragment>
-      );
+      return this.renderNoStatementDetailsData(currentTab);
     }
+
+    // if (Number(stats.count) == 0) {
+    //   const sourceApp = queryByName(this.props.location, appAttr);
+    //   const listUrl =
+    //     "/sql-activity?tab=Statements" +
+    //     (sourceApp ? "&" + appAttr + "=" + sourceApp : "");
+    //
+    //   return (
+    //     <React.Fragment>
+    //       <section className={cx("section")}>
+    //         <SqlBox value={this.state.latestStatementText} />
+    //       </section>
+    //       <section className={cx("section")}>
+    //         <h3>Unable to find statement</h3>
+    //         There are no execution statistics for this statement.{" "}
+    //         <Link className={cx("back-link")} to={listUrl}>
+    //           Back to Statements
+    //         </Link>
+    //       </section>
+    //     </React.Fragment>
+    //   );
+    // }
 
     const count = FixLong(stats.count).toInt();
     const { statement } = this.props.statementDetails;
@@ -533,9 +713,20 @@ export class StatementDetails extends React.Component<
         activeKey={currentTab}
       >
         <TabPane tab="Overview" key="overview">
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
-              <SqlBox value={formatted_query} size={SqlBoxSize.small} />
+              <SqlBox
+                value={this.getLatestFormattedQuery()}
+                size={SqlBoxSize.small}
+              />
             </Col>
           </Row>
           <Row gutter={24}>
@@ -751,6 +942,14 @@ export class StatementDetails extends React.Component<
           </Row>
         </TabPane>
         <TabPane tab="Explain Plans" key="explain-plan">
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
               <SqlBox value={formatted_query} size={SqlBoxSize.small} />
@@ -759,28 +958,7 @@ export class StatementDetails extends React.Component<
           <p className={summaryCardStylesCx("summary--card__divider")} />
           <PlanDetails plans={statement_statistics_per_plan_hash} />
         </TabPane>
-        {!isTenant && !hasViewActivityRedactedRole && (
-          <TabPane
-            tab={`Diagnostics ${
-              hasDiagnosticReports ? `(${diagnosticsReports.length})` : ""
-            }`}
-            key="diagnostics"
-          >
-            <DiagnosticsView
-              activateDiagnosticsRef={this.activateDiagnosticsRef}
-              diagnosticsReports={diagnosticsReports}
-              dismissAlertMessage={dismissStatementDiagnosticsAlertMessage}
-              hasData={hasDiagnosticReports}
-              statementFingerprint={query}
-              onDownloadDiagnosticBundleClick={onDiagnosticBundleDownload}
-              onDiagnosticCancelRequestClick={onDiagnosticCancelRequest}
-              showDiagnosticsViewLink={
-                this.props.uiConfig.showStatementDiagnosticsLink
-              }
-              onSortingChange={this.props.onSortingChange}
-            />
-          </TabPane>
-        )}
+        {this.renderDiagnosticsTab()}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"

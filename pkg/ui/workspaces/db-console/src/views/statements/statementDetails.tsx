@@ -37,6 +37,7 @@ import {
 import {
   cancelStatementDiagnosticsReportAction,
   createStatementDiagnosticsReportAction,
+  setCombinedStatementsTimeScaleAction,
 } from "src/redux/statements";
 import { createStatementDiagnosticsAlertLocalSetting } from "src/redux/alerts";
 import { statementsTimeScaleLocalSetting } from "src/redux/statementsTimeScale";
@@ -51,6 +52,10 @@ import { StatementDetailsResponseMessage } from "src/util/api";
 import { getMatchParamByName, queryByName } from "src/util/query";
 
 import { appNamesAttr, statementAttr } from "src/util/constants";
+import {
+  statementDetailsLatestQueryAction,
+  statementDetailsLatestFormattedQueryAction,
+} from "oss/src/redux/sqlActivity";
 type IStatementDiagnosticsReport = protos.cockroach.server.serverpb.IStatementDiagnosticsReport;
 
 const { generateStmtDetailsToID } = util;
@@ -68,7 +73,10 @@ export const selectStatementDetails = createSelector(
     appNames,
     timeScale,
     statementDetailsStats,
-  ): StatementDetailsResponseMessage => {
+  ): {
+    statementDetails: StatementDetailsResponseMessage;
+    isLoading: boolean;
+  } => {
     // Since the aggregation interval is 1h, we want to round the selected timeScale to include
     // the full hour. If a timeScale is between 14:32 - 15:17 we want to search for values
     // between 14:00 - 16:00. We don't encourage the aggregation interval to be modified, but
@@ -82,27 +90,43 @@ export const selectStatementDetails = createSelector(
       Long.fromNumber(end.unix()),
     );
     if (Object.keys(statementDetailsStats).includes(key)) {
-      return statementDetailsStats[key].data;
+      return {
+        statementDetails: statementDetailsStats[key].data,
+        isLoading: statementDetailsStats[key].inFlight,
+      };
     }
-    return null;
+    return { statementDetails: null, isLoading: false };
   },
+);
+
+export const statementDetailsLatestQuerySelector = createSelector(
+  (state: AdminUIState) => state.sqlActivity,
+  sqlActivity => sqlActivity.statementDetailsLatestQuery,
+);
+export const statementDetailsLatestFormattedQuerySelector = createSelector(
+  (state: AdminUIState) => state.sqlActivity,
+  sqlActivity => sqlActivity.statementDetailsLatestFormattedQuery,
 );
 
 const mapStateToProps = (
   state: AdminUIState,
   props: RouteComponentProps,
 ): StatementDetailsStateProps => {
-  const statementDetails = selectStatementDetails(state, props);
-  const statementFingerprint = statementDetails?.statement.metadata.query;
+  const { statementDetails, isLoading } = selectStatementDetails(state, props);
   return {
     statementDetails,
+    statementDetailsIsLoading: isLoading,
+    statementDetailsLatestQuery: statementDetailsLatestQuerySelector(state),
+    statementDetailsLatestFormattedQuery: statementDetailsLatestFormattedQuerySelector(
+      state,
+    ),
     statementsError: state.cachedData.statements.lastError,
     timeScale: statementsTimeScaleLocalSetting.selector(state),
     nodeNames: nodeDisplayNameByIDSelector(state),
     nodeRegions: nodeRegionsByIDSelector(state),
     diagnosticsReports: selectDiagnosticsReportsByStatementFingerprint(
       state,
-      statementFingerprint,
+      statementDetailsLatestQuerySelector(state),
     ),
     hasViewActivityRedactedRole: selectHasViewActivityRedactedRole(state),
   };
@@ -115,6 +139,7 @@ const mapDispatchToProps: StatementDetailsDispatchProps = {
     createStatementDiagnosticsAlertLocalSetting.set({ show: false }),
   createStatementDiagnosticsReport: createStatementDiagnosticsReportAction,
   onTabChanged: trackStatementDetailsSubnavSelectionAction,
+  onTimeScaleChange: setCombinedStatementsTimeScaleAction,
   onDiagnosticBundleDownload: trackDownloadDiagnosticsBundleAction,
   onDiagnosticCancelRequest: (report: IStatementDiagnosticsReport) => {
     return (dispatch: AppDispatch) => {
@@ -124,6 +149,8 @@ const mapDispatchToProps: StatementDetailsDispatchProps = {
       );
     };
   },
+  onStatementDetailsQueryChange: statementDetailsLatestQueryAction,
+  onStatementDetailsFormattedQueryChange: statementDetailsLatestFormattedQueryAction,
   refreshNodes: refreshNodes,
   refreshNodesLiveness: refreshLiveness,
   refreshUserSQLRoles: refreshUserSQLRoles,

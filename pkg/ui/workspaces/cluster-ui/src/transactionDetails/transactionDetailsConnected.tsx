@@ -37,6 +37,7 @@ import {
   getMatchParamByName,
   TimestampToString,
 } from "../util";
+import { TimeScale } from "../timeScaleDropdown";
 
 export const selectTransaction = createSelector(
   (state: AppState) => state.adminUI.sqlStats,
@@ -87,6 +88,13 @@ const mapDispatchToProps = (
   refreshData: (req?: StatementsRequest) =>
     dispatch(sqlStatsActions.refresh(req)),
   refreshUserSQLRoles: () => dispatch(uiConfigActions.refreshUserSQLRoles()),
+  onTimeScaleChange: (ts: TimeScale) => {
+    dispatch(
+      sqlStatsActions.updateTimeScale({
+        ts: ts,
+      }),
+    );
+  },
 });
 
 export const TransactionDetailsPageConnected = withRouter<any, any>(

@@ -20,6 +20,7 @@ import {
   ISortedTablePagination,
   SortSetting,
 } from "../sortedtable";
+import { PageConfig, PageConfigItem } from "src/pageConfig";
 import { Tooltip } from "@cockroachlabs/ui-components";
 import { Pagination } from "../pagination";
 import { TableStatistics } from "../tableStatistics";
@@ -56,7 +57,11 @@ import {
 import { TransactionInfo } from "src/transactionsTable";
 import Long from "long";
 import { StatementsRequest } from "../api";
-import { TimeScale, toDateRange } from "../timeScaleDropdown";
+import {
+  TimeScale,
+  TimeScaleDropdown,
+  toDateRange,
+} from "../timeScaleDropdown";
 
 const { containerClass } = tableClasses;
 const cx = classNames.bind(statementsStyles);
@@ -76,11 +81,13 @@ export interface TransactionDetailsStateProps {
   statements?: Statement[];
   transaction: TransactionInfo;
   transactionFingerprintId: string;
+  isLoading: boolean;
 }
 
 export interface TransactionDetailsDispatchProps {
   refreshData: (req?: StatementsRequest) => void;
   refreshUserSQLRoles: () => void;
+  onTimeScaleChange: (ts: TimeScale) => void;
 }
 
 export type TransactionDetailsProps = TransactionDetailsStateProps &
@@ -220,12 +227,21 @@ export class TransactionDetails extends React.Component<
           </Button>
           <h3 className={baseHeadingClasses.tableName}>Transaction Details</h3>
         </section>
+        <PageConfig>
+          <PageConfigItem>
+            <TimeScaleDropdown
+              currentScale={this.props.timeScale}
+              setTimeScale={this.props.onTimeScaleChange}
+            />
+          </PageConfigItem>
+        </PageConfig>
         <Loading
           error={error}
           page={"transaction details"}
-          loading={
-            statementsForTransaction.length == 0 || transactionText.length == 0
-          }
+          loading={this.props.isLoading}
+          // loading={
+          //   statementsForTransaction.length == 0 || transactionText.length == 0
+          // }
           render={() => {
             const { isTenant, hasViewActivityRedactedRole } = this.props;
             const { sortSetting, pagination } = this.state;

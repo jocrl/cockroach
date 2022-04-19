@@ -724,7 +724,7 @@ export function getCombinedStatements(
 }
 
 // getStatementDetails returns the statistics about the selected statement.
-export function getStatementDetails(
+export async function getStatementDetails(
   req: StatementDetailsRequestMessage,
   timeout?: moment.Duration,
 ): Promise<StatementDetailsResponseMessage> {

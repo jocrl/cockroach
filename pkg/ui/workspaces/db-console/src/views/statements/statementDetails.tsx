@@ -116,11 +116,9 @@ const mapStateToProps = (
   return {
     statementFingerprintID: getMatchParamByName(props.match, statementAttr),
     statementDetails,
-    statementDetailsIsLoading: isLoading,
-    statementDetailsLatestQuery: statementDetailsLatestQuerySelector(state),
-    statementDetailsLatestFormattedQuery: statementDetailsLatestFormattedQuerySelector(
-      state,
-    ),
+    isLoading,
+    latestQuery: statementDetailsLatestQuerySelector(state),
+    latestFormattedQuery: statementDetailsLatestFormattedQuerySelector(state),
     statementsError: state.cachedData.statements.lastError,
     timeScale: statementsTimeScaleLocalSetting.selector(state),
     nodeNames: nodeDisplayNameByIDSelector(state),

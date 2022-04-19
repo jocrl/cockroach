@@ -153,9 +153,9 @@ export interface StatementDetailsDispatchProps {
 export interface StatementDetailsStateProps {
   statementFingerprintID: string;
   statementDetails: StatementDetailsResponse;
-  statementDetailsIsLoading: boolean;
-  statementDetailsLatestQuery: string;
-  statementDetailsLatestFormattedQuery: string;
+  isLoading: boolean;
+  latestQuery: string;
+  latestFormattedQuery: string;
   statementsError: Error | null;
   timeScale: TimeScale;
   nodeNames: { [nodeId: string]: string };
@@ -380,7 +380,7 @@ export class StatementDetails extends React.Component<
     if (
       this.props.statementDetails &&
       this.props.statementDetails.statement.metadata.formatted_query &&
-      this.props.statementDetailsLatestFormattedQuery !=
+      this.props.latestFormattedQuery !=
         this.props.statementDetails.statement.metadata.formatted_query
     ) {
       this.props.onStatementDetailsFormattedQueryChange(
@@ -391,7 +391,7 @@ export class StatementDetails extends React.Component<
     if (
       this.props.statementDetails &&
       this.props.statementDetails.statement.metadata.query &&
-      this.props.statementDetailsLatestQuery !=
+      this.props.latestQuery !=
         this.props.statementDetails.statement.metadata.query
     ) {
       this.props.onStatementDetailsQueryChange(
@@ -448,7 +448,7 @@ export class StatementDetails extends React.Component<
         </div>
         <section className={cx("section", "section--container")}>
           <Loading
-            loading={this.props.statementDetailsIsLoading}
+            loading={this.props.isLoading}
             page={"statement details"}
             error={this.props.statementsError}
             render={this.renderContent}
@@ -488,7 +488,7 @@ export class StatementDetails extends React.Component<
               this.props.dismissStatementDiagnosticsAlertMessage
             }
             hasData={hasDiagnosticReports}
-            statementFingerprint={this.props.statementDetailsLatestQuery}
+            statementFingerprint={this.props.latestQuery}
             onDownloadDiagnosticBundleClick={
               this.props.onDiagnosticBundleDownload
             }
@@ -517,11 +517,11 @@ export class StatementDetails extends React.Component<
           </PageConfigItem>
         </PageConfig>
         <section className={cx("section")}>
-          {this.props.statementDetailsLatestFormattedQuery && (
+          {this.props.latestFormattedQuery && (
             <Row gutter={24}>
               <Col className="gutter-row" span={24}>
                 <SqlBox
-                  value={this.props.statementDetailsLatestFormattedQuery}
+                  value={this.props.latestFormattedQuery}
                   size={SqlBoxSize.small}
                 />
               </Col>
@@ -536,7 +536,7 @@ export class StatementDetails extends React.Component<
     );
 
     const getDiagnosticsTabOrNoData = () => {
-      if (this.props.statementDetailsLatestQuery) {
+      if (this.props.latestQuery) {
         return this.renderDiagnosticsTab();
       } else {
         return (
@@ -579,6 +579,9 @@ export class StatementDetails extends React.Component<
   renderContent = (): React.ReactElement => {
     const { nodeRegions, isTenant } = this.props;
     const { currentTab } = this.state;
+    if (!this.props.statementDetails) {
+      console.log(this.props.statementDetails, this.props.isLoading);
+    }
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
     const {
@@ -670,7 +673,7 @@ export class StatementDetails extends React.Component<
             <Row gutter={24}>
               <Col className="gutter-row" span={24}>
                 <SqlBox
-                  value={this.props.statementDetailsLatestFormattedQuery}
+                  value={this.props.latestFormattedQuery}
                   size={SqlBoxSize.small}
                 />
               </Col>

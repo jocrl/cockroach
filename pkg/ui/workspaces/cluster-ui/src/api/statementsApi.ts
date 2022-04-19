@@ -17,10 +17,6 @@ const STATEMENT_DETAILS_PATH = "/_status/stmtdetails";
 
 export type StatementsRequest = cockroach.server.serverpb.StatementsRequest;
 export type StatementDetailsRequest = cockroach.server.serverpb.StatementDetailsRequest;
-export type StatementDetailsRequestWithKey = {
-  stmtRequest: StatementDetailsRequest;
-  key: string;
-};
 export type StatementDetailsResponse = cockroach.server.serverpb.StatementDetailsResponse;
 export type StatementDetailsResponseWithKey = {
   stmtResponse: StatementDetailsResponse;

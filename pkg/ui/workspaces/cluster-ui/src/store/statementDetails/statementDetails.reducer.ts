@@ -12,10 +12,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { DOMAIN_NAME } from "../utils";
 import {
   ErrorWithKey,
-  StatementDetailsRequestWithKey,
+  StatementDetailsRequest,
   StatementDetailsResponse,
   StatementDetailsResponseWithKey,
 } from "src/api/statementsApi";
+import { generateStmtDetailsToID } from "../../util";
 
 export type SQLDetailsStatsState = {
   data: StatementDetailsResponse;
@@ -66,16 +67,32 @@ const sqlDetailsStatsSlice = createSlice({
         delete state.cachedData[key];
       }
     },
-    refresh: (state, action: PayloadAction<StatementDetailsRequestWithKey>) => {
-      state.cachedData[action.payload.key] = {
+    refresh: (state, action: PayloadAction<StatementDetailsRequest>) => {
+      const key = action?.payload
+        ? generateStmtDetailsToID(
+            action.payload.fingerprint_id,
+            action.payload.app_names.toString(),
+            action.payload.start,
+            action.payload.end,
+          )
+        : "";
+      state.cachedData[key] = {
         data: null,
         valid: false,
         lastError: null,
         inFlight: true,
       };
     },
-    request: (state, action: PayloadAction<StatementDetailsRequestWithKey>) => {
-      state.cachedData[action.payload.key] = {
+    request: (state, action: PayloadAction<StatementDetailsRequest>) => {
+      const key = action?.payload
+        ? generateStmtDetailsToID(
+            action.payload.fingerprint_id,
+            action.payload.app_names.toString(),
+            action.payload.start,
+            action.payload.end,
+          )
+        : "";
+      state.cachedData[key] = {
         data: null,
         valid: false,
         lastError: null,

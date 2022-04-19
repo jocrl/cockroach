@@ -29,10 +29,14 @@ export type SQLDetailsStatsReducerState = {
   cachedData: {
     [id: string]: SQLDetailsStatsState;
   };
+  latestQuery: string;
+  latestFormattedQuery: string;
 };
 
 const initialState: SQLDetailsStatsReducerState = {
   cachedData: {},
+  latestQuery: "",
+  latestFormattedQuery: "",
 };
 
 const sqlDetailsStatsSlice = createSlice({

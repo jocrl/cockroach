@@ -99,15 +99,6 @@ export const selectStatementDetails = createSelector(
   },
 );
 
-export const statementDetailsLatestQuerySelector = createSelector(
-  (state: AdminUIState) => state.sqlActivity,
-  sqlActivity => sqlActivity.statementDetailsLatestQuery,
-);
-export const statementDetailsLatestFormattedQuerySelector = createSelector(
-  (state: AdminUIState) => state.sqlActivity,
-  sqlActivity => sqlActivity.statementDetailsLatestFormattedQuery,
-);
-
 const mapStateToProps = (
   state: AdminUIState,
   props: RouteComponentProps,
@@ -117,15 +108,16 @@ const mapStateToProps = (
     statementFingerprintID: getMatchParamByName(props.match, statementAttr),
     statementDetails,
     isLoading,
-    latestQuery: statementDetailsLatestQuerySelector(state),
-    latestFormattedQuery: statementDetailsLatestFormattedQuerySelector(state),
+    latestQuery: state.sqlActivity.statementDetailsLatestQuery,
+    latestFormattedQuery:
+      state.sqlActivity.statementDetailsLatestFormattedQuery,
     statementsError: state.cachedData.statements.lastError,
     timeScale: statementsTimeScaleLocalSetting.selector(state),
     nodeNames: nodeDisplayNameByIDSelector(state),
     nodeRegions: nodeRegionsByIDSelector(state),
     diagnosticsReports: selectDiagnosticsReportsByStatementFingerprint(
       state,
-      statementDetailsLatestQuerySelector(state),
+      state.sqlActivity.statementDetailsLatestQuery,
     ),
     hasViewActivityRedactedRole: selectHasViewActivityRedactedRole(state),
   };

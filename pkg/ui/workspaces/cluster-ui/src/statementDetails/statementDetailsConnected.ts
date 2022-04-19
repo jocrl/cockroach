@@ -56,10 +56,11 @@ const CancelStatementDiagnosticsReportRequest =
 // diagnostics.
 const mapStateToProps = (state: AppState, props: RouteComponentProps) => {
   const { statementDetails, isLoading } = selectStatementDetails(state, props);
-  const statementFingerprint = statementDetails?.statement.metadata.query;
   return {
     statementDetails,
     isLoading,
+    latestQuery: state.adminUI.sqlDetailsStats.latestQuery,
+    latestFormattedQuery: state.adminUI.sqlDetailsStats.latestFormattedQuery,
     statementsError: state.adminUI.sqlStats.lastError,
     timeScale: selectTimeScale(state),
     nodeNames: selectIsTenant(state) ? {} : nodeDisplayNameByIDSelector(state),
@@ -69,7 +70,7 @@ const mapStateToProps = (state: AppState, props: RouteComponentProps) => {
         ? []
         : selectDiagnosticsReportsByStatementFingerprint(
             state,
-            statementFingerprint,
+            state.adminUI.sqlDetailsStats.latestQuery,
           ),
     uiConfig: selectStatementDetailsUiConfig(state),
     isTenant: selectIsTenant(state),

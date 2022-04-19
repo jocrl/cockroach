@@ -528,9 +528,7 @@ export class StatementDetails extends React.Component<
               </Col>
             </Row>
           )}
-          {/*<div className={loadingCx("alerts-container")}>*/}
           <InlineAlert intent="info" title={overviewMessage} />
-          {/*</div>*/}
         </section>
       </>
     );
@@ -542,9 +540,7 @@ export class StatementDetails extends React.Component<
         return (
           <TabPane tab={`Diagnostics`} key="diagnostics">
             <section className={cx("section")}>
-              {/*<div className={loadingCx("alerts-container")}>*/}
               <InlineAlert intent="info" title="No data available." />
-              {/*</div>*/}
             </section>
           </TabPane>
         );
@@ -571,28 +567,16 @@ export class StatementDetails extends React.Component<
           className={cx("fit-content-width")}
         >
           <section className={cx("section")}>
-            {/*<div className={loadingCx("alerts-container")}>*/}
             <InlineAlert intent="info" title="No data available." />
-            {/*</div>*/}
           </section>
         </TabPane>
       </Tabs>
     );
   };
 
-  // getOverviewTabContent = (): React.ReactElement => {};
-
   renderContent = (): React.ReactElement => {
     const { nodeRegions, isTenant } = this.props;
     const { currentTab } = this.state;
-    // this needs to be conditionalized somehow
-    if (!this.props.statementDetails) {
-      return this.renderNoStatementDetailsData(
-        currentTab,
-        "Data not available for this time frame. Select a different time frame.",
-      );
-    }
-
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
     const {
@@ -610,7 +594,7 @@ export class StatementDetails extends React.Component<
     if (Number(stats.count) == 0) {
       return this.renderNoStatementDetailsData(
         currentTab,
-        "There are no executions statistics for this statement.",
+        "Data not available for this time frame. Select a different time frame.",
       );
     }
 

@@ -95,7 +95,7 @@ export const selectStatementDetails = createSelector(
         isLoading: statementDetailsStats[key].inFlight,
       };
     }
-    return { statementDetails: null, isLoading: false };
+    return { statementDetails: null, isLoading: true };
   },
 );
 

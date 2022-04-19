@@ -419,19 +419,6 @@ export class StatementDetails extends React.Component<
     }
   };
 
-  getLatestQuery = () => {
-    return (
-      this.props.statementDetails?.statement.metadata.query ||
-      this.props.statementDetailsLatestQuery
-    );
-  };
-  getLatestFormattedQuery = () => {
-    return (
-      this.props.statementDetails?.statement.metadata.formatted_query ||
-      this.props.statementDetailsLatestFormattedQuery
-    );
-  };
-
   render(): React.ReactElement {
     const {
       refreshStatementDiagnosticsRequests,
@@ -500,11 +487,6 @@ export class StatementDetails extends React.Component<
             }
             hasData={hasDiagnosticReports}
             statementFingerprint={this.props.statementDetailsLatestQuery}
-            // statementFingerprint={this.state.latestStatementText}
-            // statementFingerprint={query}
-            // statementFingerprint={
-            //   this.props.statementDetails.statement.metadata.query
-            // }
             onDownloadDiagnosticBundleClick={
               this.props.onDiagnosticBundleDownload
             }
@@ -536,8 +518,8 @@ export class StatementDetails extends React.Component<
           </PageConfigItem>
         </PageConfig>
         <section className={cx("section")}>
-          {this.getLatestFormattedQuery() && (
-            <SqlBox value={this.getLatestFormattedQuery()} />
+          {this.props.statementDetailsLatestFormattedQuery && (
+            <SqlBox value={this.props.statementDetailsLatestFormattedQuery} />
           )}
         </section>
         <section className={cx("section")}>
@@ -596,7 +578,7 @@ export class StatementDetails extends React.Component<
   // getOverviewTabContent = (): React.ReactElement => {};
 
   renderContent = (): React.ReactElement => {
-    const { diagnosticsReports, nodeRegions, isTenant } = this.props;
+    const { nodeRegions, isTenant } = this.props;
     const { currentTab } = this.state;
     // this needs to be conditionalized somehow
     if (!this.props.statementDetails) {
@@ -698,7 +680,7 @@ export class StatementDetails extends React.Component<
           <Row gutter={24}>
             <Col className="gutter-row" span={24}>
               <SqlBox
-                value={this.getLatestFormattedQuery()}
+                value={this.props.statementDetailsLatestFormattedQuery}
                 size={SqlBoxSize.small}
               />
             </Col>

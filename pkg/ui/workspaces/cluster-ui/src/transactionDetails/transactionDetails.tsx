@@ -98,7 +98,7 @@ interface TState {
   sortSetting: SortSetting;
   pagination: ISortedTablePagination;
   statementsForTransaction: Statement[];
-  transactionFingerprintIdToText: { [key: string]: string };
+  latestTransactionText: string;
 }
 
 function statementsRequestFromProps(
@@ -129,7 +129,7 @@ export class TransactionDetails extends React.Component<
         current: 1,
       },
       statementsForTransaction: [],
-      transactionFingerprintIdToText: {},
+      latestTransactionText: "",
     };
   }
 
@@ -138,7 +138,7 @@ export class TransactionDetails extends React.Component<
     hasViewActivityRedactedRole: false,
   };
 
-  getTransactionStateInfo = (): void => {
+  getTransactionStateInfo = (prevTransactionFingerprintId: string): void => {
     const {
       transaction,
       transactionFingerprintId,
@@ -167,39 +167,42 @@ export class TransactionDetails extends React.Component<
 
     if (
       statementsForTransaction?.toString() !=
-        this.state.statementsForTransaction?.toString() ||
-      (transactionText &&
-        transactionText !=
-          this.state.transactionFingerprintIdToText[transactionFingerprintId])
+      this.state.statementsForTransaction?.toString()
     ) {
-      const newState = {
+      this.setState({
         statementsForTransaction,
-        transactionFingerprintIdToText: {
-          ...this.state.transactionFingerprintIdToText,
-        },
-      };
-      if (transactionText) {
-        newState.transactionFingerprintIdToText[
-          transactionFingerprintId
-        ] = transactionText;
-      }
-      this.setState(newState);
+      });
+    }
+
+    if (
+      transactionText &&
+      transactionText != this.state.latestTransactionText
+    ) {
+      this.setState({
+        latestTransactionText: transactionText,
+      });
+    }
+
+    if (prevTransactionFingerprintId != transactionFingerprintId) {
+      this.setState({
+        latestTransactionText: "",
+      });
     }
   };
 
-  refreshData = (): void => {
+  refreshData = (prevTransactionFingerprintId: string): void => {
     const req = statementsRequestFromProps(this.props);
     this.props.refreshData(req);
-    this.getTransactionStateInfo();
+    this.getTransactionStateInfo(prevTransactionFingerprintId);
   };
 
   componentDidMount(): void {
-    this.refreshData();
+    this.refreshData("");
     this.props.refreshUserSQLRoles();
   }
 
-  componentDidUpdate(): void {
-    this.getTransactionStateInfo();
+  componentDidUpdate(prevProps: TransactionDetailsProps): void {
+    this.getTransactionStateInfo(prevProps.transactionFingerprintId);
   }
 
   onChangeSortSetting = (ss: SortSetting): void => {
@@ -224,12 +227,7 @@ export class TransactionDetails extends React.Component<
       transaction,
       transactionFingerprintId,
     } = this.props;
-    const {
-      transactionFingerprintIdToText,
-      statementsForTransaction,
-    } = this.state;
-    const transactionText =
-      transactionFingerprintIdToText[transactionFingerprintId];
+    const { latestTransactionText, statementsForTransaction } = this.state;
     const transactionStats = transaction?.stats_data?.stats;
 
     return (
@@ -259,9 +257,6 @@ export class TransactionDetails extends React.Component<
           error={error}
           page={"transaction details"}
           loading={this.props.isLoading}
-          // loading={
-          //   statementsForTransaction.length == 0 || transactionText.length == 0
-          // }
           render={() => {
             if (!transaction) {
               return (
@@ -272,7 +267,7 @@ export class TransactionDetails extends React.Component<
                   >
                     <Col span={16}>
                       <SqlBox
-                        value={transactionText}
+                        value={latestTransactionText}
                         className={transactionDetailsStylesCx("summary-card")}
                       />
                     </Col>
@@ -327,7 +322,7 @@ export class TransactionDetails extends React.Component<
                   >
                     <Col span={16}>
                       <SqlBox
-                        value={transactionText}
+                        value={latestTransactionText}
                         className={transactionDetailsStylesCx("summary-card")}
                       />
                     </Col>

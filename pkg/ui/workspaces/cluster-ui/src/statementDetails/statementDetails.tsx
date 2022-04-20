@@ -177,7 +177,7 @@ const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 function getStatementDetailsRequest(
   timeScale: TimeScale,
   statementFingerprintID: string,
-  location: Location,
+  location: any,
 ): cockroach.server.serverpb.StatementDetailsRequest {
   const [start, end] = toRoundedDateRange(timeScale);
   return new cockroach.server.serverpb.StatementDetailsRequest({
@@ -345,9 +345,8 @@ export class StatementDetails extends React.Component<
   refreshStatementDetails = (
     timeScale: TimeScale,
     statementFingerprintID: string,
-    location: Location,
+    location: any,
   ): void => {
-    console.log("refresh");
     const req = getStatementDetailsRequest(
       timeScale,
       statementFingerprintID,
@@ -391,41 +390,33 @@ export class StatementDetails extends React.Component<
         this.props.refreshStatementDiagnosticsRequests();
       }
     }
-    // console.log(
-    //   "running",
-    //   JSON.stringify(prevProps),
-    //   JSON.stringify(this.props),
-    // );
 
-    // if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
-    //   console.log("running3");
-    //   this.props.onStatementDetailsQueryChange("");
-    //   this.props.onStatementDetailsFormattedQueryChange("");
-    // }
-    //
-    // if (
-    //   this.props.statementDetails &&
-    //   this.props.statementDetails.statement.metadata.formatted_query &&
-    //   this.props.latestFormattedQuery !=
-    //     this.props.statementDetails.statement.metadata.formatted_query
-    // ) {
-    //   console.log("running1");
-    //   this.props.onStatementDetailsFormattedQueryChange(
-    //     this.props.statementDetails.statement.metadata.formatted_query,
-    //   );
-    // }
-    //
-    // if (
-    //   this.props.statementDetails &&
-    //   this.props.statementDetails.statement.metadata.query &&
-    //   this.props.latestQuery !=
-    //     this.props.statementDetails.statement.metadata.query
-    // ) {
-    //   console.log("running2");
-    //   this.props.onStatementDetailsQueryChange(
-    //     this.props.statementDetails.statement.metadata.query,
-    //   );
-    // }
+    if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
+      this.props.onStatementDetailsQueryChange("");
+      this.props.onStatementDetailsFormattedQueryChange("");
+    }
+
+    if (
+      this.props.statementDetails &&
+      this.props.statementDetails.statement.metadata.formatted_query &&
+      this.props.latestFormattedQuery !=
+        this.props.statementDetails.statement.metadata.formatted_query
+    ) {
+      this.props.onStatementDetailsFormattedQueryChange(
+        this.props.statementDetails.statement.metadata.formatted_query,
+      );
+    }
+
+    if (
+      this.props.statementDetails &&
+      this.props.statementDetails.statement.metadata.query &&
+      this.props.latestQuery !=
+        this.props.statementDetails.statement.metadata.query
+    ) {
+      this.props.onStatementDetailsQueryChange(
+        this.props.statementDetails.statement.metadata.query,
+      );
+    }
   }
 
   onTabChange = (tabId: string): void => {
@@ -608,7 +599,6 @@ export class StatementDetails extends React.Component<
     const { nodeRegions, isTenant } = this.props;
     const { currentTab } = this.state;
     if (!this.props.statementDetails) {
-      console.log(this.props.statementDetails, this.props.isLoading);
     }
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
@@ -679,7 +669,6 @@ export class StatementDetails extends React.Component<
     ) : (
       <Text className={cx("app-name", "app-name__unset")}>(unset)</Text>
     );
-    console.log("high");
 
     return (
       <Tabs

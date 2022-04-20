@@ -40,6 +40,7 @@ export const getStatementDetailsPropsFixture = (): StatementDetailsProps => ({
     fixedWindowEnd: moment.utc("2021.12.12"),
     key: "Custom",
   },
+  statementFingerprintID: "4705782015019656142",
   latestQuery: "SELECT * FROM crdb_internal.node_build_info",
   latestFormattedQuery: "SELECT * FROM crdb_internal.node_build_info\n",
   statementDetails: {

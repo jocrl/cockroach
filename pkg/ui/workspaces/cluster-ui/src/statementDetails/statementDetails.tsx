@@ -82,7 +82,7 @@ export interface Fraction {
 }
 
 export type StatementDetailsProps = StatementDetailsOwnProps &
-  RouteComponentProps<{ statement: string }>;
+  RouteComponentProps<{ implicitTxn: string; statement: string }>;
 
 export interface StatementDetailsState {
   sortSetting: SortSetting;
@@ -383,6 +383,7 @@ export class StatementDetails extends React.Component<
         this.props.location,
       );
     }
+
     if (!this.props.isTenant) {
       this.props.refreshNodes();
       this.props.refreshNodesLiveness();

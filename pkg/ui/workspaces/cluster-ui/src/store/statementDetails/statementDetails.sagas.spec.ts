@@ -662,6 +662,7 @@ describe("SQLDetailsStats sagas", () => {
             data: SQLDetailsStatsResponse,
             lastError: null,
             valid: true,
+            inFlight: false,
           },
         })
         .run();
@@ -683,6 +684,7 @@ describe("SQLDetailsStats sagas", () => {
             data: null,
             lastError: error,
             valid: false,
+            inFlight: false,
           },
         })
         .run();

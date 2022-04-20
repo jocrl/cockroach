@@ -54,6 +54,7 @@ export const selectStatementDetails = createSelector(
       Long.fromNumber(end.unix()),
     );
     if (Object.keys(statementDetailsStatsData).includes(key)) {
+      console.log(statementDetailsStatsData[key].data);
       return {
         statementDetails: statementDetailsStatsData[key].data,
         isLoading: statementDetailsStatsData[key].inFlight,

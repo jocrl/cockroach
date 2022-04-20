@@ -28,6 +28,8 @@ import {
 } from "redux";
 import { AppState, rootReducer } from "../store";
 import { Provider } from "react-redux";
+import { StatementDetailsResponse } from "../api";
+import { cockroach } from "@cockroachlabs/crdb-protobuf-client";
 
 const history = createMemoryHistory();
 const routerReducer = connectRouter(history);
@@ -85,5 +87,24 @@ storiesOf("StatementDetails", module)
     props.history.location.search = new URLSearchParams([
       ["tab", "execution-stats"],
     ]).toString();
+    return <StatementDetails {...props} />;
+  })
+  .add("Loading", () => {
+    const props = getStatementDetailsPropsFixture();
+    props.statementDetails = null;
+    props.isLoading = true;
+    return <StatementDetails {...props} />;
+  })
+  .add(
+    "No data for this time frame; cached latestQuery and latestFormattedQuery available",
+    () => {
+      const props = getStatementDetailsPropsFixture(false);
+      return <StatementDetails {...props} />;
+    },
+  )
+  .add("No data for this time frame; no cached statement", () => {
+    const props = getStatementDetailsPropsFixture(false);
+    props.latestQuery = "";
+    props.latestFormattedQuery = "";
     return <StatementDetails {...props} />;
   });

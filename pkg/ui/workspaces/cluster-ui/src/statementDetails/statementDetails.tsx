@@ -598,8 +598,7 @@ export class StatementDetails extends React.Component<
   renderContent = (): React.ReactElement => {
     const { nodeRegions, isTenant } = this.props;
     const { currentTab } = this.state;
-    if (!this.props.statementDetails) {
-    }
+
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
     const {

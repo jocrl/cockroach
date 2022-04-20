@@ -28,14 +28,18 @@ import {
   TransactionDetails,
   util,
 } from "@cockroachlabs/cluster-ui";
+import { setCombinedStatementsTimeScaleAction } from "src/redux/statements";
 
-export const selectTransaction = createSelector(
+export const selectIsLoadingAndTransaction = createSelector(
   (state: AdminUIState) => state.cachedData.statements,
   (_state: AdminUIState, props: RouteComponentProps) => props,
   (transactionState, props) => {
     const transactions = transactionState.data?.transactions;
     if (!transactions) {
-      return null;
+      return {
+        isLoading: true,
+        transaction: null,
+      };
     }
     const aggregatedTs = getMatchParamByName(props.match, aggregatedTsAttr);
     const txnFingerprintId = getMatchParamByName(
@@ -43,7 +47,7 @@ export const selectTransaction = createSelector(
       txnFingerprintIdAttr,
     );
 
-    return transactions
+    const transaction = transactions
       .filter(
         txn =>
           txn.stats_data.transaction_fingerprint_id.toString() ==
@@ -53,6 +57,10 @@ export const selectTransaction = createSelector(
         txn =>
           util.TimestampToString(txn.stats_data.aggregated_ts) == aggregatedTs,
       )[0];
+    return {
+      isLoading: false,
+      transaction: transaction,
+    };
   },
 );
 
@@ -62,7 +70,10 @@ export default withRouter(
       state: AdminUIState,
       props: TransactionDetailsProps,
     ): TransactionDetailsStateProps => {
-      const transaction = selectTransaction(state, props);
+      const { isLoading, transaction } = selectIsLoadingAndTransaction(
+        state,
+        props,
+      );
       return {
         aggregatedTs: getMatchParamByName(props.match, aggregatedTsAttr),
         timeScale: statementsTimeScaleLocalSetting.selector(state),
@@ -75,8 +86,13 @@ export default withRouter(
           props.match,
           txnFingerprintIdAttr,
         ),
+        isLoading,
       };
     },
-    { refreshData: refreshStatements, refreshUserSQLRoles },
+    {
+      refreshData: refreshStatements,
+      refreshUserSQLRoles,
+      onTimeScaleChange: setCombinedStatementsTimeScaleAction,
+    },
   )(TransactionDetails),
 );

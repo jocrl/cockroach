@@ -9,7 +9,8 @@
 // licenses/APL.txt.
 
 import { Col, Row, Tabs } from "antd";
-import { Text, Heading } from "@cockroachlabs/ui-components";
+import { Text, Heading, InlineAlert } from "@cockroachlabs/ui-components";
+import { PageConfig, PageConfigItem } from "src/pageConfig";
 import _ from "lodash";
 import React, { ReactNode } from "react";
 import { Helmet } from "react-helmet";
@@ -52,13 +53,18 @@ import {
 import { DiagnosticsView } from "./diagnostics/diagnosticsView";
 import sortedTableStyles from "src/sortedtable/sortedtable.module.scss";
 import summaryCardStyles from "src/summaryCard/summaryCard.module.scss";
+import loadingStyles from "src/loading/loading.module.scss";
 import styles from "./statementDetails.module.scss";
 import { commonStyles } from "src/common";
 import { NodeSummaryStats } from "../nodes";
 import { UIConfigState } from "../store";
 import moment from "moment";
-import { TimeScale, toRoundedDateRange } from "../timeScaleDropdown";
 import { StatementDetailsRequest } from "src/api/statementsApi";
+import {
+  TimeScale,
+  TimeScaleDropdown,
+  toRoundedDateRange,
+} from "../timeScaleDropdown";
 import SQLActivityError from "../sqlActivity/errorComponent";
 import {
   ActivateDiagnosticsModalRef,
@@ -76,7 +82,7 @@ export interface Fraction {
 }
 
 export type StatementDetailsProps = StatementDetailsOwnProps &
-  RouteComponentProps;
+  RouteComponentProps<{ implicitTxn: string; statement: string }>;
 
 export interface StatementDetailsState {
   sortSetting: SortSetting;
@@ -130,6 +136,7 @@ export interface StatementDetailsDispatchProps {
   ) => void;
   dismissStatementDiagnosticsAlertMessage?: () => void;
   onTabChanged?: (tabName: string) => void;
+  onTimeScaleChange: (ts: TimeScale) => void;
   onDiagnosticsModalOpen?: (statementFingerprint: string) => void;
   onDiagnosticBundleDownload?: (statementFingerprint?: string) => void;
   onDiagnosticCancelRequest?: (report: IStatementDiagnosticsReport) => void;
@@ -139,10 +146,16 @@ export interface StatementDetailsDispatchProps {
     ascending: boolean,
   ) => void;
   onBackToStatementsClick?: () => void;
+  onStatementDetailsQueryChange: (query: string) => void;
+  onStatementDetailsFormattedQueryChange: (formattedQuery: string) => void;
 }
 
 export interface StatementDetailsStateProps {
+  statementFingerprintID: string;
   statementDetails: StatementDetailsResponse;
+  isLoading: boolean;
+  latestQuery: string;
+  latestFormattedQuery: string;
   statementsError: Error | null;
   timeScale: TimeScale;
   nodeNames: { [nodeId: string]: string };
@@ -157,21 +170,19 @@ export type StatementDetailsOwnProps = StatementDetailsDispatchProps &
   StatementDetailsStateProps;
 
 const cx = classNames.bind(styles);
+const loadingCx = classNames.bind(loadingStyles);
 const sortableTableCx = classNames.bind(sortedTableStyles);
 const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 
-function statementDetailsRequestFromProps(
-  props: StatementDetailsProps,
+function getStatementDetailsRequest(
+  timeScale: TimeScale,
+  statementFingerprintID: string,
+  location: any,
 ): cockroach.server.serverpb.StatementDetailsRequest {
-  const [start, end] = toRoundedDateRange(props.timeScale);
-  const statementFingerprintID = getMatchParamByName(
-    props.match,
-    statementAttr,
-  );
-
+  const [start, end] = toRoundedDateRange(timeScale);
   return new cockroach.server.serverpb.StatementDetailsRequest({
     fingerprint_id: statementFingerprintID,
-    app_names: queryByName(props.location, appNamesAttr)?.split(","),
+    app_names: queryByName(location, appNamesAttr)?.split(","),
     start: Long.fromNumber(start.unix()),
     end: Long.fromNumber(end.unix()),
   });
@@ -330,13 +341,25 @@ export class StatementDetails extends React.Component<
     }
   };
 
-  refreshStatementDetails = (): void => {
-    const req = statementDetailsRequestFromProps(this.props);
+  refreshStatementDetails = (
+    timeScale: TimeScale,
+    statementFingerprintID: string,
+    location: any,
+  ): void => {
+    const req = getStatementDetailsRequest(
+      timeScale,
+      statementFingerprintID,
+      location,
+    );
     this.props.refreshStatementDetails(req);
   };
 
   componentDidMount(): void {
-    this.refreshStatementDetails();
+    this.refreshStatementDetails(
+      this.props.timeScale,
+      this.props.statementFingerprintID,
+      this.props.location,
+    );
     this.props.refreshUserSQLRoles();
     if (!this.props.isTenant) {
       this.props.refreshNodes();
@@ -347,14 +370,52 @@ export class StatementDetails extends React.Component<
     }
   }
 
-  componentDidUpdate(): void {
-    this.refreshStatementDetails();
+  componentDidUpdate(prevProps: StatementDetailsProps): void {
+    if (
+      prevProps.timeScale != this.props.timeScale ||
+      prevProps.statementFingerprintID != this.props.statementFingerprintID ||
+      prevProps.location != this.props.location
+    ) {
+      this.refreshStatementDetails(
+        this.props.timeScale,
+        this.props.statementFingerprintID,
+        this.props.location,
+      );
+    }
+
     if (!this.props.isTenant) {
       this.props.refreshNodes();
       this.props.refreshNodesLiveness();
       if (!this.props.hasViewActivityRedactedRole) {
         this.props.refreshStatementDiagnosticsRequests();
       }
+    }
+
+    if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
+      this.props.onStatementDetailsQueryChange("");
+      this.props.onStatementDetailsFormattedQueryChange("");
+    }
+
+    if (
+      this.props.statementDetails &&
+      this.props.statementDetails.statement.metadata.formatted_query &&
+      this.props.latestFormattedQuery !=
+        this.props.statementDetails.statement.metadata.formatted_query
+    ) {
+      this.props.onStatementDetailsFormattedQueryChange(
+        this.props.statementDetails.statement.metadata.formatted_query,
+      );
+    }
+
+    if (
+      this.props.statementDetails &&
+      this.props.statementDetails.statement.metadata.query &&
+      this.props.latestQuery !=
+        this.props.statementDetails.statement.metadata.query
+    ) {
+      this.props.onStatementDetailsQueryChange(
+        this.props.statementDetails.statement.metadata.query,
+      );
     }
   }
 
@@ -406,7 +467,7 @@ export class StatementDetails extends React.Component<
         </div>
         <section className={cx("section", "section--container")}>
           <Loading
-            loading={_.isNil(this.props.statementDetails)}
+            loading={this.props.isLoading}
             page={"statement details"}
             error={this.props.statementsError}
             render={this.renderContent}
@@ -427,23 +488,123 @@ export class StatementDetails extends React.Component<
     );
   }
 
+  renderDiagnosticsTab = (): React.ReactElement => {
+    const hasDiagnosticReports = this.props.diagnosticsReports.length > 0;
+    if (!this.props.isTenant && !this.props.hasViewActivityRedactedRole) {
+      return (
+        <TabPane
+          tab={`Diagnostics ${
+            hasDiagnosticReports
+              ? `(${this.props.diagnosticsReports.length})`
+              : ""
+          }`}
+          key="diagnostics"
+        >
+          <DiagnosticsView
+            activateDiagnosticsRef={this.activateDiagnosticsRef}
+            diagnosticsReports={this.props.diagnosticsReports}
+            dismissAlertMessage={
+              this.props.dismissStatementDiagnosticsAlertMessage
+            }
+            hasData={hasDiagnosticReports}
+            statementFingerprint={this.props.latestQuery}
+            onDownloadDiagnosticBundleClick={
+              this.props.onDiagnosticBundleDownload
+            }
+            onDiagnosticCancelRequestClick={
+              this.props.onDiagnosticCancelRequest
+            }
+            showDiagnosticsViewLink={
+              this.props.uiConfig.showStatementDiagnosticsLink
+            }
+            onSortingChange={this.props.onSortingChange}
+          />
+        </TabPane>
+      );
+    }
+  };
+
+  renderNoStatementDetailsData = (currentTab: any): React.ReactElement => {
+    const overviewAndExplainPlanNoData = (
+      <>
+        <PageConfig>
+          <PageConfigItem>
+            <TimeScaleDropdown
+              currentScale={this.props.timeScale}
+              setTimeScale={this.props.onTimeScaleChange}
+            />
+          </PageConfigItem>
+        </PageConfig>
+        <section className={cx("section")}>
+          {this.props.latestFormattedQuery && (
+            <Row gutter={24}>
+              <Col className="gutter-row" span={24}>
+                <SqlBox
+                  value={this.props.latestFormattedQuery}
+                  size={SqlBoxSize.small}
+                />
+              </Col>
+            </Row>
+          )}
+          <InlineAlert
+            intent="info"
+            title="Data not available for this time frame. Select a different time frame."
+          />
+        </section>
+      </>
+    );
+
+    const getDiagnosticsTabOrNoData = () => {
+      if (this.props.latestQuery) {
+        return this.renderDiagnosticsTab();
+      } else {
+        return (
+          <TabPane tab={`Diagnostics`} key="diagnostics">
+            <section className={cx("section")}>
+              <InlineAlert intent="info" title="No data available." />
+            </section>
+          </TabPane>
+        );
+      }
+    };
+
+    return (
+      <Tabs
+        defaultActiveKey="1"
+        className={commonStyles("cockroach--tabs")}
+        onChange={this.onTabChange}
+        activeKey={currentTab}
+      >
+        <TabPane tab="Overview" key="overview">
+          {overviewAndExplainPlanNoData}
+        </TabPane>
+        <TabPane tab="Explain Plans" key="explain-plan">
+          {overviewAndExplainPlanNoData}
+        </TabPane>
+        {getDiagnosticsTabOrNoData()}
+        <TabPane
+          tab="Execution Stats"
+          key="execution-stats"
+          className={cx("fit-content-width")}
+        >
+          <section className={cx("section")}>
+            <InlineAlert intent="info" title="No data available." />
+          </section>
+        </TabPane>
+      </Tabs>
+    );
+  };
+
   renderContent = (): React.ReactElement => {
-    const {
-      diagnosticsReports,
-      dismissStatementDiagnosticsAlertMessage,
-      onDiagnosticBundleDownload,
-      onDiagnosticCancelRequest,
-      nodeRegions,
-      isTenant,
-      hasViewActivityRedactedRole,
-    } = this.props;
+    const { nodeRegions, isTenant } = this.props;
     const { currentTab } = this.state;
+    if (!this.props.statementDetails) {
+    }
     const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
     const {
       app_names,
       formatted_query,
-      query,
       databases,
       dist_sql_count,
       failed_count,
@@ -454,22 +615,7 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      const sourceApp = queryByName(this.props.location, appAttr);
-      const listUrl =
-        "/sql-activity?tab=Statements" +
-        (sourceApp ? "&" + appAttr + "=" + sourceApp : "");
-
-      return (
-        <React.Fragment>
-          <section className={cx("section")}>
-            <h3>Unable to find statement</h3>
-            There are no execution statistics for this statement.{" "}
-            <Link className={cx("back-link")} to={listUrl}>
-              Back to Statements
-            </Link>
-          </section>
-        </React.Fragment>
-      );
+      return this.renderNoStatementDetailsData(currentTab);
     }
 
     const count = FixLong(stats.count).toInt();
@@ -497,7 +643,6 @@ export class StatementDetails extends React.Component<
     ).sort();
 
     const duration = (v: number) => Duration(v * 1e9);
-    const hasDiagnosticReports = diagnosticsReports.length > 0;
     const lastExec =
       stats.last_exec_timestamp &&
       moment(stats.last_exec_timestamp.seconds.low * 1e3).format(
@@ -533,254 +678,288 @@ export class StatementDetails extends React.Component<
         activeKey={currentTab}
       >
         <TabPane tab="Overview" key="overview">
-          <Row gutter={24}>
-            <Col className="gutter-row" span={24}>
-              <SqlBox value={formatted_query} size={SqlBoxSize.small} />
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col className="gutter-row" span={12}>
-              <SummaryCard className={cx("summary-card")}>
-                <Row>
-                  <Col>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Heading type="h5">Mean statement time</Heading>
-                      <Text type="body-strong">
-                        {formatNumberForDisplay(
-                          stats.service_lat.mean,
-                          duration,
-                        )}
-                      </Text>
-                    </div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Planning time</Text>
-                      <Text>
-                        {formatNumberForDisplay(stats.plan_lat.mean, duration)}
-                      </Text>
-                    </div>
-                    <p
-                      className={summaryCardStylesCx("summary--card__divider")}
-                    />
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Execution time</Text>
-                      <Text>
-                        {formatNumberForDisplay(stats.run_lat.mean, duration)}
-                      </Text>
-                    </div>
-                    <p
-                      className={summaryCardStylesCx("summary--card__divider")}
-                    />
-                  </Col>
-                </Row>
-              </SummaryCard>
-              <SummaryCard className={cx("summary-card")}>
-                <Row>
-                  <Col>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Heading type="h5">Resource usage</Heading>
-                    </div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Mean rows/bytes read</Text>
-                      {statementSampled && (
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
+          <section className={cx("section")}>
+            <Row gutter={24}>
+              <Col className="gutter-row" span={24}>
+                <SqlBox
+                  value={this.props.latestFormattedQuery}
+                  size={SqlBoxSize.small}
+                />
+              </Col>
+            </Row>
+            <Row gutter={24}>
+              <Col className="gutter-row" span={12}>
+                <SummaryCard className={cx("summary-card")}>
+                  <Row>
+                    <Col>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Heading type="h5">Mean statement time</Heading>
+                        <Text type="body-strong">
+                          {formatNumberForDisplay(
+                            stats.service_lat.mean,
+                            duration,
+                          )}
+                        </Text>
+                      </div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Planning time</Text>
                         <Text>
                           {formatNumberForDisplay(
-                            stats.rows_read.mean,
+                            stats.plan_lat.mean,
+                            duration,
+                          )}
+                        </Text>
+                      </div>
+                      <p
+                        className={summaryCardStylesCx(
+                          "summary--card__divider",
+                        )}
+                      />
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Execution time</Text>
+                        <Text>
+                          {formatNumberForDisplay(stats.run_lat.mean, duration)}
+                        </Text>
+                      </div>
+                      <p
+                        className={summaryCardStylesCx(
+                          "summary--card__divider",
+                        )}
+                      />
+                    </Col>
+                  </Row>
+                </SummaryCard>
+                <SummaryCard className={cx("summary-card")}>
+                  <Row>
+                    <Col>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Heading type="h5">Resource usage</Heading>
+                      </div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Mean rows/bytes read</Text>
+                        {statementSampled && (
+                          <Text>
+                            {formatNumberForDisplay(
+                              stats.rows_read.mean,
+                              formatTwoPlaces,
+                            )}
+                            {" / "}
+                            {formatNumberForDisplay(
+                              stats.bytes_read.mean,
+                              Bytes,
+                            )}
+                          </Text>
+                        )}
+                        {unavailableTooltip}
+                      </div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Mean rows written</Text>
+                        <Text>
+                          {formatNumberForDisplay(
+                            stats.rows_written?.mean,
                             formatTwoPlaces,
                           )}
-                          {" / "}
-                          {formatNumberForDisplay(stats.bytes_read.mean, Bytes)}
                         </Text>
-                      )}
-                      {unavailableTooltip}
-                    </div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Mean rows written</Text>
-                      <Text>
-                        {formatNumberForDisplay(
-                          stats.rows_written?.mean,
-                          formatTwoPlaces,
+                      </div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Max memory usage</Text>
+                        {statementSampled && (
+                          <Text>
+                            {formatNumberForDisplay(
+                              stats.exec_stats.max_mem_usage.mean,
+                              Bytes,
+                            )}
+                          </Text>
                         )}
-                      </Text>
-                    </div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Max memory usage</Text>
-                      {statementSampled && (
-                        <Text>
-                          {formatNumberForDisplay(
-                            stats.exec_stats.max_mem_usage.mean,
-                            Bytes,
-                          )}
-                        </Text>
-                      )}
-                      {unavailableTooltip}
-                    </div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Network usage</Text>
-                      {statementSampled && (
-                        <Text>
-                          {formatNumberForDisplay(
-                            stats.exec_stats.network_bytes.mean,
-                            Bytes,
-                          )}
-                        </Text>
-                      )}
-                      {unavailableTooltip}
-                    </div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Max scratch disk usage</Text>
-                      {statementSampled && (
-                        <Text>
-                          {formatNumberForDisplay(
-                            stats.exec_stats.max_disk_usage.mean,
-                            Bytes,
-                          )}
-                        </Text>
-                      )}
-                      {unavailableTooltip}
-                    </div>
-                  </Col>
-                </Row>
-              </SummaryCard>
-            </Col>
-            <Col className="gutter-row" span={12}>
-              <SummaryCard className={cx("summary-card")}>
-                <Heading type="h5">Statement details</Heading>
-                {!isTenant && (
-                  <div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Nodes</Text>
-                      <Text>
-                        {intersperse<ReactNode>(
-                          nodes.map(n => <NodeLink node={n} key={n} />),
-                          ", ",
+                        {unavailableTooltip}
+                      </div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Network usage</Text>
+                        {statementSampled && (
+                          <Text>
+                            {formatNumberForDisplay(
+                              stats.exec_stats.network_bytes.mean,
+                              Bytes,
+                            )}
+                          </Text>
                         )}
-                      </Text>
+                        {unavailableTooltip}
+                      </div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Max scratch disk usage</Text>
+                        {statementSampled && (
+                          <Text>
+                            {formatNumberForDisplay(
+                              stats.exec_stats.max_disk_usage.mean,
+                              Bytes,
+                            )}
+                          </Text>
+                        )}
+                        {unavailableTooltip}
+                      </div>
+                    </Col>
+                  </Row>
+                </SummaryCard>
+              </Col>
+              <Col className="gutter-row" span={12}>
+                <SummaryCard className={cx("summary-card")}>
+                  <Heading type="h5">Statement details</Heading>
+                  {!isTenant && (
+                    <div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Nodes</Text>
+                        <Text>
+                          {intersperse<ReactNode>(
+                            nodes.map(n => <NodeLink node={n} key={n} />),
+                            ", ",
+                          )}
+                        </Text>
+                      </div>
+                      <div
+                        className={summaryCardStylesCx("summary--card__item")}
+                      >
+                        <Text>Regions</Text>
+                        <Text>{intersperse<ReactNode>(regions, ", ")}</Text>
+                      </div>
                     </div>
-                    <div className={summaryCardStylesCx("summary--card__item")}>
-                      <Text>Regions</Text>
-                      <Text>{intersperse<ReactNode>(regions, ", ")}</Text>
-                    </div>
-                  </div>
-                )}
+                  )}
 
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Database</Text>
-                  {db}
-                </div>
-                <p
-                  className={summaryCardStylesCx(
-                    "summary--card__divider--large",
-                  )}
-                />
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>App</Text>
-                  <Text>
-                    {intersperse<ReactNode>(
-                      app_names.map(a => <AppLink app={a} key={a} />),
-                      ", ",
-                    )}
-                  </Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Failed?</Text>
-                  <Text>{RenderCount(failed_count, total_count)}</Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Distributed execution?</Text>
-                  <Text>{RenderCount(dist_sql_count, total_count)}</Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Full Scan?</Text>
-                  <Text>{RenderCount(full_scan_count, total_count)}</Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Vectorized execution?</Text>
-                  <Text>{RenderCount(vec_count, total_count)}</Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Transaction type</Text>
-                  <Text>{renderTransactionType(implicit_txn)}</Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Last execution time</Text>
-                  <Text>{lastExec}</Text>
-                </div>
-                <p
-                  className={summaryCardStylesCx(
-                    "summary--card__divider--large",
-                  )}
-                />
-                <Heading type="h5">Execution counts</Heading>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>First attempts</Text>
-                  <Text>{firstAttemptsBarChart}</Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Total executions</Text>
-                  <Text>{totalCountBarChart}</Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Retries</Text>
-                  <Text
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Database</Text>
+                    {db}
+                  </div>
+                  <p
                     className={summaryCardStylesCx(
-                      "summary--card__item--value",
-                      {
-                        "summary--card__item--value-red": retriesBarChart > 0,
-                      },
+                      "summary--card__divider--large",
                     )}
-                  >
-                    {retriesBarChart}
-                  </Text>
-                </div>
-                <div className={summaryCardStylesCx("summary--card__item")}>
-                  <Text>Max retries</Text>
-                  <Text
+                  />
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>App</Text>
+                    <Text>
+                      {intersperse<ReactNode>(
+                        app_names.map(a => <AppLink app={a} key={a} />),
+                        ", ",
+                      )}
+                    </Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Failed?</Text>
+                    <Text>{RenderCount(failed_count, total_count)}</Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Distributed execution?</Text>
+                    <Text>{RenderCount(dist_sql_count, total_count)}</Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Full Scan?</Text>
+                    <Text>{RenderCount(full_scan_count, total_count)}</Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Vectorized execution?</Text>
+                    <Text>{RenderCount(vec_count, total_count)}</Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Transaction type</Text>
+                    <Text>{renderTransactionType(implicit_txn)}</Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Last execution time</Text>
+                    <Text>{lastExec}</Text>
+                  </div>
+                  <p
                     className={summaryCardStylesCx(
-                      "summary--card__item--value",
-                      {
-                        "summary--card__item--value-red":
-                          maxRetriesBarChart > 0,
-                      },
+                      "summary--card__divider--large",
                     )}
-                  >
-                    {maxRetriesBarChart}
-                  </Text>
-                </div>
-              </SummaryCard>
-            </Col>
-          </Row>
+                  />
+                  <Heading type="h5">Execution counts</Heading>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>First attempts</Text>
+                    <Text>{firstAttemptsBarChart}</Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Total executions</Text>
+                    <Text>{totalCountBarChart}</Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Retries</Text>
+                    <Text
+                      className={summaryCardStylesCx(
+                        "summary--card__item--value",
+                        {
+                          "summary--card__item--value-red": retriesBarChart > 0,
+                        },
+                      )}
+                    >
+                      {retriesBarChart}
+                    </Text>
+                  </div>
+                  <div className={summaryCardStylesCx("summary--card__item")}>
+                    <Text>Max retries</Text>
+                    <Text
+                      className={summaryCardStylesCx(
+                        "summary--card__item--value",
+                        {
+                          "summary--card__item--value-red":
+                            maxRetriesBarChart > 0,
+                        },
+                      )}
+                    >
+                      {maxRetriesBarChart}
+                    </Text>
+                  </div>
+                </SummaryCard>
+              </Col>
+            </Row>
+          </section>
         </TabPane>
         <TabPane tab="Explain Plans" key="explain-plan">
-          <Row gutter={24}>
-            <Col className="gutter-row" span={24}>
-              <SqlBox value={formatted_query} size={SqlBoxSize.small} />
-            </Col>
-          </Row>
-          <p className={summaryCardStylesCx("summary--card__divider")} />
-          <PlanDetails plans={statement_statistics_per_plan_hash} />
+          <PageConfig>
+            <PageConfigItem>
+              <TimeScaleDropdown
+                currentScale={this.props.timeScale}
+                setTimeScale={this.props.onTimeScaleChange}
+              />
+            </PageConfigItem>
+          </PageConfig>
+          <section className={cx("section")}>
+            <Row gutter={24}>
+              <Col className="gutter-row" span={24}>
+                <SqlBox value={formatted_query} size={SqlBoxSize.small} />
+              </Col>
+            </Row>
+            <p className={summaryCardStylesCx("summary--card__divider")} />
+            <PlanDetails plans={statement_statistics_per_plan_hash} />
+          </section>
         </TabPane>
-        {!isTenant && !hasViewActivityRedactedRole && (
-          <TabPane
-            tab={`Diagnostics ${
-              hasDiagnosticReports ? `(${diagnosticsReports.length})` : ""
-            }`}
-            key="diagnostics"
-          >
-            <DiagnosticsView
-              activateDiagnosticsRef={this.activateDiagnosticsRef}
-              diagnosticsReports={diagnosticsReports}
-              dismissAlertMessage={dismissStatementDiagnosticsAlertMessage}
-              hasData={hasDiagnosticReports}
-              statementFingerprint={query}
-              onDownloadDiagnosticBundleClick={onDiagnosticBundleDownload}
-              onDiagnosticCancelRequestClick={onDiagnosticCancelRequest}
-              showDiagnosticsViewLink={
-                this.props.uiConfig.showStatementDiagnosticsLink
-              }
-              onSortingChange={this.props.onSortingChange}
-            />
-          </TabPane>
-        )}
+        {this.renderDiagnosticsTab()}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"

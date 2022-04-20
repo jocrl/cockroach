@@ -43,6 +43,7 @@ import { selectTimeScale } from "../statementsPage/statementsPage.selectors";
 import { cockroach, google } from "@cockroachlabs/crdb-protobuf-client";
 import { StatementDetailsRequest } from "../api";
 import { TimeScale } from "../timeScaleDropdown";
+import { getMatchParamByName, statementAttr } from "../util";
 type IDuration = google.protobuf.IDuration;
 type IStatementDiagnosticsReport = cockroach.server.serverpb.IStatementDiagnosticsReport;
 
@@ -57,6 +58,7 @@ const CancelStatementDiagnosticsReportRequest =
 const mapStateToProps = (state: AppState, props: RouteComponentProps) => {
   const { statementDetails, isLoading } = selectStatementDetails(state, props);
   return {
+    statementFingerprintID: getMatchParamByName(props.match, statementAttr),
     statementDetails,
     isLoading,
     latestQuery: state.adminUI.sqlDetailsStats.latestQuery,
@@ -156,6 +158,16 @@ const mapDispatchToProps = (
       }),
     );
   },
+  onStatementDetailsQueryChange: (latestQuery: string) => {
+    console.log("latestQuery", latestQuery);
+    dispatch(sqlDetailsStatsActions.setLatestQuery(latestQuery));
+  },
+  onStatementDetailsFormattedQueryChange: (latestFormattedQuery: string) => {
+    console.log("latestFormattedQuery", latestFormattedQuery);
+    dispatch(
+      sqlDetailsStatsActions.setLatestFormattedQuery(latestFormattedQuery),
+    );
+  },
   onSortingChange: (tableName, columnName) =>
     dispatch(
       analyticsActions.track({
@@ -172,9 +184,6 @@ const mapDispatchToProps = (
         page: "Statement Details",
       }),
     ),
-  onStatementDetailsQueryChange: sqlDetailsStatsActions.setLatestQuery,
-  onStatementDetailsFormattedQueryChange:
-    sqlDetailsStatsActions.setLatestFormattedQuery,
 });
 
 export const ConnectedStatementDetailsPage = withRouter<any, any>(

@@ -179,10 +179,6 @@ function statementDetailsRequestFromProps(
 ): cockroach.server.serverpb.StatementDetailsRequest {
   const [start, end] = toRoundedDateRange(props.timeScale);
   const statementFingerprintID = props.statementFingerprintID;
-  // const statementFingerprintID = getMatchParamByName(
-  //   props.match,
-  //   statementAttr,
-  // );
 
   return new cockroach.server.serverpb.StatementDetailsRequest({
     fingerprint_id: statementFingerprintID,
@@ -312,6 +308,7 @@ export class StatementDetails extends React.Component<
   StatementDetailsProps,
   StatementDetailsState
 > {
+  static whyDidYouRender = true;
   activateDiagnosticsRef: React.RefObject<ActivateDiagnosticsModalRef>;
   constructor(props: StatementDetailsProps) {
     super(props);
@@ -346,6 +343,7 @@ export class StatementDetails extends React.Component<
   };
 
   refreshStatementDetails = (): void => {
+    console.log("refresh");
     const req = statementDetailsRequestFromProps(this.props);
     this.props.refreshStatementDetails(req);
   };
@@ -371,33 +369,41 @@ export class StatementDetails extends React.Component<
         this.props.refreshStatementDiagnosticsRequests();
       }
     }
+    console.log(
+      "running",
+      JSON.stringify(prevProps),
+      JSON.stringify(this.props),
+    );
 
-    if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
-      this.props.onStatementDetailsQueryChange("");
-      this.props.onStatementDetailsFormattedQueryChange("");
-    }
-
-    if (
-      this.props.statementDetails &&
-      this.props.statementDetails.statement.metadata.formatted_query &&
-      this.props.latestFormattedQuery !=
-        this.props.statementDetails.statement.metadata.formatted_query
-    ) {
-      this.props.onStatementDetailsFormattedQueryChange(
-        this.props.statementDetails.statement.metadata.formatted_query,
-      );
-    }
-
-    if (
-      this.props.statementDetails &&
-      this.props.statementDetails.statement.metadata.query &&
-      this.props.latestQuery !=
-        this.props.statementDetails.statement.metadata.query
-    ) {
-      this.props.onStatementDetailsQueryChange(
-        this.props.statementDetails.statement.metadata.query,
-      );
-    }
+    // if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
+    //   console.log("running3");
+    //   this.props.onStatementDetailsQueryChange("");
+    //   this.props.onStatementDetailsFormattedQueryChange("");
+    // }
+    //
+    // if (
+    //   this.props.statementDetails &&
+    //   this.props.statementDetails.statement.metadata.formatted_query &&
+    //   this.props.latestFormattedQuery !=
+    //     this.props.statementDetails.statement.metadata.formatted_query
+    // ) {
+    //   console.log("running1");
+    //   this.props.onStatementDetailsFormattedQueryChange(
+    //     this.props.statementDetails.statement.metadata.formatted_query,
+    //   );
+    // }
+    //
+    // if (
+    //   this.props.statementDetails &&
+    //   this.props.statementDetails.statement.metadata.query &&
+    //   this.props.latestQuery !=
+    //     this.props.statementDetails.statement.metadata.query
+    // ) {
+    //   console.log("running2");
+    //   this.props.onStatementDetailsQueryChange(
+    //     this.props.statementDetails.statement.metadata.query,
+    //   );
+    // }
   }
 
   onTabChange = (tabId: string): void => {

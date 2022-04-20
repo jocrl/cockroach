@@ -34,15 +34,6 @@ export function statementDetailsLatestFormattedQueryAction(
   };
 }
 
-// export const setStatementDetailsLatestFormattedQuery = (formattedQuery: string) => {
-//     dispatch(
-//       localStorageActions.update({
-//         key: "showColumns/ActiveStatementsPage",
-//         value: formatedQuery,
-//       }),
-//     );
-// }
-
 /**
  * The metrics reducer accepts events for individual MetricQuery objects,
  * dispatching them based on ID. It also accepts actions which indicate the

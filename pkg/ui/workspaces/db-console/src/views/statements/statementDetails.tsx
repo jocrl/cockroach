@@ -90,6 +90,7 @@ export const selectStatementDetails = createSelector(
       Long.fromNumber(end.unix()),
     );
     if (Object.keys(statementDetailsStats).includes(key)) {
+      console.log(statementDetailsStats[key].inFlight);
       return {
         statementDetails: statementDetailsStats[key].data,
         isLoading: statementDetailsStats[key].inFlight,

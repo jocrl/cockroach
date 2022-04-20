@@ -174,15 +174,15 @@ const loadingCx = classNames.bind(loadingStyles);
 const sortableTableCx = classNames.bind(sortedTableStyles);
 const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 
-function statementDetailsRequestFromProps(
-  props: StatementDetailsProps,
+function getStatementDetailsRequest(
+  timeScale: TimeScale,
+  statementFingerprintID: string,
+  location: Location,
 ): cockroach.server.serverpb.StatementDetailsRequest {
-  const [start, end] = toRoundedDateRange(props.timeScale);
-  const statementFingerprintID = props.statementFingerprintID;
-
+  const [start, end] = toRoundedDateRange(timeScale);
   return new cockroach.server.serverpb.StatementDetailsRequest({
     fingerprint_id: statementFingerprintID,
-    app_names: queryByName(props.location, appNamesAttr)?.split(","),
+    app_names: queryByName(location, appNamesAttr)?.split(","),
     start: Long.fromNumber(start.unix()),
     end: Long.fromNumber(end.unix()),
   });
@@ -342,14 +342,26 @@ export class StatementDetails extends React.Component<
     }
   };
 
-  refreshStatementDetails = (): void => {
+  refreshStatementDetails = (
+    timeScale: TimeScale,
+    statementFingerprintID: string,
+    location: Location,
+  ): void => {
     console.log("refresh");
-    const req = statementDetailsRequestFromProps(this.props);
+    const req = getStatementDetailsRequest(
+      timeScale,
+      statementFingerprintID,
+      location,
+    );
     this.props.refreshStatementDetails(req);
   };
 
   componentDidMount(): void {
-    this.refreshStatementDetails();
+    this.refreshStatementDetails(
+      this.props.timeScale,
+      this.props.statementFingerprintID,
+      this.props.location,
+    );
     this.props.refreshUserSQLRoles();
     if (!this.props.isTenant) {
       this.props.refreshNodes();
@@ -361,7 +373,17 @@ export class StatementDetails extends React.Component<
   }
 
   componentDidUpdate(prevProps: StatementDetailsProps): void {
-    this.refreshStatementDetails();
+    if (
+      prevProps.timeScale != this.props.timeScale ||
+      prevProps.statementFingerprintID != this.props.statementFingerprintID ||
+      prevProps.location != this.props.location
+    ) {
+      this.refreshStatementDetails(
+        this.props.timeScale,
+        this.props.statementFingerprintID,
+        this.props.location,
+      );
+    }
     if (!this.props.isTenant) {
       this.props.refreshNodes();
       this.props.refreshNodesLiveness();
@@ -369,11 +391,11 @@ export class StatementDetails extends React.Component<
         this.props.refreshStatementDiagnosticsRequests();
       }
     }
-    console.log(
-      "running",
-      JSON.stringify(prevProps),
-      JSON.stringify(this.props),
-    );
+    // console.log(
+    //   "running",
+    //   JSON.stringify(prevProps),
+    //   JSON.stringify(this.props),
+    // );
 
     // if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
     //   console.log("running3");

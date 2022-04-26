@@ -34,6 +34,7 @@ storiesOf("Transactions Details", module)
       timeScale={timeScale}
       transactionFingerprintId={data.transactionFingerprintId}
       transaction={data.transaction}
+      isLoading={false}
       statements={data.statements as any}
       nodeRegions={nodeRegions}
       isTenant={false}
@@ -48,6 +49,7 @@ storiesOf("Transactions Details", module)
       timeScale={timeScale}
       transactionFingerprintId={data.transactionFingerprintId}
       transaction={data.transaction}
+      isLoading={true}
       statements={undefined}
       nodeRegions={nodeRegions}
       isTenant={false}
@@ -62,6 +64,7 @@ storiesOf("Transactions Details", module)
       timeScale={undefined}
       transactionFingerprintId={undefined}
       transaction={undefined}
+      isLoading={false}
       statements={undefined}
       nodeRegions={nodeRegions}
       error={error}
@@ -69,4 +72,43 @@ storiesOf("Transactions Details", module)
       hasViewActivityRedactedRole={false}
       refreshData={noop}
     />
-  ));
+  ))
+  .add(
+    "No data for this time frame; has statement cached from previous time frame",
+    () => {
+      return (
+        <TransactionDetails
+          {...routeProps}
+          aggregatedTs={undefined}
+          timeScale={undefined}
+          transactionFingerprintId={undefined}
+          transaction={undefined}
+          isLoading={false}
+          statements={undefined}
+          nodeRegions={nodeRegions}
+          error={error}
+          isTenant={false}
+          hasViewActivityRedactedRole={false}
+          refreshData={noop}
+        />
+      );
+    },
+  )
+  .add("No data for this time frame; no cached statement", () => {
+    return (
+      <TransactionDetails
+        {...routeProps}
+        aggregatedTs={undefined}
+        timeScale={undefined}
+        transactionFingerprintId={undefined}
+        transaction={undefined}
+        isLoading={false}
+        statements={undefined}
+        nodeRegions={nodeRegions}
+        error={error}
+        isTenant={false}
+        hasViewActivityRedactedRole={false}
+        refreshData={noop}
+      />
+    );
+  });

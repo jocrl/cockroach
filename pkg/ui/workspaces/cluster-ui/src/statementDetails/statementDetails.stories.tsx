@@ -28,8 +28,6 @@ import {
 } from "redux";
 import { AppState, rootReducer } from "../store";
 import { Provider } from "react-redux";
-import { StatementDetailsResponse } from "../api";
-import { cockroach } from "@cockroachlabs/crdb-protobuf-client";
 
 const history = createMemoryHistory();
 const routerReducer = connectRouter(history);

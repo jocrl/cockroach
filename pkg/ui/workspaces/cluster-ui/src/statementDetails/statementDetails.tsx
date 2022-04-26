@@ -170,7 +170,6 @@ export type StatementDetailsOwnProps = StatementDetailsDispatchProps &
   StatementDetailsStateProps;
 
 const cx = classNames.bind(styles);
-const loadingCx = classNames.bind(loadingStyles);
 const sortableTableCx = classNames.bind(sortedTableStyles);
 const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 
@@ -332,6 +331,9 @@ export class StatementDetails extends React.Component<
     hasViewActivityRedactedRole: false,
   };
 
+  getHasDiagnosticReports = (): boolean =>
+    this.props.diagnosticsReports.length > 0;
+
   changeSortSetting = (ss: SortSetting): void => {
     this.setState({
       sortSetting: ss,
@@ -391,22 +393,14 @@ export class StatementDetails extends React.Component<
       }
     }
 
+    // If the statementFingerprintID (derived from the URL) changes, invalidate the cached query texts
     if (this.props.statementFingerprintID != prevProps.statementFingerprintID) {
       this.props.onStatementDetailsQueryChange("");
       this.props.onStatementDetailsFormattedQueryChange("");
     }
 
-    if (
-      this.props.statementDetails &&
-      this.props.statementDetails.statement.metadata.formatted_query &&
-      this.props.latestFormattedQuery !=
-        this.props.statementDetails.statement.metadata.formatted_query
-    ) {
-      this.props.onStatementDetailsFormattedQueryChange(
-        this.props.statementDetails.statement.metadata.formatted_query,
-      );
-    }
-
+    // If new, non-empty-string query text is available (derived from the statement details response),
+    // cache the query text.
     if (
       this.props.statementDetails &&
       this.props.statementDetails.statement.metadata.query &&
@@ -415,6 +409,19 @@ export class StatementDetails extends React.Component<
     ) {
       this.props.onStatementDetailsQueryChange(
         this.props.statementDetails.statement.metadata.query,
+      );
+    }
+
+    // If new, non-empty-string formatted query text is available (derived from the statement details response),
+    // cache the query text.
+    if (
+      this.props.statementDetails &&
+      this.props.statementDetails.statement.metadata.formatted_query &&
+      this.props.latestFormattedQuery !=
+        this.props.statementDetails.statement.metadata.formatted_query
+    ) {
+      this.props.onStatementDetailsFormattedQueryChange(
+        this.props.statementDetails.statement.metadata.formatted_query,
       );
     }
   }
@@ -488,44 +495,49 @@ export class StatementDetails extends React.Component<
     );
   }
 
-  renderDiagnosticsTab = (): React.ReactElement => {
-    const hasDiagnosticReports = this.props.diagnosticsReports.length > 0;
-    if (!this.props.isTenant && !this.props.hasViewActivityRedactedRole) {
-      return (
+  renderTabs = (
+    overviewTabContent: React.ReactElement,
+    explainPlanTabContent: React.ReactElement,
+    diagnosticsTabContent: React.ReactElement,
+    executionStatsTabContent: React.ReactElement,
+  ): React.ReactElement => {
+    const { currentTab } = this.state;
+    return (
+      <Tabs
+        defaultActiveKey="1"
+        className={commonStyles("cockroach--tabs")}
+        onChange={this.onTabChange}
+        activeKey={currentTab}
+      >
+        <TabPane tab="Overview" key="overview">
+          {overviewTabContent}
+        </TabPane>
+        <TabPane tab="Explain Plans" key="explain-plan">
+          {explainPlanTabContent}
+        </TabPane>
         <TabPane
-          tab={`Diagnostics ${
-            hasDiagnosticReports
-              ? `(${this.props.diagnosticsReports.length})`
+          tab={`Diagnostics${
+            this.getHasDiagnosticReports()
+              ? ` (${this.props.diagnosticsReports.length})`
               : ""
           }`}
           key="diagnostics"
         >
-          <DiagnosticsView
-            activateDiagnosticsRef={this.activateDiagnosticsRef}
-            diagnosticsReports={this.props.diagnosticsReports}
-            dismissAlertMessage={
-              this.props.dismissStatementDiagnosticsAlertMessage
-            }
-            hasData={hasDiagnosticReports}
-            statementFingerprint={this.props.latestQuery}
-            onDownloadDiagnosticBundleClick={
-              this.props.onDiagnosticBundleDownload
-            }
-            onDiagnosticCancelRequestClick={
-              this.props.onDiagnosticCancelRequest
-            }
-            showDiagnosticsViewLink={
-              this.props.uiConfig.showStatementDiagnosticsLink
-            }
-            onSortingChange={this.props.onSortingChange}
-          />
+          {diagnosticsTabContent}
         </TabPane>
-      );
-    }
+        <TabPane
+          tab="Execution Stats"
+          key="execution-stats"
+          className={cx("fit-content-width")}
+        >
+          {executionStatsTabContent}
+        </TabPane>
+      </Tabs>
+    );
   };
 
-  renderNoStatementDetailsData = (currentTab: any): React.ReactElement => {
-    const overviewAndExplainPlanNoData = (
+  renderNoStatementDetailsData = (): React.ReactElement => {
+    const noDataWithTimeScaleAndSqlBoxTabContent = (
       <>
         <PageConfig>
           <PageConfigItem>
@@ -554,45 +566,59 @@ export class StatementDetails extends React.Component<
       </>
     );
 
-    const getDiagnosticsTabOrNoData = () => {
+    const noDataTabContent = (
+      <section className={cx("section")}>
+        <InlineAlert intent="info" title="No data available." />
+      </section>
+    );
+
+    const renderDiagnosticsOrNoDataTabContent = () => {
       if (this.props.latestQuery) {
-        return this.renderDiagnosticsTab();
+        return this.renderDiagnosticsTabContent();
       } else {
-        return (
-          <TabPane tab={`Diagnostics`} key="diagnostics">
-            <section className={cx("section")}>
-              <InlineAlert intent="info" title="No data available." />
-            </section>
-          </TabPane>
-        );
+        return noDataTabContent;
       }
     };
 
-    return (
-      <Tabs
-        defaultActiveKey="1"
-        className={commonStyles("cockroach--tabs")}
-        onChange={this.onTabChange}
-        activeKey={currentTab}
-      >
-        <TabPane tab="Overview" key="overview">
-          {overviewAndExplainPlanNoData}
-        </TabPane>
-        <TabPane tab="Explain Plans" key="explain-plan">
-          {overviewAndExplainPlanNoData}
-        </TabPane>
-        {getDiagnosticsTabOrNoData()}
-        <TabPane
-          tab="Execution Stats"
-          key="execution-stats"
-          className={cx("fit-content-width")}
-        >
-          <section className={cx("section")}>
-            <InlineAlert intent="info" title="No data available." />
-          </section>
-        </TabPane>
-      </Tabs>
+    return this.renderTabs(
+      noDataWithTimeScaleAndSqlBoxTabContent,
+      noDataWithTimeScaleAndSqlBoxTabContent,
+      renderDiagnosticsOrNoDataTabContent(),
+      noDataTabContent,
     );
+  };
+
+  renderDiagnosticsTabContent = (): React.ReactElement => {
+    if (!this.props.isTenant && !this.props.hasViewActivityRedactedRole) {
+      return (
+        // <TabPane
+        //   tab={`Diagnostics${
+        //     hasDiagnosticReports
+        //       ? ` (${this.props.diagnosticsReports.length})`
+        //       : ""
+        //   }`}
+        //   key="diagnostics"
+        // >
+        <DiagnosticsView
+          activateDiagnosticsRef={this.activateDiagnosticsRef}
+          diagnosticsReports={this.props.diagnosticsReports}
+          dismissAlertMessage={
+            this.props.dismissStatementDiagnosticsAlertMessage
+          }
+          hasData={this.getHasDiagnosticReports()}
+          statementFingerprint={this.props.latestQuery}
+          onDownloadDiagnosticBundleClick={
+            this.props.onDiagnosticBundleDownload
+          }
+          onDiagnosticCancelRequestClick={this.props.onDiagnosticCancelRequest}
+          showDiagnosticsViewLink={
+            this.props.uiConfig.showStatementDiagnosticsLink
+          }
+          onSortingChange={this.props.onSortingChange}
+        />
+        // </TabPane>
+      );
+    }
   };
 
   renderContent = (): React.ReactElement => {
@@ -614,7 +640,7 @@ export class StatementDetails extends React.Component<
     } = this.props.statementDetails.statement.metadata;
 
     if (Number(stats.count) == 0) {
-      return this.renderNoStatementDetailsData(currentTab);
+      return this.renderNoStatementDetailsData();
     }
 
     const count = FixLong(stats.count).toInt();
@@ -958,7 +984,7 @@ export class StatementDetails extends React.Component<
             <PlanDetails plans={statement_statistics_per_plan_hash} />
           </section>
         </TabPane>
-        {this.renderDiagnosticsTab()}
+        {this.renderDiagnosticsTabContent()}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"

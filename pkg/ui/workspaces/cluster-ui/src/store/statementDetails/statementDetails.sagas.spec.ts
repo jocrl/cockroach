@@ -27,7 +27,6 @@ import {
   actions,
   reducer,
   SQLDetailsStatsReducerState,
-  SQLDetailsStatsState,
 } from "./statementDetails.reducer";
 export type StatementDetailsRequest = cockroach.server.serverpb.StatementDetailsRequest;
 

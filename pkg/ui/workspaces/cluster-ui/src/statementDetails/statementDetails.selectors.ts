@@ -22,7 +22,6 @@ import {
 import { cockroach } from "@cockroachlabs/crdb-protobuf-client";
 import { TimeScale, toRoundedDateRange } from "../timeScaleDropdown";
 import { selectTimeScale } from "../statementsPage/statementsPage.selectors";
-import { AdminUIState } from "db-console/dist/types/src/redux/state";
 type StatementDetailsResponseMessage = cockroach.server.serverpb.StatementDetailsResponse;
 
 export const selectStatementDetails = createSelector(

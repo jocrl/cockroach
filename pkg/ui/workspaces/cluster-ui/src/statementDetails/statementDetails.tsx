@@ -20,6 +20,7 @@ import { format as d3Format } from "d3-format";
 import { ArrowLeft } from "@cockroachlabs/icons";
 import { cockroach, google } from "@cockroachlabs/crdb-protobuf-client";
 import Long from "long";
+import { Location } from "history";
 
 import {
   NumericStat,
@@ -32,10 +33,8 @@ import {
   formatNumberForDisplay,
   unique,
   queryByName,
-  getMatchParamByName,
   appAttr,
   appNamesAttr,
-  statementAttr,
   RenderCount,
 } from "src/util";
 import { Loading } from "src/loading";
@@ -53,7 +52,6 @@ import {
 import { DiagnosticsView } from "./diagnostics/diagnosticsView";
 import sortedTableStyles from "src/sortedtable/sortedtable.module.scss";
 import summaryCardStyles from "src/summaryCard/summaryCard.module.scss";
-import loadingStyles from "src/loading/loading.module.scss";
 import styles from "./statementDetails.module.scss";
 import { commonStyles } from "src/common";
 import { NodeSummaryStats } from "../nodes";
@@ -176,7 +174,7 @@ const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 function getStatementDetailsRequest(
   timeScale: TimeScale,
   statementFingerprintID: string,
-  location: any,
+  location: Location,
 ): cockroach.server.serverpb.StatementDetailsRequest {
   const [start, end] = toRoundedDateRange(timeScale);
   return new cockroach.server.serverpb.StatementDetailsRequest({
@@ -346,7 +344,7 @@ export class StatementDetails extends React.Component<
   refreshStatementDetails = (
     timeScale: TimeScale,
     statementFingerprintID: string,
-    location: any,
+    location: Location,
   ): void => {
     const req = getStatementDetailsRequest(
       timeScale,

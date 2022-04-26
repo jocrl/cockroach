@@ -477,7 +477,7 @@ export class StatementDetails extends React.Component<
             loading={this.props.isLoading}
             page={"statement details"}
             error={this.props.statementsError}
-            render={this.renderContent}
+            render={this.renderTabs}
             renderError={() =>
               SQLActivityError({
                 statsType: "statements",
@@ -495,13 +495,12 @@ export class StatementDetails extends React.Component<
     );
   }
 
-  renderTabs = (
-    overviewTabContent: React.ReactElement,
-    explainPlanTabContent: React.ReactElement,
-    diagnosticsTabContent: React.ReactElement,
-    executionStatsTabContent: React.ReactElement,
-  ): React.ReactElement => {
+  renderTabs = (): React.ReactElement => {
     const { currentTab } = this.state;
+    const { stats } = this.props.statementDetails.statement;
+
+    const hasData = Number(stats.count) > 0;
+
     return (
       <Tabs
         defaultActiveKey="1"
@@ -510,126 +509,77 @@ export class StatementDetails extends React.Component<
         activeKey={currentTab}
       >
         <TabPane tab="Overview" key="overview">
-          {overviewTabContent}
+          {this.renderOverviewTabContent(hasData)}
         </TabPane>
         <TabPane tab="Explain Plans" key="explain-plan">
-          {explainPlanTabContent}
+          {this.renderExplainPlanTabContent(hasData)}
         </TabPane>
-        <TabPane
-          tab={`Diagnostics${
-            this.getHasDiagnosticReports()
-              ? ` (${this.props.diagnosticsReports.length})`
-              : ""
-          }`}
-          key="diagnostics"
-        >
-          {diagnosticsTabContent}
-        </TabPane>
+        {!this.props.isTenant && !this.props.hasViewActivityRedactedRole && (
+          <TabPane
+            tab={`Diagnostics${
+              this.getHasDiagnosticReports()
+                ? ` (${this.props.diagnosticsReports.length})`
+                : ""
+            }`}
+            key="diagnostics"
+          >
+            {this.renderDiagnosticsTabContent(hasData)}
+          </TabPane>
+        )}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"
           className={cx("fit-content-width")}
         >
-          {executionStatsTabContent}
+          {this.renderExecutionStatsTabContent(hasData)}
         </TabPane>
       </Tabs>
     );
   };
 
-  renderNoStatementDetailsData = (): React.ReactElement => {
-    const noDataWithTimeScaleAndSqlBoxTabContent = (
-      <>
-        <PageConfig>
-          <PageConfigItem>
-            <TimeScaleDropdown
-              currentScale={this.props.timeScale}
-              setTimeScale={this.props.onTimeScaleChange}
-            />
-          </PageConfigItem>
-        </PageConfig>
-        <section className={cx("section")}>
-          {this.props.latestFormattedQuery && (
-            <Row gutter={24}>
-              <Col className="gutter-row" span={24}>
-                <SqlBox
-                  value={this.props.latestFormattedQuery}
-                  size={SqlBoxSize.small}
-                />
-              </Col>
-            </Row>
-          )}
-          <InlineAlert
-            intent="info"
-            title="Data not available for this time frame. Select a different time frame."
+  renderNoDataTabContent = (): React.ReactElement => (
+    <section className={cx("section")}>
+      <InlineAlert intent="info" title="No data available." />
+    </section>
+  );
+
+  renderNoDataWithTimeScaleAndSqlBoxTabContent = (): React.ReactElement => (
+    <>
+      <PageConfig>
+        <PageConfigItem>
+          <TimeScaleDropdown
+            currentScale={this.props.timeScale}
+            setTimeScale={this.props.onTimeScaleChange}
           />
-        </section>
-      </>
-    );
-
-    const noDataTabContent = (
+        </PageConfigItem>
+      </PageConfig>
       <section className={cx("section")}>
-        <InlineAlert intent="info" title="No data available." />
-      </section>
-    );
-
-    const renderDiagnosticsOrNoDataTabContent = () => {
-      if (this.props.latestQuery) {
-        return this.renderDiagnosticsTabContent();
-      } else {
-        return noDataTabContent;
-      }
-    };
-
-    return this.renderTabs(
-      noDataWithTimeScaleAndSqlBoxTabContent,
-      noDataWithTimeScaleAndSqlBoxTabContent,
-      renderDiagnosticsOrNoDataTabContent(),
-      noDataTabContent,
-    );
-  };
-
-  renderDiagnosticsTabContent = (): React.ReactElement => {
-    if (!this.props.isTenant && !this.props.hasViewActivityRedactedRole) {
-      return (
-        // <TabPane
-        //   tab={`Diagnostics${
-        //     hasDiagnosticReports
-        //       ? ` (${this.props.diagnosticsReports.length})`
-        //       : ""
-        //   }`}
-        //   key="diagnostics"
-        // >
-        <DiagnosticsView
-          activateDiagnosticsRef={this.activateDiagnosticsRef}
-          diagnosticsReports={this.props.diagnosticsReports}
-          dismissAlertMessage={
-            this.props.dismissStatementDiagnosticsAlertMessage
-          }
-          hasData={this.getHasDiagnosticReports()}
-          statementFingerprint={this.props.latestQuery}
-          onDownloadDiagnosticBundleClick={
-            this.props.onDiagnosticBundleDownload
-          }
-          onDiagnosticCancelRequestClick={this.props.onDiagnosticCancelRequest}
-          showDiagnosticsViewLink={
-            this.props.uiConfig.showStatementDiagnosticsLink
-          }
-          onSortingChange={this.props.onSortingChange}
+        {this.props.latestFormattedQuery && (
+          <Row gutter={24}>
+            <Col className="gutter-row" span={24}>
+              <SqlBox
+                value={this.props.latestFormattedQuery}
+                size={SqlBoxSize.small}
+              />
+            </Col>
+          </Row>
+        )}
+        <InlineAlert
+          intent="info"
+          title="Data not available for this time frame. Select a different time frame."
         />
-        // </TabPane>
-      );
+      </section>
+    </>
+  );
+
+  renderOverviewTabContent = (hasData: boolean): React.ReactElement => {
+    if (!hasData) {
+      return this.renderNoDataWithTimeScaleAndSqlBoxTabContent();
     }
-  };
-
-  renderContent = (): React.ReactElement => {
     const { nodeRegions, isTenant } = this.props;
-    const { currentTab } = this.state;
-
-    const { statement_statistics_per_plan_hash } = this.props.statementDetails;
     const { stats } = this.props.statementDetails.statement;
     const {
       app_names,
-      formatted_query,
       databases,
       dist_sql_count,
       failed_count,
@@ -639,19 +589,7 @@ export class StatementDetails extends React.Component<
       implicit_txn,
     } = this.props.statementDetails.statement.metadata;
 
-    if (Number(stats.count) == 0) {
-      return this.renderNoStatementDetailsData();
-    }
-
-    const count = FixLong(stats.count).toInt();
     const { statement } = this.props.statementDetails;
-    const {
-      parseBarChart,
-      planBarChart,
-      runBarChart,
-      overheadBarChart,
-      overallBarChart,
-    } = latencyBreakdown(statement);
 
     const totalCountBarChart = longToInt(statement.stats.count);
     const firstAttemptsBarChart = longToInt(
@@ -694,6 +632,414 @@ export class StatementDetails extends React.Component<
     ) : (
       <Text className={cx("app-name", "app-name__unset")}>(unset)</Text>
     );
+    return (
+      <>
+        <PageConfig>
+          <PageConfigItem>
+            <TimeScaleDropdown
+              currentScale={this.props.timeScale}
+              setTimeScale={this.props.onTimeScaleChange}
+            />
+          </PageConfigItem>
+        </PageConfig>
+        <section className={cx("section")}>
+          <Row gutter={24}>
+            <Col className="gutter-row" span={24}>
+              <SqlBox
+                value={this.props.latestFormattedQuery}
+                size={SqlBoxSize.small}
+              />
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col className="gutter-row" span={12}>
+              <SummaryCard className={cx("summary-card")}>
+                <Row>
+                  <Col>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Heading type="h5">Mean statement time</Heading>
+                      <Text type="body-strong">
+                        {formatNumberForDisplay(
+                          stats.service_lat.mean,
+                          duration,
+                        )}
+                      </Text>
+                    </div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Planning time</Text>
+                      <Text>
+                        {formatNumberForDisplay(stats.plan_lat.mean, duration)}
+                      </Text>
+                    </div>
+                    <p
+                      className={summaryCardStylesCx("summary--card__divider")}
+                    />
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Execution time</Text>
+                      <Text>
+                        {formatNumberForDisplay(stats.run_lat.mean, duration)}
+                      </Text>
+                    </div>
+                    <p
+                      className={summaryCardStylesCx("summary--card__divider")}
+                    />
+                  </Col>
+                </Row>
+              </SummaryCard>
+              <SummaryCard className={cx("summary-card")}>
+                <Row>
+                  <Col>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Heading type="h5">Resource usage</Heading>
+                    </div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Mean rows/bytes read</Text>
+                      {statementSampled && (
+                        <Text>
+                          {formatNumberForDisplay(
+                            stats.rows_read.mean,
+                            formatTwoPlaces,
+                          )}
+                          {" / "}
+                          {formatNumberForDisplay(stats.bytes_read.mean, Bytes)}
+                        </Text>
+                      )}
+                      {unavailableTooltip}
+                    </div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Mean rows written</Text>
+                      <Text>
+                        {formatNumberForDisplay(
+                          stats.rows_written?.mean,
+                          formatTwoPlaces,
+                        )}
+                      </Text>
+                    </div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Max memory usage</Text>
+                      {statementSampled && (
+                        <Text>
+                          {formatNumberForDisplay(
+                            stats.exec_stats.max_mem_usage.mean,
+                            Bytes,
+                          )}
+                        </Text>
+                      )}
+                      {unavailableTooltip}
+                    </div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Network usage</Text>
+                      {statementSampled && (
+                        <Text>
+                          {formatNumberForDisplay(
+                            stats.exec_stats.network_bytes.mean,
+                            Bytes,
+                          )}
+                        </Text>
+                      )}
+                      {unavailableTooltip}
+                    </div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Max scratch disk usage</Text>
+                      {statementSampled && (
+                        <Text>
+                          {formatNumberForDisplay(
+                            stats.exec_stats.max_disk_usage.mean,
+                            Bytes,
+                          )}
+                        </Text>
+                      )}
+                      {unavailableTooltip}
+                    </div>
+                  </Col>
+                </Row>
+              </SummaryCard>
+            </Col>
+            <Col className="gutter-row" span={12}>
+              <SummaryCard className={cx("summary-card")}>
+                <Heading type="h5">Statement details</Heading>
+                {!isTenant && (
+                  <div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Nodes</Text>
+                      <Text>
+                        {intersperse<ReactNode>(
+                          nodes.map(n => <NodeLink node={n} key={n} />),
+                          ", ",
+                        )}
+                      </Text>
+                    </div>
+                    <div className={summaryCardStylesCx("summary--card__item")}>
+                      <Text>Regions</Text>
+                      <Text>{intersperse<ReactNode>(regions, ", ")}</Text>
+                    </div>
+                  </div>
+                )}
+
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Database</Text>
+                  {db}
+                </div>
+                <p
+                  className={summaryCardStylesCx(
+                    "summary--card__divider--large",
+                  )}
+                />
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>App</Text>
+                  <Text>
+                    {intersperse<ReactNode>(
+                      app_names.map(a => <AppLink app={a} key={a} />),
+                      ", ",
+                    )}
+                  </Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Failed?</Text>
+                  <Text>{RenderCount(failed_count, total_count)}</Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Distributed execution?</Text>
+                  <Text>{RenderCount(dist_sql_count, total_count)}</Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Full Scan?</Text>
+                  <Text>{RenderCount(full_scan_count, total_count)}</Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Vectorized execution?</Text>
+                  <Text>{RenderCount(vec_count, total_count)}</Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Transaction type</Text>
+                  <Text>{renderTransactionType(implicit_txn)}</Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Last execution time</Text>
+                  <Text>{lastExec}</Text>
+                </div>
+                <p
+                  className={summaryCardStylesCx(
+                    "summary--card__divider--large",
+                  )}
+                />
+                <Heading type="h5">Execution counts</Heading>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>First attempts</Text>
+                  <Text>{firstAttemptsBarChart}</Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Total executions</Text>
+                  <Text>{totalCountBarChart}</Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Retries</Text>
+                  <Text
+                    className={summaryCardStylesCx(
+                      "summary--card__item--value",
+                      {
+                        "summary--card__item--value-red": retriesBarChart > 0,
+                      },
+                    )}
+                  >
+                    {retriesBarChart}
+                  </Text>
+                </div>
+                <div className={summaryCardStylesCx("summary--card__item")}>
+                  <Text>Max retries</Text>
+                  <Text
+                    className={summaryCardStylesCx(
+                      "summary--card__item--value",
+                      {
+                        "summary--card__item--value-red":
+                          maxRetriesBarChart > 0,
+                      },
+                    )}
+                  >
+                    {maxRetriesBarChart}
+                  </Text>
+                </div>
+              </SummaryCard>
+            </Col>
+          </Row>
+        </section>
+      </>
+    );
+  };
+
+  renderExplainPlanTabContent = (hasData: boolean): React.ReactElement => {
+    if (!hasData) {
+      return this.renderNoDataWithTimeScaleAndSqlBoxTabContent();
+    }
+    const { statement_statistics_per_plan_hash } = this.props.statementDetails;
+    const { formatted_query } = this.props.statementDetails.statement.metadata;
+    return (
+      <>
+        <PageConfig>
+          <PageConfigItem>
+            <TimeScaleDropdown
+              currentScale={this.props.timeScale}
+              setTimeScale={this.props.onTimeScaleChange}
+            />
+          </PageConfigItem>
+        </PageConfig>
+        <section className={cx("section")}>
+          <Row gutter={24}>
+            <Col className="gutter-row" span={24}>
+              <SqlBox value={formatted_query} size={SqlBoxSize.small} />
+            </Col>
+          </Row>
+          <p className={summaryCardStylesCx("summary--card__divider")} />
+          <PlanDetails plans={statement_statistics_per_plan_hash} />
+        </section>
+      </>
+    );
+  };
+
+  renderDiagnosticsTabContent = (hasData: boolean): React.ReactElement => {
+    if (!hasData && !this.props.latestQuery) {
+      return this.renderNoDataTabContent();
+    }
+
+    return (
+      <DiagnosticsView
+        activateDiagnosticsRef={this.activateDiagnosticsRef}
+        diagnosticsReports={this.props.diagnosticsReports}
+        dismissAlertMessage={this.props.dismissStatementDiagnosticsAlertMessage}
+        hasData={this.getHasDiagnosticReports()}
+        statementFingerprint={this.props.latestQuery}
+        onDownloadDiagnosticBundleClick={this.props.onDiagnosticBundleDownload}
+        onDiagnosticCancelRequestClick={this.props.onDiagnosticCancelRequest}
+        showDiagnosticsViewLink={
+          this.props.uiConfig.showStatementDiagnosticsLink
+        }
+        onSortingChange={this.props.onSortingChange}
+      />
+    );
+  };
+
+  renderExecutionStatsTabContent = (hasData: boolean): React.ReactElement => {
+    if (!hasData) {
+      return this.renderNoDataTabContent();
+    }
+    const { stats } = this.props.statementDetails.statement;
+
+    const count = FixLong(stats.count).toInt();
+    const { statement } = this.props.statementDetails;
+    const {
+      parseBarChart,
+      planBarChart,
+      runBarChart,
+      overheadBarChart,
+      overallBarChart,
+    } = latencyBreakdown(statement);
+    return (
+      <>
+        <SummaryCard>
+          <h3
+            className={classNames(
+              commonStyles("base-heading"),
+              summaryCardStylesCx("summary--card__title"),
+            )}
+          >
+            Execution Latency By Phase
+            <div className={cx("numeric-stats-table__tooltip")}>
+              <Tooltip content="The execution latency of this statement, broken down by phase.">
+                <div className={cx("numeric-stats-table__tooltip-hover-area")}>
+                  <div className={cx("numeric-stats-table__info-icon")}>i</div>
+                </div>
+              </Tooltip>
+            </div>
+          </h3>
+          <NumericStatTable
+            title="Phase"
+            measure="Latency"
+            count={count}
+            format={(v: number) => Duration(v * 1e9)}
+            rows={[
+              { name: "Parse", value: stats.parse_lat, bar: parseBarChart },
+              { name: "Plan", value: stats.plan_lat, bar: planBarChart },
+              { name: "Run", value: stats.run_lat, bar: runBarChart },
+              {
+                name: "Overhead",
+                value: stats.overhead_lat,
+                bar: overheadBarChart,
+              },
+              {
+                name: "Overall",
+                summary: true,
+                value: stats.service_lat,
+                bar: overallBarChart,
+              },
+            ]}
+          />
+        </SummaryCard>
+        <SummaryCard>
+          <h3
+            className={classNames(
+              commonStyles("base-heading"),
+              summaryCardStylesCx("summary--card__title"),
+            )}
+          >
+            Other Execution Statistics
+          </h3>
+          <NumericStatTable
+            title="Stat"
+            measure="Quantity"
+            count={count}
+            format={d3Format(".2f")}
+            rows={[
+              {
+                name: "Rows Read",
+                value: stats.rows_read,
+                bar: genericBarChart(stats.rows_read, stats.count),
+              },
+              {
+                name: "Disk Bytes Read",
+                value: stats.bytes_read,
+                bar: genericBarChart(stats.bytes_read, stats.count, Bytes),
+                format: Bytes,
+              },
+              {
+                name: "Rows Written",
+                value: stats.rows_written,
+                bar: genericBarChart(stats.rows_written, stats.count),
+              },
+              {
+                name: "Network Bytes Sent",
+                value: stats.exec_stats.network_bytes,
+                bar: genericBarChart(
+                  stats.exec_stats.network_bytes,
+                  stats.exec_stats.count,
+                  Bytes,
+                ),
+                format: Bytes,
+              },
+            ].filter(function(r) {
+              if (
+                r.name === "Network Bytes Sent" &&
+                r.value &&
+                r.value.mean === 0
+              ) {
+                // Omit if empty.
+                return false;
+              }
+              return r.value;
+            })}
+          />
+        </SummaryCard>
+      </>
+    );
+  };
+
+  renderContent = (): React.ReactElement => {
+    const { currentTab } = this.state;
+
+    const { stats } = this.props.statementDetails.statement;
+
+    if (Number(stats.count) == 0) {
+      return this.renderNoStatementDetailsData();
+    }
 
     return (
       <Tabs
@@ -702,392 +1048,14 @@ export class StatementDetails extends React.Component<
         onChange={this.onTabChange}
         activeKey={currentTab}
       >
-        <TabPane tab="Overview" key="overview">
-          <PageConfig>
-            <PageConfigItem>
-              <TimeScaleDropdown
-                currentScale={this.props.timeScale}
-                setTimeScale={this.props.onTimeScaleChange}
-              />
-            </PageConfigItem>
-          </PageConfig>
-          <section className={cx("section")}>
-            <Row gutter={24}>
-              <Col className="gutter-row" span={24}>
-                <SqlBox
-                  value={this.props.latestFormattedQuery}
-                  size={SqlBoxSize.small}
-                />
-              </Col>
-            </Row>
-            <Row gutter={24}>
-              <Col className="gutter-row" span={12}>
-                <SummaryCard className={cx("summary-card")}>
-                  <Row>
-                    <Col>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Heading type="h5">Mean statement time</Heading>
-                        <Text type="body-strong">
-                          {formatNumberForDisplay(
-                            stats.service_lat.mean,
-                            duration,
-                          )}
-                        </Text>
-                      </div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Planning time</Text>
-                        <Text>
-                          {formatNumberForDisplay(
-                            stats.plan_lat.mean,
-                            duration,
-                          )}
-                        </Text>
-                      </div>
-                      <p
-                        className={summaryCardStylesCx(
-                          "summary--card__divider",
-                        )}
-                      />
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Execution time</Text>
-                        <Text>
-                          {formatNumberForDisplay(stats.run_lat.mean, duration)}
-                        </Text>
-                      </div>
-                      <p
-                        className={summaryCardStylesCx(
-                          "summary--card__divider",
-                        )}
-                      />
-                    </Col>
-                  </Row>
-                </SummaryCard>
-                <SummaryCard className={cx("summary-card")}>
-                  <Row>
-                    <Col>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Heading type="h5">Resource usage</Heading>
-                      </div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Mean rows/bytes read</Text>
-                        {statementSampled && (
-                          <Text>
-                            {formatNumberForDisplay(
-                              stats.rows_read.mean,
-                              formatTwoPlaces,
-                            )}
-                            {" / "}
-                            {formatNumberForDisplay(
-                              stats.bytes_read.mean,
-                              Bytes,
-                            )}
-                          </Text>
-                        )}
-                        {unavailableTooltip}
-                      </div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Mean rows written</Text>
-                        <Text>
-                          {formatNumberForDisplay(
-                            stats.rows_written?.mean,
-                            formatTwoPlaces,
-                          )}
-                        </Text>
-                      </div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Max memory usage</Text>
-                        {statementSampled && (
-                          <Text>
-                            {formatNumberForDisplay(
-                              stats.exec_stats.max_mem_usage.mean,
-                              Bytes,
-                            )}
-                          </Text>
-                        )}
-                        {unavailableTooltip}
-                      </div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Network usage</Text>
-                        {statementSampled && (
-                          <Text>
-                            {formatNumberForDisplay(
-                              stats.exec_stats.network_bytes.mean,
-                              Bytes,
-                            )}
-                          </Text>
-                        )}
-                        {unavailableTooltip}
-                      </div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Max scratch disk usage</Text>
-                        {statementSampled && (
-                          <Text>
-                            {formatNumberForDisplay(
-                              stats.exec_stats.max_disk_usage.mean,
-                              Bytes,
-                            )}
-                          </Text>
-                        )}
-                        {unavailableTooltip}
-                      </div>
-                    </Col>
-                  </Row>
-                </SummaryCard>
-              </Col>
-              <Col className="gutter-row" span={12}>
-                <SummaryCard className={cx("summary-card")}>
-                  <Heading type="h5">Statement details</Heading>
-                  {!isTenant && (
-                    <div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Nodes</Text>
-                        <Text>
-                          {intersperse<ReactNode>(
-                            nodes.map(n => <NodeLink node={n} key={n} />),
-                            ", ",
-                          )}
-                        </Text>
-                      </div>
-                      <div
-                        className={summaryCardStylesCx("summary--card__item")}
-                      >
-                        <Text>Regions</Text>
-                        <Text>{intersperse<ReactNode>(regions, ", ")}</Text>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Database</Text>
-                    {db}
-                  </div>
-                  <p
-                    className={summaryCardStylesCx(
-                      "summary--card__divider--large",
-                    )}
-                  />
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>App</Text>
-                    <Text>
-                      {intersperse<ReactNode>(
-                        app_names.map(a => <AppLink app={a} key={a} />),
-                        ", ",
-                      )}
-                    </Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Failed?</Text>
-                    <Text>{RenderCount(failed_count, total_count)}</Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Distributed execution?</Text>
-                    <Text>{RenderCount(dist_sql_count, total_count)}</Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Full Scan?</Text>
-                    <Text>{RenderCount(full_scan_count, total_count)}</Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Vectorized execution?</Text>
-                    <Text>{RenderCount(vec_count, total_count)}</Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Transaction type</Text>
-                    <Text>{renderTransactionType(implicit_txn)}</Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Last execution time</Text>
-                    <Text>{lastExec}</Text>
-                  </div>
-                  <p
-                    className={summaryCardStylesCx(
-                      "summary--card__divider--large",
-                    )}
-                  />
-                  <Heading type="h5">Execution counts</Heading>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>First attempts</Text>
-                    <Text>{firstAttemptsBarChart}</Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Total executions</Text>
-                    <Text>{totalCountBarChart}</Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Retries</Text>
-                    <Text
-                      className={summaryCardStylesCx(
-                        "summary--card__item--value",
-                        {
-                          "summary--card__item--value-red": retriesBarChart > 0,
-                        },
-                      )}
-                    >
-                      {retriesBarChart}
-                    </Text>
-                  </div>
-                  <div className={summaryCardStylesCx("summary--card__item")}>
-                    <Text>Max retries</Text>
-                    <Text
-                      className={summaryCardStylesCx(
-                        "summary--card__item--value",
-                        {
-                          "summary--card__item--value-red":
-                            maxRetriesBarChart > 0,
-                        },
-                      )}
-                    >
-                      {maxRetriesBarChart}
-                    </Text>
-                  </div>
-                </SummaryCard>
-              </Col>
-            </Row>
-          </section>
-        </TabPane>
-        <TabPane tab="Explain Plans" key="explain-plan">
-          <PageConfig>
-            <PageConfigItem>
-              <TimeScaleDropdown
-                currentScale={this.props.timeScale}
-                setTimeScale={this.props.onTimeScaleChange}
-              />
-            </PageConfigItem>
-          </PageConfig>
-          <section className={cx("section")}>
-            <Row gutter={24}>
-              <Col className="gutter-row" span={24}>
-                <SqlBox value={formatted_query} size={SqlBoxSize.small} />
-              </Col>
-            </Row>
-            <p className={summaryCardStylesCx("summary--card__divider")} />
-            <PlanDetails plans={statement_statistics_per_plan_hash} />
-          </section>
-        </TabPane>
+        <TabPane tab="Overview" key="overview"></TabPane>
+        <TabPane tab="Explain Plans" key="explain-plan"></TabPane>
         {this.renderDiagnosticsTabContent()}
         <TabPane
           tab="Execution Stats"
           key="execution-stats"
           className={cx("fit-content-width")}
-        >
-          <SummaryCard>
-            <h3
-              className={classNames(
-                commonStyles("base-heading"),
-                summaryCardStylesCx("summary--card__title"),
-              )}
-            >
-              Execution Latency By Phase
-              <div className={cx("numeric-stats-table__tooltip")}>
-                <Tooltip content="The execution latency of this statement, broken down by phase.">
-                  <div
-                    className={cx("numeric-stats-table__tooltip-hover-area")}
-                  >
-                    <div className={cx("numeric-stats-table__info-icon")}>
-                      i
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-            </h3>
-            <NumericStatTable
-              title="Phase"
-              measure="Latency"
-              count={count}
-              format={(v: number) => Duration(v * 1e9)}
-              rows={[
-                { name: "Parse", value: stats.parse_lat, bar: parseBarChart },
-                { name: "Plan", value: stats.plan_lat, bar: planBarChart },
-                { name: "Run", value: stats.run_lat, bar: runBarChart },
-                {
-                  name: "Overhead",
-                  value: stats.overhead_lat,
-                  bar: overheadBarChart,
-                },
-                {
-                  name: "Overall",
-                  summary: true,
-                  value: stats.service_lat,
-                  bar: overallBarChart,
-                },
-              ]}
-            />
-          </SummaryCard>
-          <SummaryCard>
-            <h3
-              className={classNames(
-                commonStyles("base-heading"),
-                summaryCardStylesCx("summary--card__title"),
-              )}
-            >
-              Other Execution Statistics
-            </h3>
-            <NumericStatTable
-              title="Stat"
-              measure="Quantity"
-              count={count}
-              format={d3Format(".2f")}
-              rows={[
-                {
-                  name: "Rows Read",
-                  value: stats.rows_read,
-                  bar: genericBarChart(stats.rows_read, stats.count),
-                },
-                {
-                  name: "Disk Bytes Read",
-                  value: stats.bytes_read,
-                  bar: genericBarChart(stats.bytes_read, stats.count, Bytes),
-                  format: Bytes,
-                },
-                {
-                  name: "Rows Written",
-                  value: stats.rows_written,
-                  bar: genericBarChart(stats.rows_written, stats.count),
-                },
-                {
-                  name: "Network Bytes Sent",
-                  value: stats.exec_stats.network_bytes,
-                  bar: genericBarChart(
-                    stats.exec_stats.network_bytes,
-                    stats.exec_stats.count,
-                    Bytes,
-                  ),
-                  format: Bytes,
-                },
-              ].filter(function(r) {
-                if (
-                  r.name === "Network Bytes Sent" &&
-                  r.value &&
-                  r.value.mean === 0
-                ) {
-                  // Omit if empty.
-                  return false;
-                }
-                return r.value;
-              })}
-            />
-          </SummaryCard>
-        </TabPane>
+        ></TabPane>
       </Tabs>
     );
   };

@@ -74,7 +74,7 @@ storiesOf("Transactions Details", module)
     />
   ))
   .add(
-    "No data for this time frame; has statement cached from previous time frame",
+    "No data for this time frame; has transaction text cached from previous time frame",
     () => {
       return (
         <TransactionDetails
@@ -94,7 +94,7 @@ storiesOf("Transactions Details", module)
       );
     },
   )
-  .add("No data for this time frame; no cached statement", () => {
+  .add("No data for this time frame; no cached transaction text", () => {
     return (
       <TransactionDetails
         {...routeProps}

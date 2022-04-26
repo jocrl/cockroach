@@ -297,7 +297,7 @@ export class TransactionDetails extends React.Component<
               isTenant,
             );
             const duration = (v: number) => Duration(v * 1e9);
-
+            console.log(transactionStats);
             const transactionSampled =
               transactionStats.exec_stats.count > Long.fromNumber(0);
             const unavailableTooltip = !transactionSampled && (

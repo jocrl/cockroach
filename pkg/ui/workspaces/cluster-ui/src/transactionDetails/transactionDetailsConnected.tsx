@@ -19,6 +19,7 @@ import {
   TransactionDetails,
   TransactionDetailsDispatchProps,
   TransactionDetailsProps,
+  TransactionDetailsStateProps,
 } from "./transactionDetails";
 import {
   selectTransactionsData,
@@ -72,7 +73,10 @@ export const selectIsLoadingAndTransaction = createSelector(
   },
 );
 
-const mapStateToProps = (state: AppState, props: TransactionDetailsProps) => {
+const mapStateToProps = (
+  state: AppState,
+  props: TransactionDetailsProps,
+): TransactionDetailsStateProps => {
   const { isLoading, transaction } = selectIsLoadingAndTransaction(
     state,
     props,

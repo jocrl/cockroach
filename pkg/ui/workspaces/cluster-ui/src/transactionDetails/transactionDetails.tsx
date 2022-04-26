@@ -54,7 +54,7 @@ import {
   populateRegionNodeForStatements,
   makeStatementsColumns,
 } from "src/statementsTable/statementsTable";
-import { TransactionInfo } from "src/transactionsTable";
+import { Transaction } from "src/transactionsTable";
 import Long from "long";
 import { StatementsRequest } from "../api";
 import {
@@ -79,7 +79,7 @@ export interface TransactionDetailsStateProps {
   hasViewActivityRedactedRole?: UIConfigState["hasViewActivityRedactedRole"];
   nodeRegions: { [nodeId: string]: string };
   statements?: Statement[];
-  transaction: TransactionInfo;
+  transaction: Transaction;
   transactionFingerprintId: string;
   isLoading: boolean;
 }
@@ -264,17 +264,19 @@ export class TransactionDetails extends React.Component<
             if (!transaction) {
               return (
                 <section className={containerClass}>
-                  <Row
-                    gutter={16}
-                    className={transactionDetailsStylesCx("summary-columns")}
-                  >
-                    <Col span={16}>
-                      <SqlBox
-                        value={latestTransactionText}
-                        className={transactionDetailsStylesCx("summary-card")}
-                      />
-                    </Col>
-                  </Row>
+                  {latestTransactionText && (
+                    <Row
+                      gutter={16}
+                      className={transactionDetailsStylesCx("summary-columns")}
+                    >
+                      <Col span={16}>
+                        <SqlBox
+                          value={latestTransactionText}
+                          className={transactionDetailsStylesCx("summary-card")}
+                        />
+                      </Col>
+                    </Row>
+                  )}
                   <InlineAlert
                     intent="info"
                     title="Data not available for this time frame. Select a different time frame."

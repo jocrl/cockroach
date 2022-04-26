@@ -1031,32 +1031,4 @@ export class StatementDetails extends React.Component<
       </>
     );
   };
-
-  renderContent = (): React.ReactElement => {
-    const { currentTab } = this.state;
-
-    const { stats } = this.props.statementDetails.statement;
-
-    if (Number(stats.count) == 0) {
-      return this.renderNoStatementDetailsData();
-    }
-
-    return (
-      <Tabs
-        defaultActiveKey="1"
-        className={commonStyles("cockroach--tabs")}
-        onChange={this.onTabChange}
-        activeKey={currentTab}
-      >
-        <TabPane tab="Overview" key="overview"></TabPane>
-        <TabPane tab="Explain Plans" key="explain-plan"></TabPane>
-        {this.renderDiagnosticsTabContent()}
-        <TabPane
-          tab="Execution Stats"
-          key="execution-stats"
-          className={cx("fit-content-width")}
-        ></TabPane>
-      </Tabs>
-    );
-  };
 }

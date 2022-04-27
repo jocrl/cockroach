@@ -62,8 +62,6 @@ import {
   TimeScaleDropdown,
   toDateRange,
 } from "../timeScaleDropdown";
-import { util } from "prettier";
-import isPreviousLineEmpty = util.isPreviousLineEmpty;
 
 const { containerClass } = tableClasses;
 const cx = classNames.bind(statementsStyles);
@@ -99,7 +97,7 @@ export type TransactionDetailsProps = TransactionDetailsStateProps &
 interface TState {
   sortSetting: SortSetting;
   pagination: ISortedTablePagination;
-  statementsForTransaction: Statement[];
+  // statementsForTransaction: Statement[];
   latestTransactionText: string;
 }
 
@@ -130,7 +128,7 @@ export class TransactionDetails extends React.Component<
         pageSize: 10,
         current: 1,
       },
-      statementsForTransaction: [],
+      // statementsForTransaction: [],
       latestTransactionText: "",
     };
   }
@@ -141,47 +139,18 @@ export class TransactionDetails extends React.Component<
   };
 
   getTransactionStateInfo = (prevTransactionFingerprintId: string): void => {
-    const {
-      transaction,
-      transactionFingerprintId,
-      // aggregatedTs,
-      statements,
-    } = this.props;
-    if (prevTransactionFingerprintId != transactionFingerprintId) {
-      console.log("prev", prevTransactionFingerprintId);
-      console.log("now", transactionFingerprintId);
-      const req = statementsRequestFromProps(this.props);
-      this.props.refreshData(req);
-    }
+    const { transaction, transactionFingerprintId } = this.props;
 
     const statementFingerprintIds =
       transaction?.stats_data?.statement_fingerprint_ids;
-
-    const statementsForTransaction =
-      (statementFingerprintIds &&
-        getStatementsByFingerprintIdAndTime(
-          statementFingerprintIds,
-          // aggregatedTs,
-          statements,
-        )) ||
-      [];
 
     const transactionText =
       (statementFingerprintIds &&
         statementFingerprintIdsToText(
           statementFingerprintIds,
-          statementsForTransaction,
+          this.getStatementsForTransaction(),
         )) ||
       "";
-
-    if (
-      statementsForTransaction?.toString() !=
-      this.state.statementsForTransaction?.toString()
-    ) {
-      this.setState({
-        statementsForTransaction,
-      });
-    }
 
     // If a new, non-empty-string transaction text is available (derived from the time-frame-specific endpoint
     // response), cache the text.
@@ -232,6 +201,23 @@ export class TransactionDetails extends React.Component<
     this.props.history.push("/sql-activity?tab=Transactions&view=fingerprints");
   };
 
+  getStatementsForTransaction = (): Statement[] => {
+    const { transaction, statements } = this.props;
+
+    const statementFingerprintIds =
+      transaction?.stats_data?.statement_fingerprint_ids;
+
+    const statementsForTransaction =
+      (statementFingerprintIds &&
+        getStatementsByFingerprintIdAndTime(
+          statementFingerprintIds,
+          // aggregatedTs,
+          statements,
+        )) ||
+      [];
+    return statementsForTransaction;
+  };
+
   render(): React.ReactElement {
     const {
       error,
@@ -239,7 +225,8 @@ export class TransactionDetails extends React.Component<
       transaction,
       transactionFingerprintId,
     } = this.props;
-    const { latestTransactionText, statementsForTransaction } = this.state;
+    const { latestTransactionText } = this.state;
+    const statementsForTransaction = this.getStatementsForTransaction();
     const transactionStats = transaction?.stats_data?.stats;
 
     return (
@@ -302,14 +289,6 @@ export class TransactionDetails extends React.Component<
                 transactionFingerprintId,
             );
 
-            if (txnScopedStmts.length == 0 && statementsForTransaction[0]) {
-              console.log("txn " + transactionFingerprintId);
-              // debugger;
-              console.log(
-                "data " +
-                  statementsForTransaction[0].key.key_data.transaction_fingerprint_id.toString(),
-              );
-            }
             const aggregatedStatements = aggregateStatements(txnScopedStmts);
             populateRegionNodeForStatements(
               aggregatedStatements,

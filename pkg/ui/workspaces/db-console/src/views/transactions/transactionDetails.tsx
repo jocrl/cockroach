@@ -26,7 +26,6 @@ import {
   TransactionDetailsDispatchProps,
   TransactionDetailsProps,
   TransactionDetails,
-  util,
 } from "@cockroachlabs/cluster-ui";
 import { setCombinedStatementsTimeScaleAction } from "src/redux/statements";
 

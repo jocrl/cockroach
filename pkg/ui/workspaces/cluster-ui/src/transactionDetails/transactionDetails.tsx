@@ -62,6 +62,8 @@ import {
   TimeScaleDropdown,
   toDateRange,
 } from "../timeScaleDropdown";
+import { util } from "prettier";
+import isPreviousLineEmpty = util.isPreviousLineEmpty;
 
 const { containerClass } = tableClasses;
 const cx = classNames.bind(statementsStyles);
@@ -145,6 +147,13 @@ export class TransactionDetails extends React.Component<
       // aggregatedTs,
       statements,
     } = this.props;
+    if (prevTransactionFingerprintId != transactionFingerprintId) {
+      console.log("prev", prevTransactionFingerprintId);
+      console.log("now", transactionFingerprintId);
+      const req = statementsRequestFromProps(this.props);
+      this.props.refreshData(req);
+    }
+
     const statementFingerprintIds =
       transaction?.stats_data?.statement_fingerprint_ids;
 
@@ -292,6 +301,15 @@ export class TransactionDetails extends React.Component<
                 s.key.key_data.transaction_fingerprint_id.toString() ===
                 transactionFingerprintId,
             );
+
+            if (txnScopedStmts.length == 0 && statementsForTransaction[0]) {
+              console.log("txn " + transactionFingerprintId);
+              // debugger;
+              console.log(
+                "data " +
+                  statementsForTransaction[0].key.key_data.transaction_fingerprint_id.toString(),
+              );
+            }
             const aggregatedStatements = aggregateStatements(txnScopedStmts);
             populateRegionNodeForStatements(
               aggregatedStatements,

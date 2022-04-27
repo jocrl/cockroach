@@ -36,14 +36,14 @@ import {
   aggregatedTsAttr,
   txnFingerprintIdAttr,
   getMatchParamByName,
-  TimestampToString,
 } from "../util";
 import { TimeScale } from "../timeScaleDropdown";
 
 export const selectIsLoadingAndTransaction = createSelector(
   (state: AppState) => state.adminUI.sqlStats,
   (_state: AppState, props: RouteComponentProps) => props,
-  (transactionState, props) => {
+  (state: AppState): TimeScale => selectTimeScale(state),
+  (transactionState, props, timeScale) => {
     const transactions = transactionState.data?.transactions;
     if (!transactions) {
       return {
@@ -51,21 +51,17 @@ export const selectIsLoadingAndTransaction = createSelector(
         transaction: null,
       };
     }
-    const aggregatedTs = getMatchParamByName(props.match, aggregatedTsAttr);
+    // const aggregatedTs = getMatchParamByName(props.match, aggregatedTsAttr);
     const txnFingerprintId = getMatchParamByName(
       props.match,
       txnFingerprintIdAttr,
     );
 
-    const transaction = transactions
-      .filter(
-        txn =>
-          txn.stats_data.transaction_fingerprint_id.toString() ==
-          txnFingerprintId,
-      )
-      .filter(
-        txn => TimestampToString(txn.stats_data.aggregated_ts) == aggregatedTs,
-      )[0];
+    const transaction = transactions.filter(
+      txn =>
+        txn.stats_data.transaction_fingerprint_id.toString() ==
+        txnFingerprintId,
+    )[0];
     return {
       isLoading: false,
       transaction: transaction,
@@ -82,7 +78,7 @@ const mapStateToProps = (
     props,
   );
   return {
-    aggregatedTs: getMatchParamByName(props.match, aggregatedTsAttr),
+    // aggregatedTs: getMatchParamByName(props.match, aggregatedTsAttr),
     timeScale: selectTimeScale(state),
     error: selectTransactionsLastError(state),
     isTenant: selectIsTenant(state),

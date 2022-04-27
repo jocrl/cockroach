@@ -147,7 +147,7 @@ export function makeTransactionsColumns(
         collectStatementsText(
           getStatementsByFingerprintIdAndTime(
             item.stats_data.statement_fingerprint_ids,
-            TimestampToString(item.stats_data.aggregated_ts),
+            // TimestampToString(item.stats_data.aggregated_ts),
             statements,
           ),
         ),

@@ -72,7 +72,7 @@ const summaryCardStylesCx = classNames.bind(summaryCardStyles);
 const transactionDetailsStylesCx = classNames.bind(transactionDetailsStyles);
 
 export interface TransactionDetailsStateProps {
-  aggregatedTs: string | null;
+  // aggregatedTs: string | null;
   timeScale: TimeScale;
   error?: Error | null;
   isTenant: UIConfigState["isTenant"];
@@ -142,7 +142,7 @@ export class TransactionDetails extends React.Component<
     const {
       transaction,
       transactionFingerprintId,
-      aggregatedTs,
+      // aggregatedTs,
       statements,
     } = this.props;
     const statementFingerprintIds =
@@ -152,7 +152,7 @@ export class TransactionDetails extends React.Component<
       (statementFingerprintIds &&
         getStatementsByFingerprintIdAndTime(
           statementFingerprintIds,
-          aggregatedTs,
+          // aggregatedTs,
           statements,
         )) ||
       [];

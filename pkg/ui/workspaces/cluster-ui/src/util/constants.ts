@@ -9,7 +9,7 @@
 // licenses/APL.txt.
 
 export const aggregationIntervalAttr = "aggregation_interval";
-export const aggregatedTsAttr = "aggregated_ts";
+// export const aggregatedTsAttr = "aggregated_ts";
 export const appAttr = "app";
 export const appNamesAttr = "appNames";
 export const dashQueryString = "dash";

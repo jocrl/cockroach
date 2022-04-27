@@ -71,7 +71,7 @@ interface TransactionLinkTargetProps {
 export const TransactionLinkTarget = (
   props: TransactionLinkTargetProps,
 ): string => {
-  return `/transaction/${props.aggregatedTs}/${props.transactionFingerprintId}`;
+  return `/transaction/${props.transactionFingerprintId}`;
 };
 
 export function makeTransactionsColumns(

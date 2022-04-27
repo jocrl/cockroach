@@ -33,7 +33,7 @@ import { nodeRegionsByIDSelector } from "../store/nodes";
 import { selectTimeScale } from "src/statementsPage/statementsPage.selectors";
 import { StatementsRequest } from "src/api/statementsApi";
 import {
-  aggregatedTsAttr,
+  // aggregatedTsAttr,
   txnFingerprintIdAttr,
   getMatchParamByName,
 } from "../util";

@@ -20,29 +20,29 @@ const history = createMemoryHistory({ initialEntries: ["/transactions"] });
 const timestamp = new protos.google.protobuf.Timestamp({
   seconds: new Long(Date.parse("Nov 26 2021 01:00:00 GMT") * 1e-3),
 });
-export const timestampString = TimestampToString(timestamp);
-export const timestampWithNoDataString = TimestampToString(
-  new protos.google.protobuf.Timestamp({
-    seconds: new Long(Date.parse("Jan 1 2000 01:00:00 GMT") * 1e-3),
-  }),
-);
+// export const timestampString = TimestampToString(timestamp);
+// export const timestampWithNoDataString = TimestampToString(
+//   new protos.google.protobuf.Timestamp({
+//     seconds: new Long(Date.parse("Jan 1 2000 01:00:00 GMT") * 1e-3),
+//   }),
+// );
 export const transactionFingerprintId = new Long(3632089240731979669);
 
 export const routeProps = {
   history,
   location: {
-    pathname: `/transaction/${timestampString}/3632089240731979669`,
+    pathname: `/transaction/${transactionFingerprintId}`,
     search: "",
     hash: "",
     state: {},
   },
   match: {
-    path: "/transaction/:aggregated_ts/:txn_fingerprint_id",
-    url: `/transaction/${timestampString}/3632089240731979669`,
+    path: "/transaction/:txn_fingerprint_id",
+    url: `/transaction/${transactionFingerprintId}`,
     isExact: true,
     params: {
-      aggregated_ts: timestampString,
-      txn_fingerprint_id: new Long(3632089240731979669),
+      // aggregated_ts: timestampString,
+      txn_fingerprint_id: transactionFingerprintId,
     },
   },
 };
@@ -122,7 +122,7 @@ export const transaction = {
       },
     },
     aggregated_ts: timestamp,
-    transaction_fingerprint_id: new Long(3632089240731979669),
+    transaction_fingerprint_id: transactionFingerprintId,
     aggregation_interval: {
       seconds: new Long(3600),
     },
@@ -144,7 +144,7 @@ export const transactionDetailsData: StatementsResponse = {
           full_scan: false,
           database: "movr",
           plan_hash: new Long(0),
-          transaction_fingerprint_id: new Long(3632089240731979669),
+          transaction_fingerprint_id: transactionFingerprintId,
           query_summary: "SELECT * FROM crdb_internal.node_build_info",
         },
         aggregated_ts: timestamp,

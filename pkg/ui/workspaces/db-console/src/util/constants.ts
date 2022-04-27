@@ -14,7 +14,7 @@ export const indexNameAttr = "index_name";
 
 export const {
   aggregationIntervalAttr,
-  aggregatedTsAttr,
+  // aggregatedTsAttr,
   appAttr,
   appNamesAttr,
   dashQueryString,

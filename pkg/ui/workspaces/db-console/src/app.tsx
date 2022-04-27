@@ -20,7 +20,7 @@ import { AdminUIState } from "src/redux/state";
 import { createLoginRoute, createLogoutRoute } from "src/routes/login";
 import visualizationRoutes from "src/routes/visualization";
 import {
-  aggregatedTsAttr,
+  // aggregatedTsAttr,
   appAttr,
   dashboardNameAttr,
   databaseAttr,
@@ -281,7 +281,7 @@ export const App: React.FC<AppProps> = (props: AppProps) => {
                 />
                 <Route
                   exact
-                  path={`/transaction/:${aggregatedTsAttr}/:${txnFingerprintIdAttr}`}
+                  path={`/transaction/:${txnFingerprintIdAttr}`}
                   component={TransactionDetails}
                 />
 

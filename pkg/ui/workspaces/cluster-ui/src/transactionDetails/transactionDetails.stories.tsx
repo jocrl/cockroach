@@ -18,8 +18,8 @@ import {
   nodeRegions,
   error,
   timeScale,
-  timestampString,
-  timestampWithNoDataString,
+  // timestampString,
+  // timestampWithNoDataString,
   transaction,
   transactionFingerprintId,
 } from "./transactionDetails.fixture";
@@ -34,7 +34,7 @@ storiesOf("Transactions Details", module)
   .add("with data", () => (
     <TransactionDetails
       {...routeProps}
-      aggregatedTs={timestampString}
+      // aggregatedTs={timestampString}
       timeScale={timeScale}
       transactionFingerprintId={transactionFingerprintId.toString()}
       transaction={transaction}
@@ -51,7 +51,7 @@ storiesOf("Transactions Details", module)
   .add("with loading indicator", () => (
     <TransactionDetails
       {...routeProps}
-      aggregatedTs={timestampString}
+      // aggregatedTs={timestampString}
       timeScale={timeScale}
       transactionFingerprintId={transactionFingerprintId.toString()}
       transaction={null}
@@ -68,7 +68,7 @@ storiesOf("Transactions Details", module)
   .add("with error alert", () => (
     <TransactionDetails
       {...routeProps}
-      aggregatedTs={undefined}
+      // aggregatedTs={undefined}
       timeScale={timeScale}
       transactionFingerprintId={undefined}
       transaction={undefined}
@@ -87,7 +87,7 @@ storiesOf("Transactions Details", module)
     return (
       <TransactionDetails
         {...routeProps}
-        aggregatedTs={timestampWithNoDataString}
+        // aggregatedTs={timestampWithNoDataString}
         timeScale={timeScale}
         transactionFingerprintId={transactionFingerprintId.toString()}
         transaction={undefined}

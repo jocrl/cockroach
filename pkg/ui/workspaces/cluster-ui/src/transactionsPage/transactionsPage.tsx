@@ -38,7 +38,7 @@ import Long from "long";
 import { merge } from "lodash";
 import { unique, syncHistory } from "src/util";
 import { EmptyTransactionsPlaceholder } from "./emptyTransactionsPlaceholder";
-import { Loading } from "../loading";
+import { Delayed, Loading } from "../loading";
 import { PageConfig, PageConfigItem } from "../pageConfig";
 import { Search } from "../search";
 import {
@@ -67,6 +67,7 @@ import {
 import { InlineAlert } from "@cockroachlabs/ui-components";
 import { TransactionViewType } from "./transactionsPageTypes";
 import { isSelectedColumn } from "../columnsSelector/utils";
+import moment from "moment";
 
 type IStatementsResponse = protos.cockroach.server.serverpb.IStatementsResponse;
 
@@ -375,10 +376,12 @@ export class TransactionsPage extends React.Component<
       internal_app_name_prefix,
     );
     const longLoadingMessage = !this.props?.data && (
-      <InlineAlert
-        intent="info"
-        title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
-      />
+      <Delayed delay={moment.duration(10, "s")}>
+        <InlineAlert
+          intent="info"
+          title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
+        />
+      </Delayed>
     );
 
     return (

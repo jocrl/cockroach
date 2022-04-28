@@ -460,15 +460,15 @@ export function getJobs(
   req: JobsRequestMessage,
   timeout?: moment.Duration,
 ): Promise<JobsResponseMessage> {
-  return timeoutFetch(
-    serverpb.JobsResponse,
-    `${API_PREFIX}/jobs?status=${req.status}&type=${req.type}&limit=${req.limit}`,
-    null,
-    timeout,
-  ).then(
+  const url = `${API_PREFIX}/jobs?status=${req.status}&type=${req.type}&limit=${req.limit}`;
+  return timeoutFetch(serverpb.JobsResponse, url, null, timeout).then(
     (response: JobsResponseMessage) => response,
     (err: Error) => {
       if (err instanceof TimeoutError) {
+        console.error(
+          `Jobs page time out because attempt to retrieve jobs exceeded ${err.timeout.asMilliseconds()}ms.`,
+          `URL: ${url}. Request: ${JSON.stringify(req)}`,
+        );
         throw new Error(
           "Time out while attempting to retrieve the Jobs table. As an alternative, try filtering the table.",
         );
@@ -483,13 +483,11 @@ export function getJob(
   req: JobRequestMessage,
   timeout?: moment.Duration,
 ): Promise<JobResponseMessage> {
-  console.log("hi");
   return timeoutFetch(
     serverpb.JobResponse,
     `${API_PREFIX}/jobs/${req.job_id}`,
     null,
-    moment.duration(1, "s"),
-    // timeout,
+    timeout,
   );
 }
 

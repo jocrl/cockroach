@@ -456,28 +456,27 @@ export function getHealth(
   );
 }
 
-// ): Promise<TResponseMessage> {
 export function getJobs(
   req: JobsRequestMessage,
   timeout?: moment.Duration,
-): Promise<any> {
-  console.log("hi");
+): Promise<JobsResponseMessage> {
   return timeoutFetch(
     serverpb.JobsResponse,
     `${API_PREFIX}/jobs?status=${req.status}&type=${req.type}&limit=${req.limit}`,
     null,
-    moment.duration(4, "s"),
-    // timeout,
-  ).catch(err => {
-    console.log(err);
-    if (err instanceof TimeoutError) {
-      console.log("TIMEOUT");
-      throw new Error(
-        "Time out while attempting to retrieve the Jobs table. As an alternative, try filtering the table.",
-      );
-    }
-    throw err;
-  });
+    timeout,
+  ).then(
+    (response: JobsResponseMessage) => response,
+    (err: Error) => {
+      if (err instanceof TimeoutError) {
+        throw new Error(
+          "Time out while attempting to retrieve the Jobs table. As an alternative, try filtering the table.",
+        );
+      } else {
+        throw err;
+      }
+    },
+  );
 }
 
 export function getJob(

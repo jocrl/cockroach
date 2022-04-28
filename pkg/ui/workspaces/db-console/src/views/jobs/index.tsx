@@ -20,7 +20,7 @@ import { CachedDataReducerState } from "src/redux/cachedDataReducer";
 import { LocalSetting } from "src/redux/localsettings";
 import { AdminUIState } from "src/redux/state";
 import Dropdown, { DropdownOption } from "src/views/shared/components/dropdown";
-import { Loading, util, SortSetting } from "@cockroachlabs/cluster-ui";
+import { Loading, Delayed, util, SortSetting } from "@cockroachlabs/cluster-ui";
 import { InlineAlert } from "@cockroachlabs/ui-components";
 import {
   PageConfig,
@@ -33,7 +33,6 @@ import { trackFilter } from "src/util/analytics";
 import JobType = cockroach.sql.jobs.jobspb.Type;
 import JobsRequest = cockroach.server.serverpb.JobsRequest;
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
-import Delayed from "../../../../cluster-ui/src/loading/delay";
 
 export const statusSetting = new LocalSetting<AdminUIState, string>(
   "jobs/status_setting",
@@ -287,10 +286,10 @@ export class JobsTable extends React.Component<JobsTableProps> {
             )}
           />
           {isLoading && !error && (
-            <Delayed>
+            <Delayed delay={moment.duration(10, "s")}>
               <InlineAlert
                 intent="info"
-                title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
+                title="If the Jobs table contains a large amount of data, this page might take a while to load."
               />
             </Delayed>
           )}

@@ -11,27 +11,23 @@
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 
-interface Props {
+type Props = {
   children: React.ReactElement;
   delay?: moment.Duration;
-}
+};
 
-const Delayed = ({
+export const Delayed = ({
   children,
-  delay = moment.duration(500, "m"),
+  delay = moment.duration(10, "s"),
 }: Props): React.ReactElement => {
-  const delayMilliseconds = delay.asMilliseconds();
   const [isShown, setIsShown] = useState(false);
-  console.log("showing", isShown);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      console.log("show true");
       setIsShown(true);
-    }, delayMilliseconds);
+    }, delay.asMilliseconds());
     return () => clearTimeout(timer);
-  }, [delayMilliseconds]);
+  }, [delay]);
 
   return isShown ? children : null;
 };
-
-export default Delayed;

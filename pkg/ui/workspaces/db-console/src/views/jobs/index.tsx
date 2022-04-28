@@ -237,6 +237,9 @@ export class JobsTable extends React.Component<JobsTableProps> {
   render() {
     const isLoading = !this.props.jobs || !this.props.jobs.data;
     const error = this.props.jobs && this.props.jobs.lastError;
+    console.log("HIIIII");
+    console.log(JSON.stringify(error));
+    console.log(JSON.stringify(this.props));
     return (
       <div className="jobs-page">
         <Helmet title="Jobs" />

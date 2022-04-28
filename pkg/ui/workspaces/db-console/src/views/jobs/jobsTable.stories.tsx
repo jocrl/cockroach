@@ -12,7 +12,7 @@ import { storiesOf } from "@storybook/react";
 import { withRouterDecorator } from "src/util/decorators";
 
 import { JobsTable } from "./index";
-import { withData, empty, loading, error } from "./jobsTable.fixture";
+import { withData, empty, loading } from "./jobsTable.fixture";
 
 storiesOf("JobsTable", module)
   .addDecorator(withRouterDecorator)

@@ -466,7 +466,7 @@ export function getJobs(
           `URL: ${url}. Request: ${JSON.stringify(req)}`,
         );
         throw new Error(
-          "Time out while attempting to retrieve the Jobs table. As an alternative, try filtering the table.",
+          "Unable to retrieve the Jobs table. To reduce the amount of data, try filtering the table.",
         );
       } else {
         throw err;

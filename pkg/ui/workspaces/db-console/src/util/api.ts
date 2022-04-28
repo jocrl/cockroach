@@ -176,6 +176,26 @@ export const STATUS_PREFIX = "_status";
 
 const ResponseError = protos.cockroach.server.serverpb.ResponseError;
 
+export class TimeoutError extends Error {
+  timeout: moment.Duration;
+  constructor(timeout: moment.Duration) {
+    const message = `Promise timed out after ${timeout.asMilliseconds()} ms`;
+    super(message);
+
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, TimeoutError);
+    }
+
+    this.name = this.constructor.name;
+    this.timeout = timeout;
+    // constructor(message: string) {
+    //   super(message);
+    //   this.name = this.constructor.name;
+    // }
+  }
+}
+
 // HELPER FUNCTIONS
 
 // Inspired by https://github.com/github/fetch/issues/175
@@ -190,7 +210,8 @@ export function withTimeout<T>(
       setTimeout(
         () =>
           reject(
-            new Error(`Promise timed out after ${timeout.asMilliseconds()} ms`),
+            new TimeoutError(timeout),
+            // new Error(`Promise timed out after ${timeout.asMilliseconds()} ms`),
           ),
         timeout.asMilliseconds(),
       );
@@ -439,27 +460,41 @@ export function getHealth(
   );
 }
 
+// ): Promise<TResponseMessage> {
 export function getJobs(
   req: JobsRequestMessage,
   timeout?: moment.Duration,
-): Promise<JobsResponseMessage> {
+): Promise<any> {
+  console.log("hi");
   return timeoutFetch(
     serverpb.JobsResponse,
     `${API_PREFIX}/jobs?status=${req.status}&type=${req.type}&limit=${req.limit}`,
     null,
-    timeout,
-  );
+    moment.duration(4, "s"),
+    // timeout,
+  ).catch(err => {
+    console.log(err);
+    if (err instanceof TimeoutError) {
+      console.log("TIMEOUT");
+      throw new Error(
+        "Time out while attempting to retrieve the Jobs table. As an alternative, try filtering the table.",
+      );
+    }
+    throw err;
+  });
 }
 
 export function getJob(
   req: JobRequestMessage,
   timeout?: moment.Duration,
 ): Promise<JobResponseMessage> {
+  console.log("hi");
   return timeoutFetch(
     serverpb.JobResponse,
     `${API_PREFIX}/jobs/${req.job_id}`,
     null,
-    timeout,
+    moment.duration(1, "s"),
+    // timeout,
   );
 }
 

@@ -1967,6 +1967,8 @@ func (s *adminServer) Jobs(
 	ctx context.Context, req *serverpb.JobsRequest,
 ) (_ *serverpb.JobsResponse, retErr error) {
 	ctx = s.server.AnnotateCtx(ctx)
+	//return nil, serverError(ctx, errors.New("cannot create a type in the system database"))
+	time.Sleep(35 * time.Second)
 
 	userName, err := userFromContext(ctx)
 	if err != nil {

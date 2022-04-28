@@ -189,10 +189,6 @@ export class TimeoutError extends Error {
 
     this.name = this.constructor.name;
     this.timeout = timeout;
-    // constructor(message: string) {
-    //   super(message);
-    //   this.name = this.constructor.name;
-    // }
   }
 }
 

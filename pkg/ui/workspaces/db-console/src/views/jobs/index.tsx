@@ -21,6 +21,7 @@ import { LocalSetting } from "src/redux/localsettings";
 import { AdminUIState } from "src/redux/state";
 import Dropdown, { DropdownOption } from "src/views/shared/components/dropdown";
 import { Loading, util, SortSetting } from "@cockroachlabs/cluster-ui";
+import { InlineAlert } from "@cockroachlabs/ui-components";
 import {
   PageConfig,
   PageConfigItem,
@@ -32,6 +33,7 @@ import { trackFilter } from "src/util/analytics";
 import JobType = cockroach.sql.jobs.jobspb.Type;
 import JobsRequest = cockroach.server.serverpb.JobsRequest;
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
+import Delayed from "../../../../cluster-ui/src/loading/delay";
 
 export const statusSetting = new LocalSetting<AdminUIState, string>(
   "jobs/status_setting",
@@ -234,6 +236,8 @@ export class JobsTable extends React.Component<JobsTableProps> {
   };
 
   render() {
+    const isLoading = !this.props.jobs || !this.props.jobs.data;
+    const error = this.props.jobs && this.props.jobs.lastError;
     return (
       <div className="jobs-page">
         <Helmet title="Jobs" />
@@ -268,9 +272,9 @@ export class JobsTable extends React.Component<JobsTableProps> {
         </div>
         <section className="section">
           <Loading
-            loading={!this.props.jobs || !this.props.jobs.data}
+            loading={isLoading}
             page={"jobs"}
-            error={this.props.jobs && this.props.jobs.lastError}
+            error={error}
             render={() => (
               <JobTable
                 isUsedFilter={
@@ -282,6 +286,14 @@ export class JobsTable extends React.Component<JobsTableProps> {
               />
             )}
           />
+          {isLoading && !error && (
+            <Delayed>
+              <InlineAlert
+                intent="info"
+                title="If the selected time period contains a large amount of data, this page might take a few minutes to load."
+              />
+            </Delayed>
+          )}
         </section>
       </div>
     );

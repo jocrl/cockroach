@@ -116,6 +116,24 @@ export function DurationToNumber(
 }
 
 /**
+ * ProtoDurationToMoment converts a Duration object, as seen in wire.proto, to
+ * a moment.Duration object. If timestamp is null,
+ * it returns the `defaultIfNull` value which is by default 0.
+ */
+export function ProtoDurationToMoment(
+  duration?: protos.google.protobuf.IDuration,
+  defaultIfNull = moment.duration(0),
+): moment.Duration {
+  if (!duration) {
+    return defaultIfNull;
+  }
+  return moment
+    .duration(duration.seconds.toNumber(), "seconds")
+    .add(NanoToMilli(duration.nanos), "milliseconds");
+  // return duration.seconds.toNumber() + NanoToMilli(duration.nanos) * 1e-3;
+}
+
+/**
  * NumberToDuration converts a number representing a duration in seconds
  * to a Duration object.
  */

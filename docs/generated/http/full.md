@@ -5911,6 +5911,7 @@ JobsResponse contains the job record for each matching job.
 | Field | Type | Label | Description | Support status |
 | ----- | ---- | ----- | ----------- | -------------- |
 | jobs | [JobResponse](#cockroach.server.serverpb.JobsResponse-cockroach.server.serverpb.JobResponse) | repeated |  | [reserved](#support-status) |
+| retention_time | [google.protobuf.Duration](#cockroach.server.serverpb.JobsResponse-google.protobuf.Duration) |  |  | [reserved](#support-status) |
 
 
 

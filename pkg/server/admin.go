@@ -2058,6 +2058,9 @@ func (s *adminServer) jobsHelper(
 		resp.Jobs = append(resp.Jobs, job)
 	}
 
+	resp.RetentionTime = 10 * time.Minute
+	//resp.RetentionTime = RetentionTimeSetting.Get(&r.settings.SV)
+
 	if err != nil {
 		return nil, err
 	}

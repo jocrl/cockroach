@@ -32,11 +32,13 @@ import {
   jobTable,
 } from "src/util/docs";
 import { trackDocsLink } from "src/util/analytics";
-import { EmptyTable, SortedTable } from "@cockroachlabs/cluster-ui";
+import { EmptyTable, SortedTable, util } from "@cockroachlabs/cluster-ui";
 import { Anchor } from "src/components";
 import emptyTableResultsIcon from "assets/emptyState/empty-table-results.svg";
 import magnifyingGlassIcon from "assets/emptyState/magnifying-glass.svg";
 import { Tooltip } from "@cockroachlabs/ui-components";
+import moment from "moment";
+// import { ProtoDurationToMoment } from "@cockroachlabs/cluster-ui/dist/types/util";
 
 class JobsSortedTable extends SortedTable<Job> {}
 
@@ -253,7 +255,16 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     const total = this.props.jobs.data.jobs.length;
     const pageCount = current * pageSize > total ? total : current * pageSize;
     const count = total > 10 ? pageCount : current * total;
-    return `${count} of ${total} jobs`;
+
+    const retention = moment().subtract(
+      util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
+    );
+    console.log(retention);
+
+    return `${count} of ${total} jobs${this.props.jobs.data.retention_time &&
+      ` Since ${moment().subtract(
+        util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
+      )}`}`;
   };
 
   renderEmptyState = () => {

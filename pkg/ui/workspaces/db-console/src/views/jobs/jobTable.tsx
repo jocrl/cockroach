@@ -248,24 +248,26 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     this.setState({ pagination: { ...pagination, current } });
   };
 
-  renderCounts = () => {
-    const {
-      pagination: { current, pageSize },
-    } = this.state;
-    const total = this.props.jobs.data.jobs.length;
-    const pageCount = current * pageSize > total ? total : current * pageSize;
-    const count = total > 10 ? pageCount : current * total;
-
-    const retention = moment().subtract(
-      util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
-    );
-    console.log(retention);
-
-    return `${count} of ${total} jobs${this.props.jobs.data.retention_time &&
-      ` Since ${moment().subtract(
-        util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
-      )}`}`;
-  };
+  // renderCounts = () => {
+  //   const {
+  //     pagination: { current, pageSize },
+  //   } = this.state;
+  //   const total = this.props.jobs.data.jobs.length;
+  //   const pageCount = current * pageSize > total ? total : current * pageSize;
+  //   const count = total > 10 ? pageCount : current * total;
+  //
+  //   const retention = moment().subtract(
+  //     util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
+  //   );
+  //   console.log("retention");
+  //   console.log(retention);
+  //
+  //   return `${count} of ${total} jobsasss${this.props.jobs.data
+  //     .retention_time &&
+  //     ` Since ${moment().subtract(
+  //       util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
+  //     )}`}`;
+  // };
 
   renderEmptyState = () => {
     const { isUsedFilter, jobs } = this.props;

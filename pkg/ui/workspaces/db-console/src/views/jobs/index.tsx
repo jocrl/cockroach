@@ -15,8 +15,16 @@ import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 
 import { cockroach } from "src/js/protos";
-import { jobsKey, refreshJobs } from "src/redux/apiReducers";
-import { CachedDataReducerState } from "src/redux/cachedDataReducer";
+import {
+  jobsKey,
+  KeyedCachedDataReducerState,
+  refreshJobs,
+  refreshSettings,
+} from "src/redux/apiReducers";
+import {
+  CachedDataReducer,
+  CachedDataReducerState,
+} from "src/redux/cachedDataReducer";
 import { LocalSetting } from "src/redux/localsettings";
 import { AdminUIState } from "src/redux/state";
 import Dropdown, { DropdownOption } from "src/views/shared/components/dropdown";
@@ -33,6 +41,8 @@ import { trackFilter } from "src/util/analytics";
 import JobType = cockroach.sql.jobs.jobspb.Type;
 import JobsRequest = cockroach.server.serverpb.JobsRequest;
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
+import { createSelector } from "reselect";
+import { selectClusterSettings } from "src/redux/clusterSettings";
 
 export const statusSetting = new LocalSetting<AdminUIState, string>(
   "jobs/status_setting",
@@ -104,6 +114,17 @@ export const sortSetting = new LocalSetting<AdminUIState, SortSetting>(
   { columnTitle: "creationTime", ascending: false },
 );
 
+const selectJobsRetentionTime = createSelector(
+  selectClusterSettings,
+  settings => {
+    if (!settings) {
+      return null;
+    }
+    const value = settings["jobs.retention_time"]?.value;
+    return util.durationFromISO8601String(value);
+  },
+);
+
 export interface JobsTableOwnProps {
   sort: SortSetting;
   status: string;
@@ -114,7 +135,9 @@ export interface JobsTableOwnProps {
   setShow: (value: string) => void;
   setType: (value: JobType) => void;
   refreshJobs: typeof refreshJobs;
+  refreshSettings: typeof refreshSettings;
   jobs: CachedDataReducerState<JobsResponse>;
+  jobsRetentionTime: moment.Duration | null;
 }
 
 export type JobsTableProps = JobsTableOwnProps & RouteComponentProps<any>;
@@ -170,6 +193,7 @@ export class JobsTable extends React.Component<JobsTableProps> {
 
   componentDidMount() {
     this.refresh();
+    this.props.refreshSettings();
   }
 
   componentDidUpdate(prevProps: JobsTableProps) {
@@ -282,6 +306,7 @@ export class JobsTable extends React.Component<JobsTableProps> {
                 jobs={this.props.jobs}
                 setSort={this.changeSortSetting}
                 sort={this.props.sort}
+                jobsRetentionTime={this.props.jobsRetentionTime}
               />
             )}
           />
@@ -306,12 +331,14 @@ const mapStateToProps = (state: AdminUIState, _: RouteComponentProps) => {
   const type = typeSetting.selector(state);
   const key = jobsKey(status, type, parseInt(show, 10));
   const jobs = state.cachedData.jobs[key];
+  const jobsRetentionTime = selectJobsRetentionTime(state);
   return {
     sort,
     status,
     show,
     type,
     jobs,
+    jobsRetentionTime,
   };
 };
 
@@ -321,6 +348,7 @@ const mapDispatchToProps = {
   setShow: showSetting.set,
   setType: typeSetting.set,
   refreshJobs,
+  refreshSettings,
 };
 
 export default withRouter(

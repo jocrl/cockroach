@@ -22,7 +22,6 @@ import {
   Pagination,
   ResultsPerPageLabel,
   SortSetting,
-  util,
 } from "@cockroachlabs/cluster-ui";
 import {
   jobsCancel,
@@ -218,6 +217,7 @@ export interface JobTableProps {
   pageSize?: number;
   current?: number;
   isUsedFilter: boolean;
+  jobsRetentionTime: moment.Duration | null;
 }
 
 export interface JobTableState {
@@ -247,27 +247,6 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     const { pagination } = this.state;
     this.setState({ pagination: { ...pagination, current } });
   };
-
-  // renderCounts = () => {
-  //   const {
-  //     pagination: { current, pageSize },
-  //   } = this.state;
-  //   const total = this.props.jobs.data.jobs.length;
-  //   const pageCount = current * pageSize > total ? total : current * pageSize;
-  //   const count = total > 10 ? pageCount : current * total;
-  //
-  //   const retention = moment().subtract(
-  //     util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
-  //   );
-  //   console.log("retention");
-  //   console.log(retention);
-  //
-  //   return `${count} of ${total} jobsasss${this.props.jobs.data
-  //     .retention_time &&
-  //     ` Since ${moment().subtract(
-  //       util.ProtoDurationToMoment(this.props.jobs.data.retention_time),
-  //     )}`}`;
-  // };
 
   renderEmptyState = () => {
     const { isUsedFilter, jobs } = this.props;
@@ -317,6 +296,13 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     trackDocsLink(e.currentTarget.text);
   };
 
+  formatJobsTimeFrameMessage = (jobsRetentionTime: moment.Duration): string => {
+    const jobsOldestTime = moment()
+      .subtract(jobsRetentionTime)
+      .utc();
+    return ` | Since ${jobsOldestTime.format("MMM D, YYYY [at] h:m A")}`;
+  };
+
   render() {
     const jobs = this.props.jobs.data.jobs;
     const { pagination } = this.state;
@@ -329,6 +315,8 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
               pagination={{ ...pagination, total: jobs.length }}
               pageName="jobs"
             />
+            {this.props.jobsRetentionTime &&
+              this.formatJobsTimeFrameMessage(this.props.jobsRetentionTime)}
           </h4>
         </div>
         <JobsSortedTable

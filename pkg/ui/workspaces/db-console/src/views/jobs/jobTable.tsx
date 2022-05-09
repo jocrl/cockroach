@@ -217,7 +217,7 @@ export interface JobTableProps {
   pageSize?: number;
   current?: number;
   isUsedFilter: boolean;
-  jobsRetentionTime: moment.Duration | null;
+  retentionTime: moment.Duration | null;
 }
 
 export interface JobTableState {
@@ -296,9 +296,9 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     trackDocsLink(e.currentTarget.text);
   };
 
-  formatJobsTimeFrameMessage = (jobsRetentionTime: moment.Duration): string => {
+  formatJobsTimeFrameMessage = (retentionTime: moment.Duration): string => {
     const jobsOldestTime = moment()
-      .subtract(jobsRetentionTime)
+      .subtract(retentionTime)
       .utc();
     return ` | Since ${jobsOldestTime.format("MMM D, YYYY [at] h:m A")}`;
   };
@@ -315,8 +315,8 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
               pagination={{ ...pagination, total: jobs.length }}
               pageName="jobs"
             />
-            {this.props.jobsRetentionTime &&
-              this.formatJobsTimeFrameMessage(this.props.jobsRetentionTime)}
+            {this.props.retentionTime &&
+              this.formatJobsTimeFrameMessage(this.props.retentionTime)}
           </h4>
         </div>
         <JobsSortedTable

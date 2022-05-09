@@ -114,16 +114,13 @@ export const sortSetting = new LocalSetting<AdminUIState, SortSetting>(
   { columnTitle: "creationTime", ascending: false },
 );
 
-const selectJobsRetentionTime = createSelector(
-  selectClusterSettings,
-  settings => {
-    if (!settings) {
-      return null;
-    }
-    const value = settings["jobs.retention_time"]?.value;
-    return util.durationFromISO8601String(value);
-  },
-);
+const selectRetentionTime = createSelector(selectClusterSettings, settings => {
+  if (!settings) {
+    return null;
+  }
+  const value = settings["jobs.retention_time"]?.value;
+  return util.durationFromISO8601String(value);
+});
 
 export interface JobsTableOwnProps {
   sort: SortSetting;
@@ -137,7 +134,7 @@ export interface JobsTableOwnProps {
   refreshJobs: typeof refreshJobs;
   refreshSettings: typeof refreshSettings;
   jobs: CachedDataReducerState<JobsResponse>;
-  jobsRetentionTime: moment.Duration | null;
+  retentionTime: moment.Duration | null;
 }
 
 export type JobsTableProps = JobsTableOwnProps & RouteComponentProps<any>;
@@ -306,7 +303,7 @@ export class JobsTable extends React.Component<JobsTableProps> {
                 jobs={this.props.jobs}
                 setSort={this.changeSortSetting}
                 sort={this.props.sort}
-                jobsRetentionTime={this.props.jobsRetentionTime}
+                retentionTime={this.props.retentionTime}
               />
             )}
           />
@@ -331,14 +328,14 @@ const mapStateToProps = (state: AdminUIState, _: RouteComponentProps) => {
   const type = typeSetting.selector(state);
   const key = jobsKey(status, type, parseInt(show, 10));
   const jobs = state.cachedData.jobs[key];
-  const jobsRetentionTime = selectJobsRetentionTime(state);
+  const retentionTime = selectRetentionTime(state);
   return {
     sort,
     status,
     show,
     type,
     jobs,
-    jobsRetentionTime,
+    retentionTime,
   };
 };
 

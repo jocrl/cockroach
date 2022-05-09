@@ -15,16 +15,8 @@ import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 
 import { cockroach } from "src/js/protos";
-import {
-  jobsKey,
-  KeyedCachedDataReducerState,
-  refreshJobs,
-  refreshSettings,
-} from "src/redux/apiReducers";
-import {
-  CachedDataReducer,
-  CachedDataReducerState,
-} from "src/redux/cachedDataReducer";
+import { jobsKey, refreshJobs, refreshSettings } from "src/redux/apiReducers";
+import { CachedDataReducerState } from "src/redux/cachedDataReducer";
 import { LocalSetting } from "src/redux/localsettings";
 import { AdminUIState } from "src/redux/state";
 import Dropdown, { DropdownOption } from "src/views/shared/components/dropdown";

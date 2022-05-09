@@ -337,6 +337,7 @@ const getJobsTableProps = (jobs: Array<Job>): JobsTableProps => ({
 });
 
 export const withData: JobsTableProps = getJobsTableProps(allJobsFixture);
+export const nonAdmin: JobsTableProps = { ...withData, retentionTime: null };
 export const empty: JobsTableProps = getJobsTableProps([]);
 export const loading: JobsTableProps = {
   ...staticJobProps,

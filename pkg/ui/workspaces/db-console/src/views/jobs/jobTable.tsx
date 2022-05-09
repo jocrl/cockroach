@@ -19,9 +19,12 @@ import Job = cockroach.server.serverpb.IJobResponse;
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
 import {
   ColumnDescriptor,
+  EmptyTable,
   Pagination,
   ResultsPerPageLabel,
   SortSetting,
+  SortedTable,
+  util,
 } from "@cockroachlabs/cluster-ui";
 import {
   jobsCancel,
@@ -31,7 +34,6 @@ import {
   jobTable,
 } from "src/util/docs";
 import { trackDocsLink } from "src/util/analytics";
-import { EmptyTable, SortedTable, util } from "@cockroachlabs/cluster-ui";
 import { Anchor } from "src/components";
 import emptyTableResultsIcon from "assets/emptyState/empty-table-results.svg";
 import magnifyingGlassIcon from "assets/emptyState/magnifying-glass.svg";
@@ -296,11 +298,11 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     trackDocsLink(e.currentTarget.text);
   };
 
-  formatJobsTimeFrameMessage = (retentionTime: moment.Duration): string => {
+  formatJobsRetentionMessage = (retentionTime: moment.Duration): string => {
     const jobsOldestTime = moment()
       .subtract(retentionTime)
       .utc();
-    return ` | Since ${jobsOldestTime.format("MMM D, YYYY [at] h:m A")}`;
+    return `Since ${jobsOldestTime.format(DATE_FORMAT_24_UTC)}`;
   };
 
   render() {
@@ -309,14 +311,18 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
 
     return (
       <React.Fragment>
-        <div className="cl-table-statistic">
+        <div className="cl-table-statistic jobs-table-summary">
           <h4 className="cl-count-title">
             <ResultsPerPageLabel
               pagination={{ ...pagination, total: jobs.length }}
               pageName="jobs"
             />
-            {this.props.retentionTime &&
-              this.formatJobsTimeFrameMessage(this.props.retentionTime)}
+            {this.props.retentionTime && (
+              <>
+                <span className="jobs-table-summary__retention-divider">|</span>
+                {this.formatJobsRetentionMessage(this.props.retentionTime)}
+              </>
+            )}
           </h4>
         </div>
         <JobsSortedTable

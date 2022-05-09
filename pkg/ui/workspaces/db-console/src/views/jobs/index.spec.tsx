@@ -15,9 +15,10 @@ import { formatDuration } from ".";
 import { JobsTable, JobsTableProps } from "src/views/jobs/index";
 import {
   allJobsFixture,
+  earliestRetainedTime,
   retryRunningJobFixture,
 } from "src/views/jobs/jobsTable.fixture";
-import { refreshJobs } from "src/redux/apiReducers";
+import { refreshJobs, refreshSettings } from "src/redux/apiReducers";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -42,12 +43,14 @@ const getMockJobsTableProps = (jobs: Array<Job>): JobsTableProps => {
     jobs: {
       data: {
         jobs: jobs,
+        earliest_retained_time: earliestRetainedTime,
         toJSON: () => ({}),
       },
       inFlight: false,
       valid: true,
     },
     refreshJobs,
+    refreshSettings,
     location: history.location,
     history,
     match: {
@@ -71,7 +74,7 @@ describe("Jobs", () => {
     );
   });
 
-  it("renders expected jobs table columns", () => {
+  it.only("renders expected jobs table columns and the earliest retained time", () => {
     const { getByText } = render(
       <MemoryRouter>
         <JobsTable {...getMockJobsTableProps(allJobsFixture)} />
@@ -89,6 +92,22 @@ describe("Jobs", () => {
 
     for (const columnTitle of expectedColumnTitles) {
       getByText(columnTitle);
+    }
+  });
+
+  it.only("renders a message when the table is empty", () => {
+    const { getByText } = render(
+      <MemoryRouter>
+        <JobsTable {...getMockJobsTableProps([])} />
+      </MemoryRouter>,
+    );
+    const expectedText = [
+      "No jobs to show",
+      "The jobs page provides details about backup/restore jobs, schema changes, user-created table statistics, automatic table statistics jobs and changefeeds.",
+    ];
+
+    for (const text of expectedText) {
+      getByText(text);
     }
   });
 

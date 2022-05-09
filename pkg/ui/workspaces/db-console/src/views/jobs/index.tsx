@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 
 import { cockroach } from "src/js/protos";
-import { jobsKey, refreshJobs } from "src/redux/apiReducers";
+import { jobsKey, refreshJobs, refreshSettings } from "src/redux/apiReducers";
 import { CachedDataReducerState } from "src/redux/cachedDataReducer";
 import { LocalSetting } from "src/redux/localsettings";
 import { AdminUIState } from "src/redux/state";
@@ -114,6 +114,7 @@ export interface JobsTableOwnProps {
   setShow: (value: string) => void;
   setType: (value: JobType) => void;
   refreshJobs: typeof refreshJobs;
+  refreshSettings: typeof refreshSettings;
   jobs: CachedDataReducerState<JobsResponse>;
 }
 
@@ -170,6 +171,7 @@ export class JobsTable extends React.Component<JobsTableProps> {
 
   componentDidMount() {
     this.refresh();
+    this.props.refreshSettings();
   }
 
   componentDidUpdate(prevProps: JobsTableProps) {
@@ -321,6 +323,7 @@ const mapDispatchToProps = {
   setShow: showSetting.set,
   setType: typeSetting.set,
   refreshJobs,
+  refreshSettings,
 };
 
 export default withRouter(

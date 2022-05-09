@@ -1334,6 +1334,9 @@ func (cf *changeFrontier) Start(ctx context.Context) {
 		if err != nil {
 			cf.MoveToDraining(err)
 			return
+		} else {
+			cf.MoveToDraining(errors.Errorf("test error while running in start"))
+			return
 		}
 		cf.js = newJobState(job, cf.flowCtx.Cfg.Settings, cf.metrics, timeutil.DefaultTimeSource{})
 

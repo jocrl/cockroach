@@ -1089,7 +1089,9 @@ func FormatRetriableExecutionErrorLogToStringArray(
 	ctx context.Context, log []*jobspb.RetriableExecutionFailure,
 ) *tree.DArray {
 	arr := tree.NewDArray(types.String)
+	fmt.Println("HIII ABOUT TO LOOP")
 	for _, ev := range log {
+		fmt.Println("LOOPING")
 		if ev == nil { // no reason this should happen, but be defensive
 			continue
 		}
@@ -1106,6 +1108,7 @@ func FormatRetriableExecutionErrorLogToStringArray(
 			timeutil.FromUnixMicros(ev.ExecutionEndMicros),
 			cause,
 		)
+		fmt.Println(msg)
 		// We really don't care about errors here. I'd much rather see nothing
 		// in my log than crash.
 		_ = arr.Append(tree.NewDString(msg))

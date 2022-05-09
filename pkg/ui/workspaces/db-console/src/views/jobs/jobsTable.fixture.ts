@@ -14,9 +14,15 @@ import * as protos from "@cockroachlabs/crdb-protobuf-client";
 import { cockroach } from "src/js/protos";
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
 import Job = cockroach.server.serverpb.IJobResponse;
+import ExecutionFailure = cockroach.server.serverpb.JobResponse.IExecutionFailure;
 import Long from "long";
 import { createMemoryHistory } from "history";
 import { jobsTimeoutErrorMessage } from "src/util/api";
+
+const startTime = new protos.google.protobuf.Timestamp({
+  seconds: new Long(1634648118),
+  nanos: 215527000,
+});
 
 const defaultJobProperties = {
   username: "root",
@@ -25,10 +31,7 @@ const defaultJobProperties = {
     seconds: new Long(1634648118),
     nanos: 200459000,
   }),
-  started: new protos.google.protobuf.Timestamp({
-    seconds: new Long(1634648118),
-    nanos: 215527000,
-  }),
+  started: startTime,
   finished: new protos.google.protobuf.Timestamp({
     seconds: new Long(1634648118),
     nanos: 311522000,
@@ -47,9 +50,10 @@ const defaultJobProperties = {
     nanos: 215527100,
   }),
   num_runs: new Long(1),
+  execution_failures: [] as ExecutionFailure[],
 };
 
-export const succeededJobFixture = {
+export const succeededJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(8136728577, 70289336),
   type: "AUTO SQL STATS COMPACTION",
@@ -58,7 +62,7 @@ export const succeededJobFixture = {
   status: "succeeded",
 };
 
-const failedJobFixture = {
+const failedJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(7003330561, 70312826),
   type: "SCHEMA CHANGE",
@@ -66,9 +70,14 @@ const failedJobFixture = {
     "ALTER TABLE movr.public.user_promo_codes ADD FOREIGN KEY (city, user_id) REFERENCES movr.public.users (city, id)",
   status: "failed",
   error: "mock failure message",
+  execution_failures: [
+    {
+      start: startTime,
+    },
+  ],
 };
 
-const canceledJobFixture = {
+const canceledJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(7002707969, 70312826),
   type: "UNSPECIFIED",
@@ -76,7 +85,7 @@ const canceledJobFixture = {
   status: "canceled",
 };
 
-const pausedJobFixture = {
+const pausedJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(6091954177, 70312826),
   type: "BACKUP",
@@ -85,7 +94,7 @@ const pausedJobFixture = {
   status: "paused",
 };
 
-const runningJobFixture = {
+const runningJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "AUTO SPAN CONFIG RECONCILIATION",
@@ -94,7 +103,7 @@ const runningJobFixture = {
   fraction_completed: 0,
 };
 
-const runningWithMessageJobFixture = {
+const runningWithMessageJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "AUTO SPAN CONFIG RECONCILIATION",
@@ -104,7 +113,7 @@ const runningWithMessageJobFixture = {
   running_status: "Waiting For GC TTL",
 };
 
-const runningWithRemainingJobFixture = {
+const runningWithRemainingJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(6093756417, 70312826),
   type: "RESTORE",
@@ -113,7 +122,7 @@ const runningWithRemainingJobFixture = {
   fraction_completed: 0.38,
 };
 
-const runningWithMessageRemainingJobFixture = {
+const runningWithMessageRemainingJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "AUTO SPAN CONFIG RECONCILIATION",
@@ -123,7 +132,7 @@ const runningWithMessageRemainingJobFixture = {
   running_status: "performing garbage collection on index 2",
 };
 
-export const retryRunningJobFixture = {
+export const retryRunningJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "STREAM INGESTION",
@@ -137,7 +146,7 @@ export const retryRunningJobFixture = {
   num_runs: new Long(3),
 };
 
-const retryRunningWithMessageJobFixture = {
+const retryRunningWithMessageJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "AUTO SPAN CONFIG RECONCILIATION",
@@ -152,7 +161,7 @@ const retryRunningWithMessageJobFixture = {
   num_runs: new Long(2),
 };
 
-const retryRunningWithRemainingJobFixture = {
+const retryRunningWithRemainingJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "STREAM INGESTION",
@@ -167,7 +176,7 @@ const retryRunningWithRemainingJobFixture = {
   num_runs: new Long(3),
 };
 
-const retryRunningWithMessageRemainingJobFixture = {
+const retryRunningWithMessageRemainingJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "MIGRATION",
@@ -183,7 +192,7 @@ const retryRunningWithMessageRemainingJobFixture = {
   num_runs: new Long(2),
 };
 
-const pendingJobFixture = {
+const pendingJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(5247850497, 70312826),
   type: "IMPORT",
@@ -192,7 +201,7 @@ const pendingJobFixture = {
   status: "pending",
 };
 
-const revertingJobFixture = {
+const revertingJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(5246539777, 70312826),
   type: "CHANGEFEED",
@@ -200,7 +209,7 @@ const revertingJobFixture = {
   status: "reverting",
 };
 
-const retryRevertingJobFixture = {
+const retryRevertingJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "NEW SCHEMA CHANGE",
@@ -213,7 +222,7 @@ const retryRevertingJobFixture = {
   num_runs: new Long(2),
 };
 
-const highwaterJobFixture = {
+const highwaterJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3390625793, 70312826),
   type: "TYPEDESC SCHEMA CHANGE",
@@ -226,7 +235,7 @@ const highwaterJobFixture = {
   highwater_decimal: "test highwater decimal",
 };
 
-const cancelRequestedJobFixture = {
+const cancelRequestedJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(4337653761, 70312826),
   type: "CREATE STATS",
@@ -234,7 +243,7 @@ const cancelRequestedJobFixture = {
   status: "cancel-requested",
 };
 
-const pauseRequestedJobFixture = {
+const pauseRequestedJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(4338669569, 70312826),
   type: "AUTO CREATE STATS",
@@ -242,7 +251,7 @@ const pauseRequestedJobFixture = {
   status: "pause-requested",
 };
 
-const revertFailedJobFixture = {
+const revertFailedJobFixture: Job = {
   ...defaultJobProperties,
   id: new Long(3391379457, 70312826),
   type: "SCHEMA CHANGE GC",

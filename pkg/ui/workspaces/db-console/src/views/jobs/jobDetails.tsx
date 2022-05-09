@@ -31,6 +31,7 @@ import { SummaryCard } from "../shared/components/summaryCard";
 
 import Job = cockroach.server.serverpb.JobResponse;
 import JobRequest = cockroach.server.serverpb.JobRequest;
+import ExecutionFailure = cockroach.server.serverpb.JobResponse.IExecutionFailure;
 import { Button } from "@cockroachlabs/cluster-ui";
 import { ArrowLeft } from "@cockroachlabs/icons";
 import { DATE_FORMAT } from "src/util/format";
@@ -39,14 +40,14 @@ import "src/views/shared/components/summaryCard/styles.styl";
 import * as protos from "src/js/protos";
 import { LocalSetting } from "src/redux/localsettings";
 
-interface JobsTableProps extends RouteComponentProps {
+export interface JobDetailsProps extends RouteComponentProps {
   job: Job;
   sort: SortSetting;
   refreshJob: typeof refreshJob;
   setSort: (value: SortSetting) => void;
 }
 
-class JobDetails extends React.Component<JobsTableProps, {}> {
+class JobDetails extends React.Component<JobDetailsProps, {}> {
   refresh = (props = this.props) => {
     props.refreshJob(
       new JobRequest({
@@ -61,16 +62,12 @@ class JobDetails extends React.Component<JobsTableProps, {}> {
 
   prevPage = () => this.props.history.goBack();
 
-  renderJobErrors = (
-    executionFailures: cockroach.server.serverpb.JobResponse.IExecutionFailure[],
-  ) => {
+  renderJobErrors = (executionFailures: ExecutionFailure[]) => {
     const columns = [
       {
         title: "Error start time (UTC)",
         name: "startTime",
-        cell: (
-          executionFailure: cockroach.server.serverpb.JobResponse.IExecutionFailure,
-        ) =>
+        cell: (executionFailure: ExecutionFailure) =>
           util
             .TimestampToMoment(executionFailure.start)
             .format("MMM D, YYYY [at] h:mm A"),
@@ -78,9 +75,7 @@ class JobDetails extends React.Component<JobsTableProps, {}> {
       {
         title: "Error end time (UTC)",
         name: "endTime",
-        cell: (
-          executionFailure: cockroach.server.serverpb.JobResponse.IExecutionFailure,
-        ) =>
+        cell: (executionFailure: ExecutionFailure) =>
           util
             .TimestampToMoment(executionFailure.end)
             .format("MMM D, YYYY [at] h:mm A"),
@@ -88,9 +83,7 @@ class JobDetails extends React.Component<JobsTableProps, {}> {
       {
         title: "Error message",
         name: "message",
-        cell: (
-          executionFailure: cockroach.server.serverpb.JobResponse.IExecutionFailure,
-        ) => (
+        cell: (executionFailure: ExecutionFailure) => (
           <pre className="sort-table__unbounded-column logs-table__message">
             {executionFailure.error}
           </pre>

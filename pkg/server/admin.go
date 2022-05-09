@@ -2058,6 +2058,25 @@ func (s *adminServer) jobsHelper(
 		resp.Jobs = append(resp.Jobs, job)
 	}
 
+	now := timeutil.Now()
+	if s.server.cfg.TestingKnobs.Server.(*TestingKnobs) != nil && s.server.cfg.TestingKnobs.Server.(*TestingKnobs).StubTimeNow != nil {
+		now = s.server.cfg.TestingKnobs.Server.(*TestingKnobs).StubTimeNow()
+		fmt.Println(now, "HIIIII")
+	}
+
+	retentionDuration := func() time.Duration {
+		if s.server.cfg.TestingKnobs.JobsTestingKnobs.(*jobs.TestingKnobs).IntervalOverrides.RetentionTime != nil {
+			return *s.server.cfg.TestingKnobs.JobsTestingKnobs.(*jobs.TestingKnobs).IntervalOverrides.RetentionTime
+		}
+		return jobs.RetentionTimeSetting.Get(&s.server.st.SV)
+	}
+
+	//retentionTime :=jobs.RetentionTimeSetting.Get(&s.server.st.SV)
+	//if s.server.cfg.TestingKnobs.JobsTestingKnobs != nil && s.server.cfg.TestingKnobs.JobsTestingKnobs.(*jobs.TestingKnobs).StubTimeNow != nil {
+	//	retentionTime = s.server.cfg.TestingKnobs.JobsTestingKnobs.(*jobs.TestingKnobs).IntervalOverrides.RetentionTime
+	//}
+	resp.EarliestRetainedTime = now.Add(-retentionDuration())
+
 	if err != nil {
 		return nil, err
 	}

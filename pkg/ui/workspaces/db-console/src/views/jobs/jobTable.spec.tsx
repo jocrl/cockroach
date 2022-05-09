@@ -14,6 +14,7 @@ import { assert } from "chai";
 import { JobTable, JobTableProps } from "src/views/jobs/jobTable";
 
 import "src/enzymeInit";
+import { earliestRetainedTime } from "src/views/jobs/jobsTable.fixture";
 
 describe("<JobTable>", () => {
   it("should reset page to 1 after job list prop changes", () => {
@@ -25,6 +26,7 @@ describe("<JobTable>", () => {
       setSort: () => {},
       jobs: {
         data: { jobs: [{}, {}, {}, {}], toJSON },
+        earliest_retained_time: earliestRetainedTime,
         inFlight: false,
         valid: true,
       },

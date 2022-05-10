@@ -20,7 +20,7 @@ import { defaultJobProperties } from "src/views/jobs/jobsTable.fixture";
 
 const history = createMemoryHistory({ initialEntries: ["/statements"] });
 
-const failedWithoutRetriableErrors: Job = {
+const failedWithoutRetriableErrorsJob: Job = {
   ...defaultJobProperties,
   id: new Long(7003330561, 70312826),
   type: "SCHEMA CHANGE",
@@ -30,6 +30,9 @@ const failedWithoutRetriableErrors: Job = {
   error: "mock failure message",
   execution_failures: [],
 };
+
+// failed changefeed
+// successful (no errors)
 
 export const jobDetailsProps: JobDetailsProps = {
   history,
@@ -51,5 +54,5 @@ export const jobDetailsProps: JobDetailsProps = {
   },
   setSort: () => {},
   refreshJob: () => null,
-  job: failedWithoutRetriableErrors,
+  job: failedWithoutRetriableErrorsJob,
 };

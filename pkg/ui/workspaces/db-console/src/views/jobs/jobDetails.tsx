@@ -25,6 +25,7 @@ import {
   EmptyTable,
   util,
   SortSetting,
+  getHighlightedText,
 } from "@cockroachlabs/cluster-ui";
 import SqlBox from "../shared/components/sql/box";
 import { SummaryCard } from "../shared/components/summaryCard";
@@ -72,8 +73,17 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
         end: job.finished,
         error: job.error,
       },
+      {
+        start: job.started,
+        end: job.finished,
+        error: "FIXME REMOVE THIS TEMP TO HAVE TWO ITEMS",
+      },
       ...job.execution_failures,
     ];
+
+    // import styles from "";
+    // import classNames from "classnames/bind";
+    // const cx = classNames.bind(styles);
     const columns = [
       {
         title: "Error start time (UTC)",
@@ -90,11 +100,13 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
       {
         title: "Error message",
         name: "message",
-        cell: (error: JobError) => (
-          <pre className="sort-table__unbounded-column logs-table__message">
-            {error.error}
-          </pre>
-        ),
+        cell: (error: JobError) =>
+          // <pre className="sort-table__unbounded-column logs-table__message">
+          //   {error.error}
+          // </pre>
+          // <pre className={cx("cl-table-link__description")}>{error.error}</pre>
+          // <pre>{error.error}</pre>
+          error.error,
       },
     ];
     return (

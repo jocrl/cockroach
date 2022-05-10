@@ -40,6 +40,7 @@ export const JobStatus: React.FC<JobStatusProps> = ({
   lineWidth,
 }) => {
   const visualType = jobToVisual(job);
+  console.log("visual", visualType);
 
   switch (visualType) {
     case JobStatusVisual.BadgeOnly:

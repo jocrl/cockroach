@@ -24,7 +24,7 @@ const startTime = new protos.google.protobuf.Timestamp({
   nanos: 215527000,
 });
 
-const defaultJobProperties = {
+export const defaultJobProperties = {
   username: "root",
   descriptor_ids: [] as number[],
   created: new protos.google.protobuf.Timestamp({

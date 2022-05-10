@@ -15,22 +15,35 @@ import { cockroach } from "src/js/protos";
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
 import Job = cockroach.server.serverpb.IJobResponse;
 import { createMemoryHistory } from "history";
+import Long from "long";
+import { defaultJobProperties } from "src/views/jobs/jobsTable.fixture";
 
 const history = createMemoryHistory({ initialEntries: ["/statements"] });
+
+const failedWithoutRetriableErrors: Job = {
+  ...defaultJobProperties,
+  id: new Long(7003330561, 70312826),
+  type: "SCHEMA CHANGE",
+  description:
+    "ALTER TABLE movr.public.user_promo_codes ADD FOREIGN KEY (city, user_id) REFERENCES movr.public.users (city, id)",
+  status: "failed",
+  error: "mock failure message",
+  execution_failures: [],
+};
 
 export const jobDetailsProps: JobDetailsProps = {
   history,
   location: {
-    pathname: "/fixme",
+    pathname: "/jobs/760621514586259457",
     search: "",
     hash: "",
-    state: null,
+    state: undefined,
   },
   match: {
-    path: "/fixme",
-    url: "/fixme",
+    path: "/jobs/:id",
+    url: "/jobs/760621514586259457",
     isExact: true,
-    params: "{}",
+    params: { id: "/jobs/760621514586259457" },
   },
   sort: {
     columnTitle: "startTime",
@@ -38,4 +51,5 @@ export const jobDetailsProps: JobDetailsProps = {
   },
   setSort: () => {},
   refreshJob: () => null,
+  job: failedWithoutRetriableErrors,
 };

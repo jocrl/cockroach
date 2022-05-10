@@ -11,9 +11,9 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { withRouterDecorator } from "src/util/decorators";
 
-import { JobsTable } from "./index";
 import { jobDetailsProps } from "./jobDetails.fixture";
+import { JobDetails } from "src/views/jobs/jobDetails";
 
-storiesOf("JobsTable", module)
+storiesOf("JobDetails", module)
   .addDecorator(withRouterDecorator)
-  .add("With data", () => <JobsTable {...withData} />);
+  .add("With data", () => <JobDetails {...jobDetailsProps} />);

@@ -47,7 +47,7 @@ export interface JobDetailsProps extends RouteComponentProps {
   setSort: (value: SortSetting) => void;
 }
 
-class JobDetails extends React.Component<JobDetailsProps, {}> {
+export class JobDetails extends React.Component<JobDetailsProps, {}> {
   refresh = (props = this.props) => {
     props.refreshJob(
       new JobRequest({
@@ -62,30 +62,37 @@ class JobDetails extends React.Component<JobDetailsProps, {}> {
 
   prevPage = () => this.props.history.goBack();
 
-  renderJobErrors = (executionFailures: ExecutionFailure[]) => {
+  renderJobErrors = (job: Job) => {
+    // Creating this differently named type to be clear that this table data contains more  errors than just those in
+    // the execution_failures field. Ignoring "status" since the table does not need it.
+    type JobError = Pick<ExecutionFailure, "start" | "end" | "error">;
+    const errors: JobError[] = [
+      {
+        start: job.started,
+        end: job.finished,
+        error: job.error,
+      },
+      ...job.execution_failures,
+    ];
     const columns = [
       {
         title: "Error start time (UTC)",
         name: "startTime",
-        cell: (executionFailure: ExecutionFailure) =>
-          util
-            .TimestampToMoment(executionFailure.start)
-            .format("MMM D, YYYY [at] h:mm A"),
+        cell: (error: JobError) =>
+          util.TimestampToMoment(error.start).format("MMM D, YYYY [at] h:mm A"),
       },
       {
         title: "Error end time (UTC)",
         name: "endTime",
-        cell: (executionFailure: ExecutionFailure) =>
-          util
-            .TimestampToMoment(executionFailure.end)
-            .format("MMM D, YYYY [at] h:mm A"),
+        cell: (error: JobError) =>
+          util.TimestampToMoment(error.end).format("MMM D, YYYY [at] h:mm A"),
       },
       {
         title: "Error message",
         name: "message",
-        cell: (executionFailure: ExecutionFailure) => (
+        cell: (error: JobError) => (
           <pre className="sort-table__unbounded-column logs-table__message">
-            {executionFailure.error}
+            {error.error}
           </pre>
         ),
       },
@@ -94,7 +101,7 @@ class JobDetails extends React.Component<JobDetailsProps, {}> {
       <section>
         <h3 className="summary--card__status--title">Job errors</h3>
         <SortedTable
-          data={executionFailures}
+          data={errors}
           columns={columns}
           sortSetting={this.props.sort}
           onChangeSortSetting={this.props.setSort}
@@ -141,7 +148,7 @@ class JobDetails extends React.Component<JobDetailsProps, {}> {
             </SummaryCard>
           </Col>
         </Row>
-        <Row>{this.renderJobErrors(job.execution_failures)}</Row>
+        <Row>{this.renderJobErrors(job)}</Row>
       </>
     );
   };

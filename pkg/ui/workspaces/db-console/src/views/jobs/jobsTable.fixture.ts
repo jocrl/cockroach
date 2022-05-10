@@ -14,44 +14,10 @@ import * as protos from "@cockroachlabs/crdb-protobuf-client";
 import { cockroach } from "src/js/protos";
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
 import Job = cockroach.server.serverpb.IJobResponse;
-import ExecutionFailure = cockroach.server.serverpb.JobResponse.IExecutionFailure;
 import Long from "long";
 import { createMemoryHistory } from "history";
 import { jobsTimeoutErrorMessage } from "src/util/api";
-
-const startTime = new protos.google.protobuf.Timestamp({
-  seconds: new Long(1634648118),
-  nanos: 215527000,
-});
-
-export const defaultJobProperties = {
-  username: "root",
-  descriptor_ids: [] as number[],
-  created: new protos.google.protobuf.Timestamp({
-    seconds: new Long(1634648118),
-    nanos: 200459000,
-  }),
-  started: startTime,
-  finished: new protos.google.protobuf.Timestamp({
-    seconds: new Long(1634648118),
-    nanos: 311522000,
-  }),
-  modified: new protos.google.protobuf.Timestamp({
-    seconds: new Long(1634648118),
-    nanos: 310899000,
-  }),
-  fraction_completed: 1,
-  last_run: new protos.google.protobuf.Timestamp({
-    seconds: new Long(1634648118),
-    nanos: 215527000,
-  }),
-  next_run: new protos.google.protobuf.Timestamp({
-    seconds: new Long(1634648118),
-    nanos: 215527100,
-  }),
-  num_runs: new Long(1),
-  execution_failures: [] as ExecutionFailure[],
-};
+import { defaultJobProperties } from "src/views/jobs/jobsShared.fixture";
 
 export const succeededJobFixture: Job = {
   ...defaultJobProperties,
@@ -70,11 +36,6 @@ const failedJobFixture: Job = {
     "ALTER TABLE movr.public.user_promo_codes ADD FOREIGN KEY (city, user_id) REFERENCES movr.public.users (city, id)",
   status: "failed",
   error: "mock failure message",
-  execution_failures: [
-    {
-      start: startTime,
-    },
-  ],
 };
 
 const canceledJobFixture: Job = {

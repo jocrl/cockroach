@@ -8,7 +8,7 @@
 // by the Apache License, Version 2.0, included in the file
 // licenses/APL.txt.
 
-import { Col, Row } from "antd";
+import { Col, Icon, Row } from "antd";
 import _ from "lodash";
 import Long from "long";
 import React from "react";
@@ -22,10 +22,8 @@ import { getMatchParamByName } from "src/util/query";
 import {
   Loading,
   SortedTable,
-  EmptyTable,
   util,
   SortSetting,
-  getHighlightedText,
 } from "@cockroachlabs/cluster-ui";
 import SqlBox from "../shared/components/sql/box";
 import { SummaryCard } from "../shared/components/summaryCard";
@@ -40,6 +38,9 @@ import { JobStatusCell } from "./jobStatusCell";
 import "src/views/shared/components/summaryCard/styles.styl";
 import * as protos from "src/js/protos";
 import { LocalSetting } from "src/redux/localsettings";
+import styles from "./jobDetails.module.styl";
+import classNames from "classnames/bind";
+const cx = classNames.bind(styles);
 
 export interface JobDetailsProps extends RouteComponentProps {
   job: Job;
@@ -67,35 +68,32 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
     // Creating this differently named type to be clear that this table data contains more  errors than just those in
     // the execution_failures field. Ignoring "status" since the table does not need it.
     type JobError = Pick<ExecutionFailure, "start" | "end" | "error">;
-    const errors: JobError[] = [
-      {
-        start: job.started,
-        end: job.finished,
-        error: job.error,
-      },
-      {
-        start: job.started,
-        end: job.finished,
-        error: "FIXME REMOVE THIS TEMP TO HAVE TWO ITEMS",
-      },
-      ...job.execution_failures,
-    ];
+    const errors: JobError[] = job.error
+      ? [
+          {
+            start: job.started,
+            end: job.finished,
+            error: job.error,
+          },
+          ...job.execution_failures,
+        ]
+      : job.execution_failures;
 
-    // import styles from "";
-    // import classNames from "classnames/bind";
-    // const cx = classNames.bind(styles);
     const columns = [
       {
         title: "Error start time (UTC)",
         name: "startTime",
         cell: (error: JobError) =>
           util.TimestampToMoment(error.start).format("MMM D, YYYY [at] h:mm A"),
+        sort: (error: JobError) =>
+          util.TimestampToMoment(error.start).valueOf(),
       },
       {
         title: "Error end time (UTC)",
         name: "endTime",
         cell: (error: JobError) =>
           util.TimestampToMoment(error.end).format("MMM D, YYYY [at] h:mm A"),
+        sort: (error: JobError) => util.TimestampToMoment(error.end).valueOf(),
       },
       {
         title: "Error message",
@@ -107,6 +105,7 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
           // <pre className={cx("cl-table-link__description")}>{error.error}</pre>
           // <pre>{error.error}</pre>
           error.error,
+        sort: (error: JobError) => error.error,
       },
     ];
     return (
@@ -117,7 +116,14 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
           columns={columns}
           sortSetting={this.props.sort}
           onChangeSortSetting={this.props.setSort}
-          renderNoResult={<EmptyTable title="No job errors occured" />}
+          renderNoResult={
+            <div>
+              <Icon className={cx("no-errors__icon")} type={"check-circle"} />
+              <span className={cx("no-errors__message")}>
+                No job errors occured.
+              </span>
+            </div>
+          }
         />
       </section>
     );
@@ -197,10 +203,15 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
   }
 }
 
+export const defaultSortSetting: SortSetting = {
+  columnTitle: "startTime",
+  ascending: false,
+};
+
 export const sortSetting = new LocalSetting<AdminUIState, SortSetting>(
   "sortSetting/JobDetails",
   s => s.localSettings,
-  { columnTitle: "startTime", ascending: false },
+  defaultSortSetting,
 );
 
 const mapStateToProps = (state: AdminUIState, props: RouteComponentProps) => {

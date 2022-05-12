@@ -9,7 +9,15 @@
 // licenses/APL.txt.
 
 import React, { useEffect, useState } from "react";
-import { Alert, DatePicker, Form, Input, Popover, TimePicker } from "antd";
+import {
+  Alert,
+  DatePicker,
+  Form,
+  Icon,
+  Input,
+  Popover,
+  TimePicker,
+} from "antd";
 import moment, { Moment } from "moment";
 import classNames from "classnames/bind";
 import { Time as TimeIcon, ErrorCircleFilled } from "@cockroachlabs/icons";
@@ -112,6 +120,7 @@ export function DateRangeMenu({
   return (
     <div className={cx("popup-content")}>
       <a onClick={onBackClick} style={{ color: "#000000a6" }}>
+        <Icon type={"arrow-left"} className={cx("icon")} />
         <Text textType={TextTypes.BodyStrong}>Back</Text>
       </a>
       <Text className={cx("label")} textType={TextTypes.BodyStrong}>

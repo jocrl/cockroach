@@ -40,6 +40,9 @@ type DateRangeMenuProps = {
   onBackClick: () => void;
 };
 
+export const dateFormat = "MMMM D, YYYY";
+export const timeFormat = "h:mm A [(UTC)]";
+
 export function DateRangeMenu({
   startInit,
   endInit,
@@ -48,8 +51,6 @@ export function DateRangeMenu({
   onCancel,
   onBackClick,
 }: DateRangeMenuProps): React.ReactElement {
-  const dateFormat = "MMMM D, YYYY";
-  const timeFormat = "h:mm A [(UTC)]";
   /**
    * Local startMoment and endMoment state are stored here so that users can change the time before clicking "Apply".
    * They are re-initialized to startInit and endInit by re-mounting this component. It is thus the responsibility of

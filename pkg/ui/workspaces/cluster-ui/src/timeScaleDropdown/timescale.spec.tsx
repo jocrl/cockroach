@@ -11,7 +11,7 @@
 import React from "react";
 import { mount } from "enzyme";
 import {
-  getTimeRangeTitle,
+  formatRangeSelectSelected,
   generateDisabledArrows,
   timeFormat,
   dateFormat,
@@ -102,7 +102,7 @@ describe("<TimeScaleDropdown>", function() {
     assert.deepEqual(wrapper.props().currentScale, expected);
   });
 
-  it("getTimeRangeTitle must return title Past 10 Minutes", () => {
+  it("formatRangeSelectSelected must return title Past 10 Minutes", () => {
     const wrapper = makeTimeScaleDropdown(state);
     assert.equal(
       wrapper
@@ -112,18 +112,18 @@ describe("<TimeScaleDropdown>", function() {
       "Past 10 Minutes",
     );
 
-    const title = getTimeRangeTitle(currentWindow, state.currentScale);
+    const title = formatRangeSelectSelected(currentWindow, state.currentScale);
     assert.deepEqual(title, {
-      title: "Past 10 Minutes",
+      key: "Past 10 Minutes",
       timeLabel: "10m",
       timeWindow: currentWindow,
     });
   });
 
-  describe("getTimeRangeTitle", () => {
+  describe("formatRangeSelectSelected", () => {
     it("returns custom Title with Time part only for current day", () => {
       const currentScale = { ...state.currentScale, key: "Custom" };
-      const title = getTimeRangeTitle(currentWindow, currentScale);
+      const title = formatRangeSelectSelected(currentWindow, currentScale);
       const timeStart = moment.utc(currentWindow.start).format(timeFormat);
       const timeEnd = moment.utc(currentWindow.end).format(timeFormat);
       const wrapper = makeTimeScaleDropdown({ ...state, currentScale });
@@ -139,7 +139,7 @@ describe("<TimeScaleDropdown>", function() {
         dateEnd: "",
         timeStart,
         timeEnd,
-        title: "Custom",
+        key: "Custom",
         timeLabel: "10m",
         timeWindow: currentWindow,
       });
@@ -159,7 +159,7 @@ describe("<TimeScaleDropdown>", function() {
         ),
         key: "Custom",
       };
-      const title = getTimeRangeTitle(window, currentScale);
+      const title = formatRangeSelectSelected(window, currentScale);
       const timeStart = moment.utc(window.start).format(timeFormat);
       const timeEnd = moment.utc(window.end).format(timeFormat);
       const dateStart = moment.utc(window.start).format(dateFormat);
@@ -180,7 +180,7 @@ describe("<TimeScaleDropdown>", function() {
         dateEnd,
         timeStart,
         timeEnd,
-        title: "Custom",
+        key: "Custom",
         timeLabel: "1d",
         timeWindow: currentWindow,
       });

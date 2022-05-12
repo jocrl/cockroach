@@ -37,6 +37,7 @@ type DateRangeMenuProps = {
   allowedInterval?: [Moment, Moment];
   onSubmit: (start: Moment, end: Moment) => void;
   onCancel: () => void;
+  onBackClick: () => void;
 };
 
 export function DateRangeMenu({
@@ -45,6 +46,7 @@ export function DateRangeMenu({
   allowedInterval,
   onSubmit,
   onCancel,
+  onBackClick,
 }: DateRangeMenuProps): React.ReactElement {
   const dateFormat = "MMMM D, YYYY";
   const timeFormat = "h:mm A [(UTC)]";
@@ -108,6 +110,9 @@ export function DateRangeMenu({
 
   return (
     <div className={cx("popup-content")}>
+      <button onClick={onBackClick}>
+        <Text textType={TextTypes.BodyStrong}>Back</Text>
+      </button>
       <Text className={cx("label")} textType={TextTypes.BodyStrong}>
         Start
       </Text>

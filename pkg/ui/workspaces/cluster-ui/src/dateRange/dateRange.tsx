@@ -110,9 +110,9 @@ export function DateRangeMenu({
 
   return (
     <div className={cx("popup-content")}>
-      <button onClick={onBackClick}>
+      <a onClick={onBackClick} style={{ color: "#000000a6" }}>
         <Text textType={TextTypes.BodyStrong}>Back</Text>
-      </button>
+      </a>
       <Text className={cx("label")} textType={TextTypes.BodyStrong}>
         Start
       </Text>
@@ -174,63 +174,5 @@ export function DateRangeMenu({
         </Button>
       </div>
     </div>
-  );
-}
-
-type DateRangeProps = {
-  start: Moment;
-  end: Moment;
-  allowedInterval?: [Moment, Moment];
-  onSubmit: (start: Moment, end: Moment) => void;
-};
-
-export function DateRange({
-  allowedInterval,
-  start,
-  end,
-  onSubmit,
-}: DateRangeProps): React.ReactElement {
-  const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const displayStr = rangeToString(start, end);
-
-  const onVisibleChange = (visible: boolean): void => {
-    setMenuVisible(visible);
-  };
-
-  const closeMenu = (): void => {
-    setMenuVisible(false);
-  };
-
-  const _onSubmit = (start: Moment, end: Moment) => {
-    onSubmit(start, end);
-    closeMenu();
-  };
-
-  const menu = (
-    <DateRangeMenu
-      allowedInterval={allowedInterval}
-      startInit={start}
-      endInit={end}
-      onSubmit={_onSubmit}
-      onCancel={closeMenu}
-    />
-  );
-
-  return (
-    <Form className={cx("date-range-form")}>
-      <Form.Item>
-        <Popover
-          destroyTooltipOnHide
-          content={menu}
-          overlayClassName={cx("popup-container")}
-          placement="bottomLeft"
-          visible={menuVisible}
-          onVisibleChange={onVisibleChange}
-          trigger="click"
-        >
-          <Input value={displayStr} prefix={<TimeIcon />} />
-        </Popover>
-      </Form.Item>
-    </Form>
   );
 }

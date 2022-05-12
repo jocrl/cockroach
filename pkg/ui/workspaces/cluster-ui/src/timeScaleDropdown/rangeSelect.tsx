@@ -172,10 +172,7 @@ const RangeSelect = ({
                 startInit={selected.timeWindow.start}
                 endInit={selected.timeWindow.end}
                 onSubmit={onCustomSelectWrapper}
-                onCancel={() => {
-                  setCustomDropdownOptionWasJustSelected(false);
-                  setCustomBackWasJustSelected(true);
-                }}
+                onCancel={closeDropdown}
                 onBackClick={onCustomBackClick}
               />
             </div>

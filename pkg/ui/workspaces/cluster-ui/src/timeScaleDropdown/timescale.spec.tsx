@@ -8,7 +8,7 @@
 // by the Apache License, Version 2.0, included in the file
 // licenses/APL.txt.
 
-import React from "react";
+import React, { useState } from "react";
 import { mount } from "enzyme";
 import {
   formatRangeSelectSelected,
@@ -20,6 +20,7 @@ import {
 } from "./timeScaleDropdown";
 import {
   defaultTimeScaleOptions,
+  defaultTimeScaleSelected,
   findClosestTimeScale,
   toRoundedDateRange,
 } from "./utils";
@@ -31,6 +32,7 @@ import RangeSelect from "./rangeSelect";
 import { assert } from "chai";
 import sinon from "sinon";
 import { TimeWindow, ArrowDirection, TimeScale } from "./timeScaleTypes";
+import { render } from "@testing-library/react";
 
 const initialEntries = [
   "#/metrics/overview/cluster", // Past 10 minutes
@@ -61,6 +63,15 @@ describe("<TimeScaleDropdown>", function() {
       end,
     };
   };
+
+  function TimeScaleDropdownWrapper(
+    props: TimeScaleDropdownProps,
+  ): React.ReactElement {
+    const [timeScale, setTimeScale] = useState(defaultTimeScaleSelected);
+    return (
+      <TimeScaleDropdown currentScale={timeScale} setTimeScale={setTimeScale} />
+    );
+  }
 
   const makeTimeScaleDropdown = (props: TimeScaleDropdownProps) => {
     setCurrentWindowFromTimeScale(props.currentScale);
@@ -210,6 +221,40 @@ describe("<TimeScaleDropdown>", function() {
     });
     assert.equal(wrapper.find(".controls-content ._action.disabled").length, 0);
     assert.deepEqual(arrows, []);
+  });
+
+  it("test RTL", () => {
+    function TimeScaleDropdownWrapper(): React.ReactElement {
+      const [timeScale, setTimeScale] = useState(defaultTimeScaleSelected);
+      return (
+        <TimeScaleDropdown
+          currentScale={timeScale}
+          setTimeScale={setTimeScale}
+        />
+      );
+    }
+    const { getByText } = render(
+      <MemoryRouter>
+        <TimeScaleDropdownWrapper />
+      </MemoryRouter>,
+    );
+
+    getByText("Past 1 Hour");
+    // getByText("foo");
+
+    // const expectedColumnTitles = [
+    //   "Description",
+    //   "Status",
+    //   "Job ID",
+    //   "User",
+    //   "Creation Time (UTC)",
+    //   "Last Execution Time (UTC)",
+    //   "Execution Count",
+    // ];
+
+    // for (const columnTitle of expectedColumnTitles) {
+    //   getByText(columnTitle);
+    // }
   });
 });
 

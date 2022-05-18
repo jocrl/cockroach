@@ -25,6 +25,7 @@ import {
   SortSetting,
   SortedTable,
   util,
+  TimestampToMoment,
 } from "@cockroachlabs/cluster-ui";
 import {
   jobsCancel,
@@ -39,7 +40,6 @@ import emptyTableResultsIcon from "assets/emptyState/empty-table-results.svg";
 import magnifyingGlassIcon from "assets/emptyState/magnifying-glass.svg";
 import { Tooltip } from "@cockroachlabs/ui-components";
 import moment from "moment";
-import { TimestampToMoment } from "@cockroachlabs/cluster-ui/dist/types/util";
 // import { ProtoDurationToMoment } from "@cockroachlabs/cluster-ui/dist/types/util";
 
 class JobsSortedTable extends SortedTable<Job> {}

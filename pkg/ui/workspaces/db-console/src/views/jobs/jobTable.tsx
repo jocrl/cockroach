@@ -39,6 +39,7 @@ import emptyTableResultsIcon from "assets/emptyState/empty-table-results.svg";
 import magnifyingGlassIcon from "assets/emptyState/magnifying-glass.svg";
 import { Tooltip } from "@cockroachlabs/ui-components";
 import moment from "moment";
+import { TimestampToMoment } from "@cockroachlabs/cluster-ui/dist/types/util";
 // import { ProtoDurationToMoment } from "@cockroachlabs/cluster-ui/dist/types/util";
 
 class JobsSortedTable extends SortedTable<Job> {}
@@ -219,7 +220,6 @@ export interface JobTableProps {
   pageSize?: number;
   current?: number;
   isUsedFilter: boolean;
-  retentionTime: moment.Duration | null;
 }
 
 export interface JobTableState {
@@ -298,11 +298,13 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     trackDocsLink(e.currentTarget.text);
   };
 
-  formatJobsRetentionMessage = (retentionTime: moment.Duration): string => {
-    const jobsOldestTime = moment()
-      .subtract(retentionTime)
-      .utc();
-    return `Since ${jobsOldestTime.format(DATE_FORMAT_24_UTC)}`;
+  formatJobsRetentionMessage = (
+    earliestRetainedTime: moment.Moment,
+  ): string => {
+    // const jobsOldestTime = moment()
+    //   .subtract(retentionTime)
+    //   .utc();
+    return `Since ${earliestRetainedTime.format(DATE_FORMAT_24_UTC)}`;
   };
 
   render() {
@@ -317,10 +319,14 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
               pagination={{ ...pagination, total: jobs.length }}
               pageName="jobs"
             />
-            {this.props.retentionTime && (
+            {this.props.jobs.data.earliest_retained_time && (
               <>
                 <span className="jobs-table-summary__retention-divider">|</span>
-                {this.formatJobsRetentionMessage(this.props.retentionTime)}
+                {this.formatJobsRetentionMessage(
+                  TimestampToMoment(
+                    this.props.jobs.data.earliest_retained_time,
+                  ),
+                )}
               </>
             )}
           </h4>

@@ -283,7 +283,6 @@ const staticJobProps: Pick<
   | "status"
   | "show"
   | "type"
-  | "retentionTime"
   | "setSort"
   | "setStatus"
   | "setShow"
@@ -311,7 +310,6 @@ const staticJobProps: Pick<
   status: "",
   show: "50",
   type: 0,
-  retentionTime: moment.duration(336, "hours"),
   setSort: () => {},
   setStatus: () => {},
   setShow: () => {},
@@ -320,33 +318,32 @@ const staticJobProps: Pick<
   refreshSettings: () => null,
 };
 
+const now = moment("Mon Oct 18 2021 14:01:45 GMT-0400 (Eastern Daylight Time)");
+
 const getJobsTableProps = (jobs: Array<Job>): JobsTableProps => ({
   ...staticJobProps,
   jobs: {
     inFlight: false,
     valid: false,
-    requestedAt: moment(
-      "Mon Oct 18 2021 14:01:45 GMT-0400 (Eastern Daylight Time)",
-    ),
+    requestedAt: now,
     setAt: moment("Mon Oct 18 2021 14:01:50 GMT-0400 (Eastern Daylight Time)"),
     lastError: null,
     data: JobsResponse.create({
       jobs: jobs,
+      earliest_retained_time: now.subtract(moment.duration(336, "hours")),
     }),
   },
 });
 
 export const withData: JobsTableProps = getJobsTableProps(allJobsFixture);
-export const nonAdmin: JobsTableProps = { ...withData, retentionTime: null };
+export const nonAdmin: JobsTableProps = { ...withData };
 export const empty: JobsTableProps = getJobsTableProps([]);
 export const loading: JobsTableProps = {
   ...staticJobProps,
   jobs: {
     inFlight: true,
     valid: false,
-    requestedAt: moment(
-      "Mon Oct 18 2021 14:01:45 GMT-0400 (Eastern Daylight Time)",
-    ),
+    requestedAt: now,
   },
 };
 
@@ -355,9 +352,7 @@ export const error: JobsTableProps = {
   jobs: {
     inFlight: false,
     valid: false,
-    requestedAt: moment(
-      "Mon Oct 18 2021 14:01:45 GMT-0400 (Eastern Daylight Time)",
-    ),
+    requestedAt: now,
     lastError: new Error(jobsTimeoutErrorMessage),
   },
 };

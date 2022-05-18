@@ -33,8 +33,6 @@ import { trackFilter } from "src/util/analytics";
 import JobType = cockroach.sql.jobs.jobspb.Type;
 import JobsRequest = cockroach.server.serverpb.JobsRequest;
 import JobsResponse = cockroach.server.serverpb.JobsResponse;
-import { createSelector } from "reselect";
-import { selectClusterSettings } from "src/redux/clusterSettings";
 
 export const statusSetting = new LocalSetting<AdminUIState, string>(
   "jobs/status_setting",
@@ -106,14 +104,6 @@ export const sortSetting = new LocalSetting<AdminUIState, SortSetting>(
   { columnTitle: "creationTime", ascending: false },
 );
 
-const selectRetentionTime = createSelector(selectClusterSettings, settings => {
-  if (!settings) {
-    return null;
-  }
-  const value = settings["jobs.retention_time"]?.value;
-  return util.durationFromISO8601String(value);
-});
-
 export interface JobsTableOwnProps {
   sort: SortSetting;
   status: string;
@@ -126,7 +116,6 @@ export interface JobsTableOwnProps {
   refreshJobs: typeof refreshJobs;
   refreshSettings: typeof refreshSettings;
   jobs: CachedDataReducerState<JobsResponse>;
-  retentionTime: moment.Duration | null;
 }
 
 export type JobsTableProps = JobsTableOwnProps & RouteComponentProps<any>;
@@ -295,7 +284,6 @@ export class JobsTable extends React.Component<JobsTableProps> {
                 jobs={this.props.jobs}
                 setSort={this.changeSortSetting}
                 sort={this.props.sort}
-                retentionTime={this.props.retentionTime}
               />
             )}
           />
@@ -320,14 +308,12 @@ const mapStateToProps = (state: AdminUIState, _: RouteComponentProps) => {
   const type = typeSetting.selector(state);
   const key = jobsKey(status, type, parseInt(show, 10));
   const jobs = state.cachedData.jobs[key];
-  const retentionTime = selectRetentionTime(state);
   return {
     sort,
     status,
     show,
     type,
     jobs,
-    retentionTime,
   };
 };
 

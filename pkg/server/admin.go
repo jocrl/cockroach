@@ -2058,7 +2058,7 @@ func (s *adminServer) jobsHelper(
 		resp.Jobs = append(resp.Jobs, job)
 	}
 
-	//resp.RetentionTime = 10 * time.Minutexz
+	//foo := timeutil.Now().Add(-jobs.RetentionTimeSetting.Get(&s.server.st.SV))
 	resp.EarliestRetainedTime = timeutil.Now().Add(-jobs.RetentionTimeSetting.Get(&s.server.st.SV))
 
 	if err != nil {

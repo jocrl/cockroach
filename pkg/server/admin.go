@@ -2058,8 +2058,8 @@ func (s *adminServer) jobsHelper(
 		resp.Jobs = append(resp.Jobs, job)
 	}
 
-	resp.RetentionTime = 10 * time.Minute
-	resp.RetentionTime = jobs.RetentionTimeSetting.Get(&r.settings.SV)
+	//resp.RetentionTime = 10 * time.Minutexz
+	resp.EarliestRetainedTime = timeutil.Now().Add(-jobs.RetentionTimeSetting.Get(&s.server.st.SV))
 
 	if err != nil {
 		return nil, err

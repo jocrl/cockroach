@@ -10,6 +10,7 @@
 
 import React, { MouseEvent } from "react";
 import { cockroach } from "src/js/protos";
+import * as protos from "@cockroachlabs/crdb-protobuf-client";
 import { DATE_FORMAT_24_UTC } from "src/util/format";
 import { JobStatusCell } from "src/views/jobs/jobStatusCell";
 import { CachedDataReducerState } from "src/redux/cachedDataReducer";
@@ -38,7 +39,6 @@ import { Anchor } from "src/components";
 import emptyTableResultsIcon from "assets/emptyState/empty-table-results.svg";
 import magnifyingGlassIcon from "assets/emptyState/magnifying-glass.svg";
 import { Tooltip } from "@cockroachlabs/ui-components";
-import moment from "moment";
 
 class JobsSortedTable extends SortedTable<Job> {}
 
@@ -218,7 +218,6 @@ export interface JobTableProps {
   pageSize?: number;
   current?: number;
   isUsedFilter: boolean;
-  retentionTime: moment.Duration | null;
 }
 
 export interface JobTableState {
@@ -297,11 +296,12 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
     trackDocsLink(e.currentTarget.text);
   };
 
-  formatJobsRetentionMessage = (retentionTime: moment.Duration): string => {
-    const jobsOldestTime = moment()
-      .subtract(retentionTime)
-      .utc();
-    return `Since ${jobsOldestTime.format(DATE_FORMAT_24_UTC)}`;
+  formatJobsRetentionMessage = (
+    earliestRetainedTime: protos.google.protobuf.ITimestamp,
+  ): string => {
+    return `Since ${util
+      .TimestampToMoment(earliestRetainedTime)
+      .format(DATE_FORMAT_24_UTC)}`;
   };
 
   render() {
@@ -316,10 +316,12 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
               pagination={{ ...pagination, total: jobs.length }}
               pageName="jobs"
             />
-            {this.props.retentionTime && (
+            {this.props.jobs.data.earliest_retained_time && (
               <>
                 <span className="jobs-table-summary__retention-divider">|</span>
-                {this.formatJobsRetentionMessage(this.props.retentionTime)}
+                {this.formatJobsRetentionMessage(
+                  this.props.jobs.data.earliest_retained_time,
+                )}
               </>
             )}
           </h4>

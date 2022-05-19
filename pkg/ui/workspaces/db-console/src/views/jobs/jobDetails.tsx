@@ -64,49 +64,40 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
 
   prevPage = () => this.props.history.goBack();
 
-  renderJobErrors = (job: Job) => {
-    // Creating this differently named type to be clear that this table data contains more  errors than just those in
-    // the execution_failures field. Ignoring "status" since the table does not need it.
-    type JobError = Pick<ExecutionFailure, "start" | "end" | "error">;
-    const errors: JobError[] = job.error
-      ? [
-          {
-            start: job.started,
-            end: job.finished,
-            error: job.error,
-          },
-          ...job.execution_failures,
-        ]
-      : job.execution_failures;
-
+  renderRetriableJobErrors = (executionFailures: ExecutionFailure[]) => {
     const columns = [
       {
         title: "Error start time (UTC)",
         name: "startTime",
-        cell: (error: JobError) =>
-          util.TimestampToMoment(error.start).format("MMM D, YYYY [at] h:mm A"),
-        sort: (error: JobError) =>
-          util.TimestampToMoment(error.start).valueOf(),
+        cell: (executionFailure: ExecutionFailure) =>
+          util
+            .TimestampToMoment(executionFailure.start)
+            .format("MMM D, YYYY [at] h:mm A"),
+        sort: (executionFailure: ExecutionFailure) =>
+          util.TimestampToMoment(executionFailure.start).valueOf(),
       },
       {
         title: "Error end time (UTC)",
         name: "endTime",
-        cell: (error: JobError) =>
-          util.TimestampToMoment(error.end).format("MMM D, YYYY [at] h:mm A"),
-        sort: (error: JobError) => util.TimestampToMoment(error.end).valueOf(),
+        cell: (executionFailure: ExecutionFailure) =>
+          util
+            .TimestampToMoment(executionFailure.end)
+            .format("MMM D, YYYY [at] h:mm A"),
+        sort: (executionFailure: ExecutionFailure) =>
+          util.TimestampToMoment(executionFailure.end).valueOf(),
       },
       {
         title: "Error message",
         name: "message",
-        cell: (error: JobError) => error.error,
-        sort: (error: JobError) => error.error,
+        cell: (executionFailure: ExecutionFailure) => executionFailure.error,
+        sort: (executionFailure: ExecutionFailure) => executionFailure.error,
       },
     ];
     return (
       <section>
-        <h3 className="summary--card__status--title">Job errors</h3>
+        <h3 className="summary--card__status--title">Previous job errors</h3>
         <SortedTable
-          data={errors}
+          data={executionFailures}
           columns={columns}
           sortSetting={this.props.sort}
           onChangeSortSetting={this.props.setSort}
@@ -114,7 +105,7 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
             <div>
               <Icon className={cx("no-errors__icon")} type={"check-circle"} />
               <span className={cx("no-errors__message")}>
-                No job errors occured.
+                No previous job errors occured.
               </span>
             </div>
           }
@@ -160,7 +151,7 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
             </SummaryCard>
           </Col>
         </Row>
-        <Row>{this.renderJobErrors(job)}</Row>
+        <Row>{this.renderRetriableJobErrors(job.execution_failures)}</Row>
       </>
     );
   };

@@ -10,12 +10,18 @@
 
 @require "~src/components/core/index"
 
-.no-errors
-  &__icon
+.errors-table
+  &__error-message
+    max-height: 200px;
+    overflow: auto;
+    word-break: break-word;
+
+  &__no-errors-icon
     vertical-align: middle
     font-size: 20px
     margin-right: 10px;
 
-  &__message
+  &__no-errors-message
     @extends $text--body-strong
     font-family $font-family--semi-bold
+

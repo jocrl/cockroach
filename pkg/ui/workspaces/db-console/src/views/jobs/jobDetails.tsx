@@ -89,7 +89,11 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
       {
         title: "Error message",
         name: "message",
-        cell: (executionFailure: ExecutionFailure) => executionFailure.error,
+        cell: (executionFailure: ExecutionFailure) => (
+          <div className={cx("errors-table__error-message")}>
+            {executionFailure.error}
+          </div>
+        ),
         sort: (executionFailure: ExecutionFailure) => executionFailure.error,
       },
     ];
@@ -98,14 +102,18 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
         <h3 className="summary--card__status--title">Previous job errors</h3>
         <SortedTable
           data={executionFailures}
+          className="errors-table"
           columns={columns}
           sortSetting={this.props.sort}
           onChangeSortSetting={this.props.setSort}
           renderNoResult={
             <div>
-              <Icon className={cx("no-errors__icon")} type={"check-circle"} />
-              <span className={cx("no-errors__message")}>
-                No previous job errors occured.
+              <Icon
+                className={cx("errors-table__no-errors-icon")}
+                type={"check-circle"}
+              />
+              <span className={cx("errors-table__no-errors-message")}>
+                No previous job errors occurred.
               </span>
             </div>
           }

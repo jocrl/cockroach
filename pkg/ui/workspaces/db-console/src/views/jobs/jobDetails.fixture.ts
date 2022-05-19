@@ -19,6 +19,18 @@ import * as protos from "src/js/protos";
 
 const history = createMemoryHistory({ initialEntries: ["/statements"] });
 
+export const finalErrorMessage = "Mock final failure error message";
+// error message lengths are capped at 16k, and so could potentially be very long
+export const longErrorMessage = `Mock [${
+  '"very",'.repeat(50) // no space, simulating hypothetical JSON dump
+}] ${
+  "very ".repeat(1000) // with space
+} long failure message.`;
+export const retriableErrorMessages = [
+  "Short retriable error message.",
+  longErrorMessage,
+];
+
 export const getJobDetailsProps = (job: Job): JobDetailsProps => {
   return {
     history,
@@ -63,8 +75,7 @@ export const failedJobProps = getJobDetailsProps(
     description:
       "ALTER TABLE movr.public.user_promo_codes ADD FOREIGN KEY (city, user_id) REFERENCES movr.public.users (city, id)",
     status: "failed",
-    error:
-      "Mock very very very very very very very very very very very very very very very very very very very very very very very very very very very very very long failure message",
+    error: finalErrorMessage,
     execution_failures: [], // no retriable errors
   }),
 );
@@ -93,13 +104,13 @@ export const hypotheticalRunningWithRetriableErrorsJobProps = getJobDetailsProps
         start: getDetaultStartPlusTime(60 * 2),
         end: getDetaultStartPlusTime(60 * 4),
         status: "running",
-        error: "First retriable error.",
+        error: retriableErrorMessages[0],
       },
       {
         start: getDetaultStartPlusTime(60 * 6),
         end: getDetaultStartPlusTime(60 * 8),
         status: "running",
-        error: "Second mock retriable error.",
+        error: retriableErrorMessages[1],
       },
     ],
   }),
@@ -113,19 +124,19 @@ export const hypotheticalFailedWithRetriableErrorsJobProps = getJobDetailsProps(
     description:
       "ALTER TABLE movr.public.user_promo_codes ADD FOREIGN KEY (city, user_id) REFERENCES movr.public.users (city, id)",
     status: "failed",
-    error: "Mock final failure error message",
+    error: finalErrorMessage,
     execution_failures: [
       {
         start: getDetaultStartPlusTime(60 * 2),
         end: getDetaultStartPlusTime(60 * 4),
         status: "running",
-        error: "First retriable error.",
+        error: retriableErrorMessages[0],
       },
       {
         start: getDetaultStartPlusTime(60 * 6),
         end: getDetaultStartPlusTime(60 * 8),
         status: "running",
-        error: "Second mock retriable error.",
+        error: retriableErrorMessages[1],
       },
     ],
   }),

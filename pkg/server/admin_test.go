@@ -1494,11 +1494,11 @@ func TestAdminAPIJobs(t *testing.T) {
 	now := timeutil.Now()
 	s, conn, _ := serverutils.StartServer(t, base.TestServerArgs{
 		Knobs: base.TestingKnobs{
-			JobsTestingKnobs: &jobs.TestingKnobs{
-				IntervalOverrides: jobs.TestingIntervalOverrides{
-					//RetentionTime: *(4 * time.Hour),
-				},
-			},
+			//JobsTestingKnobs: &jobs.TestingKnobs{
+			//	IntervalOverrides: jobs.TestingIntervalOverrides{
+			//		//RetentionTime: *(4 * time.Hour),
+			//	},
+			//},
 			Server: &TestingKnobs{
 				StubTimeNow: func() time.Time { return now },
 			},
@@ -1685,7 +1685,7 @@ func TestAdminAPIJobs(t *testing.T) {
 			if e, a := expected, resIDs; !reflect.DeepEqual(e, a) {
 				t.Errorf("%d: expected job IDs %v, but got %v", i, e, a)
 			}
-			require.Equal(t, res.EarliestRetainedTime, now.Add(-336*time.Hour))
+			require.Equal(t, now.Add(-336*time.Hour), res.EarliestRetainedTime)
 			//require.Equal(t, res.EarliestRetainedTime, parsedCert.NotBefore.Unix())
 		}
 	})

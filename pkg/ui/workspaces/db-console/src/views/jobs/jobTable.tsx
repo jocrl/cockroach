@@ -25,7 +25,6 @@ import {
   SortSetting,
   SortedTable,
   util,
-  TimestampToMoment,
 } from "@cockroachlabs/cluster-ui";
 import {
   jobsCancel,
@@ -323,7 +322,7 @@ export class JobTable extends React.Component<JobTableProps, JobTableState> {
               <>
                 <span className="jobs-table-summary__retention-divider">|</span>
                 {this.formatJobsRetentionMessage(
-                  TimestampToMoment(
+                  util.TimestampToMoment(
                     this.props.jobs.data.earliest_retained_time,
                   ),
                 )}

@@ -8,35 +8,17 @@
 // by the Apache License, Version 2.0, included in the file
 // licenses/APL.txt.
 
-import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  DatePicker,
-  Form,
-  Icon,
-  Input,
-  Popover,
-  TimePicker,
-} from "antd";
+import React, { useState } from "react";
+import { Alert, DatePicker, Icon, TimePicker } from "antd";
 import moment, { Moment } from "moment";
 import classNames from "classnames/bind";
 import { Time as TimeIcon, ErrorCircleFilled } from "@cockroachlabs/icons";
 import { Button } from "src/button";
 import { Text, TextTypes } from "src/text";
 
-import styles from "./dateRange.module.scss";
+import styles from "./dateRangeMenu.module.scss";
 
 const cx = classNames.bind(styles);
-
-function rangeToString(start: Moment, end: Moment): string {
-  const formatStr = "MMM D, H:mm";
-  const formatStrSameDay = "H:mm";
-
-  const isSameDay = start.isSame(end, "day");
-  return `${start.utc().format(formatStr)} - ${end
-    .utc()
-    .format(isSameDay ? formatStrSameDay : formatStr)} (UTC)`;
-}
 
 type DateRangeMenuProps = {
   startInit?: Moment;

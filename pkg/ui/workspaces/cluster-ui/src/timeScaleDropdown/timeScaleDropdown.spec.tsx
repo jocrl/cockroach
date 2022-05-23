@@ -23,7 +23,7 @@ import moment from "moment";
 import { MemoryRouter } from "react-router";
 import TimeFrameControls from "./timeFrameControls";
 import RangeSelect from "./rangeSelect";
-import { timeFormat as customMenuTimeFormat } from "../dateRange";
+import { timeFormat as customMenuTimeFormat } from "../dateRangeMenu";
 import { assert } from "chai";
 import sinon from "sinon";
 import { TimeWindow, ArrowDirection, TimeScale } from "./timeScaleTypes";

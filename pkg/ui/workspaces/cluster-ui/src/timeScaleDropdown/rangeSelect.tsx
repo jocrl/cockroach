@@ -11,7 +11,7 @@
 import React, { useState, useRef } from "react";
 import { Button, Dropdown } from "antd";
 import moment, { Moment } from "moment";
-import { DateRangeMenu } from "src/dateRange";
+import { DateRangeMenu } from "src/dateRangeMenu";
 import { CaretDown } from "src/icon/caretDown";
 import classNames from "classnames/bind";
 

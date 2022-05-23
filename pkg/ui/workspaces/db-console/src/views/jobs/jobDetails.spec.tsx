@@ -28,10 +28,10 @@ describe.only("JobDetails", () => {
     );
     getByText(finalErrorMessage);
     for (const errorMessage of retriableErrorMessages) {
-      // Just checking that it renders; truncated to max 100 chars because
-      const truncatedMessage = errorMessage.substring(0, Math.min(length, 100));
-      console.log(truncatedMessage);
-      getByText(truncatedMessage);
+      // Just checking that it renders; truncated to max 100 chars because RTL can't seem to find the overflow
+      // and it's been hard to debug (Karma seems to swallow `DEBUG_PRINT_LIMIT`).
+      const truncatedMessage = errorMessage.substring(0, 100);
+      getByText(truncatedMessage, { exact: false });
     }
   });
 });

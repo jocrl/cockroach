@@ -8,8 +8,16 @@
 // by the Apache License, Version 2.0, included in the file
 // licenses/APL.txt.
 
-import React, { useState } from "react";
-import { Alert, DatePicker, Form, Input, Popover, TimePicker } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  DatePicker,
+  Form,
+  Icon,
+  Input,
+  Popover,
+  TimePicker,
+} from "antd";
 import moment, { Moment } from "moment";
 import classNames from "classnames/bind";
 import { Time as TimeIcon, ErrorCircleFilled } from "@cockroachlabs/icons";
@@ -36,6 +44,7 @@ type DateRangeMenuProps = {
   allowedInterval?: [Moment, Moment];
   onSubmit: (start: Moment, end: Moment) => void;
   onCancel: () => void;
+  onBackClick: () => void;
 };
 
 export const dateFormat = "MMMM D, YYYY";
@@ -47,6 +56,7 @@ export function DateRangeMenu({
   allowedInterval,
   onSubmit,
   onCancel,
+  onBackClick,
 }: DateRangeMenuProps): React.ReactElement {
   /**
    * Local startMoment and endMoment state are stored here so that users can change the time before clicking "Apply".
@@ -108,6 +118,10 @@ export function DateRangeMenu({
 
   return (
     <div className={cx("popup-content")}>
+      <a onClick={onBackClick} style={{ color: "#000000a6" }}>
+        <Icon type={"arrow-left"} className={cx("icon")} />
+        <Text textType={TextTypes.BodyStrong}>Back</Text>
+      </a>
       <Text className={cx("label")} textType={TextTypes.BodyStrong}>
         Start (UTC)
       </Text>
@@ -167,63 +181,5 @@ export function DateRangeMenu({
         </Button>
       </div>
     </div>
-  );
-}
-
-type DateRangeProps = {
-  start: Moment;
-  end: Moment;
-  allowedInterval?: [Moment, Moment];
-  onSubmit: (start: Moment, end: Moment) => void;
-};
-
-export function DateRange({
-  allowedInterval,
-  start,
-  end,
-  onSubmit,
-}: DateRangeProps): React.ReactElement {
-  const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const displayStr = rangeToString(start, end);
-
-  const onVisibleChange = (visible: boolean): void => {
-    setMenuVisible(visible);
-  };
-
-  const closeMenu = (): void => {
-    setMenuVisible(false);
-  };
-
-  const _onSubmit = (start: Moment, end: Moment) => {
-    onSubmit(start, end);
-    closeMenu();
-  };
-
-  const menu = (
-    <DateRangeMenu
-      allowedInterval={allowedInterval}
-      startInit={start}
-      endInit={end}
-      onSubmit={_onSubmit}
-      onCancel={closeMenu}
-    />
-  );
-
-  return (
-    <Form className={cx("date-range-form")}>
-      <Form.Item>
-        <Popover
-          destroyTooltipOnHide
-          content={menu}
-          overlayClassName={cx("popup-container")}
-          placement="bottomLeft"
-          visible={menuVisible}
-          onVisibleChange={onVisibleChange}
-          trigger="click"
-        >
-          <Input value={displayStr} prefix={<TimeIcon />} />
-        </Popover>
-      </Form.Item>
-    </Form>
   );
 }

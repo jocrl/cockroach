@@ -68,7 +68,7 @@ export interface ColumnDescriptor<T> {
  * SortedTableProps describes the properties expected by a SortedTable
  * component.
  */
-interface SortedTableProps<T> {
+export interface SortedTableProps<T> {
   // The data which should be displayed in the table. This data may be sorted
   // by this component before display.
   data: T[];

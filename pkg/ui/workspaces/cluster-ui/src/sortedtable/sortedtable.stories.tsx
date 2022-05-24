@@ -11,39 +11,49 @@
 import React, { useState } from "react";
 import { storiesOf } from "@storybook/react";
 
-import { SortedTable, SortSetting } from "./";
+import { SortedTable, SortedTableProps, SortSetting } from "./";
 
-export function SortedTableWrapper(): React.ReactElement {
-  const [sortSetting, setSortSetting] = useState<SortSetting>({
-    ascending: true,
-    columnTitle: "col1",
-  });
-  const columns = [
-    {
-      name: "col1",
-      title: "Col 1",
-      cell: (idx: number) => `Col 1: row-${idx}`,
-      sort: (idx: number) => idx,
+const columns = [
+  {
+    name: "col1",
+    title: "Col 1",
+    cell: (idx: number) => `Col 1: row-${idx}`,
+    sort: (idx: number) => idx,
+  },
+  {
+    name: "col2",
+    title: "Col 2",
+    cell: (idx: number) => `Col 2: row-${idx}`,
+    sort: (idx: number) => idx,
+  },
+  {
+    name: "col3",
+    title: "Col 3",
+    cell: (idx: number) => `Col 3: row-${idx}`,
+    sort: (idx: number) => idx,
+  },
+];
+
+const data = [1, 2, 3];
+
+export function SortedTableWrapper({
+  // We pull out onChangeSortSetting so that they will not be passed.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onChangeSortSetting,
+  ...props
+}: Partial<SortedTableProps<number>>): React.ReactElement {
+  const [statefulSortSetting, setSortSetting] = useState<SortSetting>(
+    props.sortSetting && {
+      ascending: true,
+      columnTitle: "col1",
     },
-    {
-      name: "col2",
-      title: "Col 2",
-      cell: (idx: number) => `Col 2: row-${idx}`,
-      sort: (idx: number) => idx,
-    },
-    {
-      name: "col3",
-      title: "Col 3",
-      cell: (idx: number) => `Col 3: row-${idx}`,
-      sort: (idx: number) => idx,
-    },
-  ];
+  );
+
   return (
     <SortedTable
-      columns={columns}
-      data={[1, 2, 3]}
-      sortSetting={sortSetting}
+      sortSetting={statefulSortSetting}
       onChangeSortSetting={setSortSetting}
+      {...props}
     />
   );
 }
@@ -51,23 +61,22 @@ export function SortedTableWrapper(): React.ReactElement {
 storiesOf("Sorted table", module)
   .add("Empty state", () => <SortedTable empty />)
   .add("No sort", () => {
-    const columns = [
-      {
-        name: "col1",
-        title: "Col 1",
-        cell: (idx: number) => `Col 1: row-${idx}`,
-      },
-      {
-        name: "col2",
-        title: "Col 2",
-        cell: (idx: number) => `Col 2: row-${idx}`,
-      },
-      {
-        name: "col3",
-        title: "Col 3",
-        cell: (idx: number) => `Col 3: row-${idx}`,
-      },
-    ];
-    return <SortedTable columns={columns} data={[1, 2, 3]} />;
+    return <SortedTable columns={columns} data={data} />;
   })
-  .add("With sort", () => <SortedTableWrapper />);
+  .add("With sort", () => <SortedTableWrapper columns={columns} data={data} />)
+  // This story was added upon noticing that the table had this functionality, and that this functionality was tested
+  // It doesn't appear to be used.
+  .add("Expandable", () => (
+    <SortedTableWrapper
+      columns={columns}
+      data={data}
+      expandableConfig={{
+        expandedContent: testRow => (
+          <div>
+            {testRow}={testRow}
+          </div>
+        ),
+        expansionKey: testRow => testRow.toString(),
+      }}
+    />
+  ));

@@ -40,6 +40,8 @@ import * as protos from "src/js/protos";
 import { LocalSetting } from "src/redux/localsettings";
 import styles from "./jobDetails.module.styl";
 import classNames from "classnames/bind";
+import { Typography } from "antd";
+const { Paragraph } = Typography;
 const cx = classNames.bind(styles);
 
 export interface JobDetailsProps extends RouteComponentProps {
@@ -98,7 +100,9 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
       {
         title: "Error message",
         name: "message",
-        cell: (error: JobError) => error.error,
+        cell: (error: JobError) => {
+          return <Paragraph ellipsis={{ rows: 2 }}>{error.error}</Paragraph>;
+        },
         sort: (error: JobError) => error.error,
       },
     ];

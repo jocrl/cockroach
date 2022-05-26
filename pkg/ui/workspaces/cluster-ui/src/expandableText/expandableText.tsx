@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Anchor } from "src/anchor";
+import { Typography } from "antd";
+const { Paragraph, Text } = Typography;
 
 interface ExpandableTextProps {
   text: string;
@@ -20,17 +22,18 @@ export function ExpandableText({
 
   return (
     <>
-      {!isExpanded && (
-        <>
-          {text.slice(0, characterLimit) + "..."}{" "}
+      <>
+        <Paragraph ellipsis={!isExpanded}>{text}</Paragraph>{" "}
+        {!isExpanded && (
           <Anchor onClick={() => setIsExpanded(true)}>Show More</Anchor>
-        </>
-      )}
-      {isExpanded && (
-        <>
-          {text} <Anchor onClick={() => setIsExpanded(false)}>Show Less</Anchor>
-        </>
-      )}
+        )}
+        {isExpanded && (
+          <Anchor onClick={() => setIsExpanded(false)}>Show Less</Anchor>
+        )}
+      </>
+      {/*<>*/}
+      {/*  {text} <Anchor onClick={() => setIsExpanded(false)}>Show Less</Anchor>*/}
+      {/*</>*/}
     </>
   );
 }

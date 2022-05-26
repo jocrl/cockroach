@@ -31,7 +31,7 @@ import { SummaryCard } from "../shared/components/summaryCard";
 import Job = cockroach.server.serverpb.JobResponse;
 import JobRequest = cockroach.server.serverpb.JobRequest;
 import ExecutionFailure = cockroach.server.serverpb.JobResponse.IExecutionFailure;
-import { Button } from "@cockroachlabs/cluster-ui";
+import { Button, ExpandableText } from "@cockroachlabs/cluster-ui";
 import { ArrowLeft } from "@cockroachlabs/icons";
 import { DATE_FORMAT } from "src/util/format";
 import { JobStatusCell } from "./jobStatusCell";
@@ -40,8 +40,6 @@ import * as protos from "src/js/protos";
 import { LocalSetting } from "src/redux/localsettings";
 import styles from "./jobDetails.module.styl";
 import classNames from "classnames/bind";
-import { Typography } from "antd";
-const { Paragraph } = Typography;
 const cx = classNames.bind(styles);
 
 export interface JobDetailsProps extends RouteComponentProps {
@@ -101,7 +99,11 @@ export class JobDetails extends React.Component<JobDetailsProps, {}> {
         title: "Error message",
         name: "message",
         cell: (error: JobError) => {
-          return <Paragraph ellipsis={{ rows: 2 }}>{error.error}</Paragraph>;
+          return (
+            <ExpandableText ellipsis={{ rows: 2 }}>
+              {error.error}
+            </ExpandableText>
+          );
         },
         sort: (error: JobError) => error.error,
       },
